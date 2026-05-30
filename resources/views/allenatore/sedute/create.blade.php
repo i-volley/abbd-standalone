@@ -1,0 +1,32 @@
+@extends('layouts.allenatore')
+@section('title', 'Nuova Seduta')
+
+@section('content')
+<h2 class="mb-4">Nuova Seduta</h2>
+
+<form action="{{ route('allenatore.sedute.store') }}" method="POST" id="formSeduta">
+@csrf
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Titolo *</label>
+        <input type="text" name="titolo" class="form-control" required value="{{ old('titolo') }}">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Data *</label>
+        <input type="date" name="data" class="form-control" required value="{{ old('data', date('Y-m-d')) }}">
+    </div>
+    <div class="col-md-5">
+        <label class="form-label">Team *</label>
+        <select name="team_id" class="form-select" required>
+            @foreach($teams as $t)
+                <option value="{{ $t->id }}">{{ $t->nome }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+<button type="submit" class="btn btn-outline-secondary mb-4">Crea seduta bozza e apri costruttore</button>
+</form>
+
+<p class="text-muted">Dopo aver creato la bozza potrai aggiungere gli esercizi.</p>
+@endsection
