@@ -25,19 +25,21 @@ class EsercizioController extends Controller
         $miei     = (clone $base)->where('creato_da', auth()->id())->orderBy('nome')->get();
         $catalogo = (clone $base)->where('is_pubblico', true)->orderBy('nome')->get();
         $gesti    = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
-        $categorie = Esercizio::categorieEta();
+        $categorie       = Esercizio::categorieEta();
+        $ruoliDisponibili = Esercizio::ruoliDisponibili();
 
-        return view('allenatore.esercizi.index', compact('miei', 'catalogo', 'gesti', 'categorie'));
+        return view('allenatore.esercizi.index', compact('miei', 'catalogo', 'gesti', 'categorie', 'ruoliDisponibili'));
     }
 
     public function create()
     {
-        $sportId  = $this->sportId();
-        $gesti    = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
-        $capacita = Capacita::all();
-        $categorie = Esercizio::categorieEta();
+        $sportId          = $this->sportId();
+        $gesti            = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
+        $capacita         = Capacita::all();
+        $categorie        = Esercizio::categorieEta();
+        $ruoliDisponibili = Esercizio::ruoliDisponibili();
 
-        return view('allenatore.esercizi.create', compact('gesti', 'capacita', 'categorie'));
+        return view('allenatore.esercizi.create', compact('gesti', 'capacita', 'categorie', 'ruoliDisponibili'));
     }
 
     public function store(Request $request)
@@ -56,6 +58,16 @@ class EsercizioController extends Controller
             'is_pubblico'       => 'boolean',
             'capacita_ids'      => 'nullable|array',
             'capacita_ids.*'    => 'exists:capacita,id',
+            // Assi metodologici FIPAV
+            'obiettivo'         => 'nullable|in:permanente,principale,secondario',
+            'fase_seduta'       => 'nullable|in:preparatoria,centrale,finale',
+            'fase_gioco'        => 'nullable|in:cambio_palla,break_point,ricostruzione',
+            'componente'        => 'nullable|in:tecnica,tattica',
+            'rendimento'        => 'nullable|in:positivita,gestione_errore,efficienza',
+            'livello'           => 'nullable|in:base,medio,alto',
+            'n_giocatori'       => 'nullable|string|max:10',
+            'ruoli'             => 'nullable|array',
+            'ruoli.*'           => 'in:' . implode(',', Esercizio::ruoliDisponibili()),
         ]);
 
         $esercizio = Esercizio::create([
@@ -68,6 +80,7 @@ class EsercizioController extends Controller
         if (!empty($data['capacita_ids'])) {
             $esercizio->capacita()->sync($data['capacita_ids']);
         }
+        $esercizio->syncRuoli($data['ruoli'] ?? []);
 
         return redirect()->route('allenatore.esercizi.index')->with('success', 'Esercizio creato.');
     }
@@ -80,12 +93,14 @@ class EsercizioController extends Controller
 
     public function edit(Esercizio $esercizio)
     {
-        $sportId  = $this->sportId();
-        $gesti    = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
-        $capacita = Capacita::all();
-        $categorie = Esercizio::categorieEta();
+        $sportId          = $this->sportId();
+        $gesti            = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
+        $capacita         = Capacita::all();
+        $categorie        = Esercizio::categorieEta();
+        $ruoliDisponibili = Esercizio::ruoliDisponibili();
+        $esercizio->load(['gestoTecnico', 'capacita', 'ruoli']);
 
-        return view('allenatore.esercizi.edit', compact('esercizio', 'gesti', 'capacita', 'categorie'));
+        return view('allenatore.esercizi.edit', compact('esercizio', 'gesti', 'capacita', 'categorie', 'ruoliDisponibili'));
     }
 
     public function update(Request $request, Esercizio $esercizio)
@@ -104,6 +119,16 @@ class EsercizioController extends Controller
             'is_pubblico'       => 'boolean',
             'capacita_ids'      => 'nullable|array',
             'capacita_ids.*'    => 'exists:capacita,id',
+            // Assi metodologici FIPAV
+            'obiettivo'         => 'nullable|in:permanente,principale,secondario',
+            'fase_seduta'       => 'nullable|in:preparatoria,centrale,finale',
+            'fase_gioco'        => 'nullable|in:cambio_palla,break_point,ricostruzione',
+            'componente'        => 'nullable|in:tecnica,tattica',
+            'rendimento'        => 'nullable|in:positivita,gestione_errore,efficienza',
+            'livello'           => 'nullable|in:base,medio,alto',
+            'n_giocatori'       => 'nullable|string|max:10',
+            'ruoli'             => 'nullable|array',
+            'ruoli.*'           => 'in:' . implode(',', Esercizio::ruoliDisponibili()),
         ]);
 
         $esercizio->update([
@@ -111,6 +136,7 @@ class EsercizioController extends Controller
             'is_pubblico' => $request->boolean('is_pubblico'),
         ]);
         $esercizio->capacita()->sync($data['capacita_ids'] ?? []);
+        $esercizio->syncRuoli($data['ruoli'] ?? []);
 
         return redirect()->route('allenatore.esercizi.index')->with('success', 'Esercizio aggiornato.');
     }
@@ -142,6 +168,19 @@ class EsercizioController extends Controller
             foreach ((array) $request->capacita_ids as $cid) {
                 $query->whereHas('capacita', fn($q) => $q->where('capacita.id', $cid));
             }
+        }
+        // Assi metodologici FIPAV
+        if ($request->filled('ruolo')) {
+            $query->whereHas('ruoli', fn($q) => $q->whereIn('ruolo', (array) $request->ruolo));
+        }
+        if ($request->filled('fase_gioco')) {
+            $query->whereIn('fase_gioco', (array) $request->fase_gioco);
+        }
+        if ($request->filled('componente')) {
+            $query->where('componente', $request->componente);
+        }
+        if ($request->filled('obiettivo')) {
+            $query->where('obiettivo', $request->obiettivo);
         }
         if ($request->filled('q')) {
             $q = $request->q;

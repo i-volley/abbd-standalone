@@ -48,6 +48,31 @@
             @endforeach
         </div>
 
+        {{-- Fase di gioco --}}
+        <div class="mb-1">
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Fase di gioco</small>
+        </div>
+        <div class="d-flex gap-1 flex-wrap mb-3">
+            <button type="button" class="btn btn-sm btn-secondary filtro-fase-gioco active-all" data-val="">Tutte</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="cambio_palla">Cambio palla</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="break_point">Break point</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="ricostruzione">Ricostruzione</button>
+        </div>
+
+        {{-- Ruolo --}}
+        <div class="mb-1">
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Ruolo</small>
+        </div>
+        <div class="d-flex gap-1 flex-wrap mb-3">
+            <button type="button" class="btn btn-sm btn-secondary filtro-ruolo active-all" data-val="">Tutti</button>
+            @php
+            $labRuoli = ['alzatore'=>'Alzatore','ricevitore_attaccante'=>'Ric.-Attaccante','centrale'=>'Centrale','opposto'=>'Opposto','libero'=>'Libero'];
+            @endphp
+            @foreach($ruoliDisponibili as $r)
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-ruolo" data-val="{{ $r }}">{{ $labRuoli[$r] }}</button>
+            @endforeach
+        </div>
+
         {{-- Testo libero --}}
         <input type="text" id="cerca-nome" class="form-control"
                placeholder="Cerca per nome o descrizione...">
@@ -64,7 +89,7 @@
 <script>
 const CERCA_URL = '{{ route('allenatore.esercizi.cerca') }}';
 
-let filtri = { metodologia: '', gesto_tecnico_id: '', categoria_eta: '', q: '' };
+let filtri = { metodologia: '', gesto_tecnico_id: '', categoria_eta: '', fase_gioco: '', ruolo: '', q: '' };
 
 function aggiorna() {
     const params = new URLSearchParams();
@@ -165,6 +190,48 @@ document.querySelectorAll('.filtro-cat').forEach(btn => {
             const tutteBtn = document.querySelector('.filtro-cat[data-val=""]');
             tutteBtn.style.background = '#6c757d';
             tutteBtn.style.color      = '#fff';
+        }
+        aggiorna();
+    });
+});
+
+// ── Fase di gioco ─────────────────────────────────────────────────────────
+document.querySelectorAll('.filtro-fase-gioco').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        filtri.fase_gioco = filtri.fase_gioco === val && val !== '' ? '' : val;
+
+        document.querySelectorAll('.filtro-fase-gioco').forEach(b => {
+            b.classList.remove('btn-secondary');
+            b.classList.add('btn-outline-secondary');
+        });
+        if (filtri.fase_gioco) {
+            btn.classList.remove('btn-outline-secondary');
+            btn.classList.add('btn-secondary');
+        } else {
+            document.querySelector('.filtro-fase-gioco[data-val=""]').classList.remove('btn-outline-secondary');
+            document.querySelector('.filtro-fase-gioco[data-val=""]').classList.add('btn-secondary');
+        }
+        aggiorna();
+    });
+});
+
+// ── Ruolo ─────────────────────────────────────────────────────────────────
+document.querySelectorAll('.filtro-ruolo').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        filtri.ruolo = filtri.ruolo === val && val !== '' ? '' : val;
+
+        document.querySelectorAll('.filtro-ruolo').forEach(b => {
+            b.classList.remove('btn-secondary');
+            b.classList.add('btn-outline-secondary');
+        });
+        if (filtri.ruolo) {
+            btn.classList.remove('btn-outline-secondary');
+            btn.classList.add('btn-secondary');
+        } else {
+            document.querySelector('.filtro-ruolo[data-val=""]').classList.remove('btn-outline-secondary');
+            document.querySelector('.filtro-ruolo[data-val=""]').classList.add('btn-secondary');
         }
         aggiorna();
     });

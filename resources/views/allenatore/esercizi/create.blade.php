@@ -104,6 +104,10 @@
         </div>
 
         <div class="col-12">
+            @include('allenatore.esercizi._assi-metodologici')
+        </div>
+
+        <div class="col-12">
             <button type="submit" class="btn btn-primary">Salva esercizio</button>
             <a href="{{ route('allenatore.esercizi.index') }}" class="btn btn-outline-secondary ms-2">Annulla</a>
         </div>
