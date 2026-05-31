@@ -1,6 +1,9 @@
 @php
-$metodBadge = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-dark', 'globale' => 'bg-success'];
-$faseBadge  = ['riscaldamento' => 'bg-warning text-dark', 'potenziamento' => 'bg-danger', 'stretching' => 'bg-info text-dark'];
+$metodBadge     = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-dark', 'globale' => 'bg-success'];
+$faseBadge      = ['riscaldamento' => 'bg-warning text-dark', 'potenziamento' => 'bg-danger', 'stretching' => 'bg-info text-dark'];
+$faseGiocoBadge = ['cambio_palla' => 'bg-info text-dark', 'break_point' => 'bg-danger', 'ricostruzione' => 'bg-warning text-dark'];
+$faseGiocoLab   = ['cambio_palla' => 'CP', 'break_point' => 'BP', 'ricostruzione' => 'RIC'];
+$ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
 @endphp
 
 {{-- ── I MIEI ESERCIZI ─────────────────────────────────────────────────────── --}}
@@ -21,12 +24,19 @@ $faseBadge  = ['riscaldamento' => 'bg-warning text-dark', 'potenziamento' => 'bg
                     @if($e->categoria_eta)
                         <x-badge-categoria-eta :categoria="$e->categoria_eta" />
                     @endif
+                    @if($e->fase_gioco)
+                        <span class="badge {{ $faseGiocoBadge[$e->fase_gioco] ?? 'bg-secondary' }} rounded-pill" style="font-size:.65rem">{{ $faseGiocoLab[$e->fase_gioco] ?? $e->fase_gioco }}</span>
+                    @endif
+                    @foreach($e->ruoli as $r)
+                        <span class="badge bg-dark rounded-pill" style="font-size:.65rem">{{ $ruoloLab[$r->ruolo] ?? $r->ruolo }}</span>
+                    @endforeach
                 </div>
                 <div class="small text-muted d-flex gap-2 flex-wrap mb-1">
                     @if($e->gestoTecnico)<span>{{ $e->gestoTecnico->nome }}</span>@endif
                     <span>{{ $e->durata_min }} min</span>
                     @if($e->n_salti > 0)<span>{{ $e->n_salti }} salti</span>@endif
                     @if($e->n_gesti > 0)<span>{{ $e->n_gesti }} gesti</span>@endif
+                    @if($e->n_giocatori)<span>{{ $e->n_giocatori }}</span>@endif
                 </div>
                 <div class="d-flex flex-wrap gap-1">
                     @foreach($e->capacita as $c)

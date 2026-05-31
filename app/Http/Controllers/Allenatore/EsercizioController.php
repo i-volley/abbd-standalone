@@ -20,7 +20,7 @@ class EsercizioController extends Controller
     public function index()
     {
         $sportId  = $this->sportId();
-        $base     = Esercizio::with(['gestoTecnico', 'capacita'])->where('sport_id', $sportId);
+        $base     = Esercizio::with(['gestoTecnico', 'capacita', 'ruoli'])->where('sport_id', $sportId);
 
         $miei     = (clone $base)->where('creato_da', auth()->id())->orderBy('nome')->get();
         $catalogo = (clone $base)->where('is_pubblico', true)->orderBy('nome')->get();
@@ -87,7 +87,7 @@ class EsercizioController extends Controller
 
     public function show(Esercizio $esercizio)
     {
-        $esercizio->load(['gestoTecnico', 'capacita']);
+        $esercizio->load(['gestoTecnico', 'capacita', 'ruoli']);
         return view('allenatore.esercizi.show', compact('esercizio'));
     }
 
@@ -150,7 +150,7 @@ class EsercizioController extends Controller
     public function cerca(Request $request)
     {
         $sportId = $this->sportId();
-        $query   = Esercizio::with(['gestoTecnico', 'capacita'])->where('sport_id', $sportId);
+        $query   = Esercizio::with(['gestoTecnico', 'capacita', 'ruoli'])->where('sport_id', $sportId);
 
         if ($request->filled('metodologia')) {
             $query->whereIn('metodologia', (array) $request->metodologia);
