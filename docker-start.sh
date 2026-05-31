@@ -7,6 +7,8 @@ fi
 
 # Laravel legge direttamente dalle env vars del container — nessun .env file necessario
 php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache

@@ -11,18 +11,13 @@ use App\Http\Controllers\Allenatore\StagioneController;
 use App\Http\Controllers\Allenatore\TeamController;
 use App\Http\Controllers\Atleta\AtletaSeduteController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PushSubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
 
-Route::get('/', function () {
-    if (auth()->check()) {
-        if (auth()->user()->hasRole('allenatore')) return redirect()->route('allenatore.dashboard');
-        return redirect()->route('atleta.sedute');
-    }
-    return redirect()->route('login');
-});
+Route::get('/', [HomeController::class, 'index']);
 
 // ── AREA ALLENATORE ──────────────────────────────────────────────────────────
 Route::prefix('allenatore')->name('allenatore.')
