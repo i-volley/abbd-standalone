@@ -11,16 +11,17 @@ class SportController extends Controller
 {
     public function index()
     {
-        $sports = Sport::all();
+        $sports = Sport::with(['gestiTecnici' => fn($q) => $q->orderBy('ordinamento')])->get();
         return view('allenatore.impostazioni.sports', compact('sports'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate(['nome' => 'required|string|max:100|unique:sports,nome']);
-        Sport::create(['nome' => $data['nome'], 'slug' => Str::slug($data['nome'])]);
+        $sport = Sport::create(['nome' => $data['nome'], 'slug' => Str::slug($data['nome'])]);
 
-        return back()->with('success', 'Sport aggiunto.');
+        return redirect()->route('allenatore.sports.index', ['open_sport' => $sport->id])
+            ->with('success', 'Sport aggiunto.');
     }
 
     public function update(Request $request, Sport $sport)
@@ -28,7 +29,8 @@ class SportController extends Controller
         $data = $request->validate(['nome' => 'required|string|max:100', 'attivo' => 'boolean']);
         $sport->update([...$data, 'attivo' => $request->boolean('attivo')]);
 
-        return back()->with('success', 'Sport aggiornato.');
+        return redirect()->route('allenatore.sports.index', ['open_sport' => $sport->id])
+            ->with('success', 'Sport aggiornato.');
     }
 
     public function destroy(Sport $sport)
