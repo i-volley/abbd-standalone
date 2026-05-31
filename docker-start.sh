@@ -5,6 +5,10 @@ if [ -z "$APP_KEY" ]; then
     export APP_KEY="base64:72/KL/qkEeS+KQE31iqfLqsq0e6bNqGVFaU39Rywxkc="
 fi
 
+# DEBUG TEMPORANEO — rimuovere dopo fix
+export APP_DEBUG=true
+export APP_ENV=local
+
 # Laravel legge direttamente dalle env vars del container — nessun .env file necessario
 php artisan config:clear
 php artisan route:clear
