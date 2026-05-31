@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Seduta extends Model
 {
+    protected $table = 'sedute';
+
     protected $fillable = [
         'microciclo_id', 'team_id', 'allenatore_id', 'titolo', 'data',
         'durata_tot_min', 'stato', 'visibile_atleti', 'scadenza_feedback',

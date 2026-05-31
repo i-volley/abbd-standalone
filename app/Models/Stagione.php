@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Stagione extends Model
 {
+    protected $table = 'stagioni';
+
     protected $fillable = ['team_id', 'nome', 'data_inizio', 'data_fine', 'attiva'];
 
     protected function casts(): array

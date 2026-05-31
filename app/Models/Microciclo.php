@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Microciclo extends Model
 {
+    protected $table = 'microcicli';
+
     protected $fillable = ['macrociclo_id', 'numero', 'data_inizio', 'intensita', 'note'];
 
     protected function casts(): array
