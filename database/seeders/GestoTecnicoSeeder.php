@@ -20,6 +20,8 @@ class GestoTecnicoSeeder extends Seeder
             ['nome' => 'Attacco',   'categoria' => 'fondamentale_gioco', 'ordinamento' => 4],
             ['nome' => 'Muro',      'categoria' => 'fondamentale_gioco', 'ordinamento' => 5],
             ['nome' => 'Ricezione', 'categoria' => 'fondamentale_gioco', 'ordinamento' => 6],
+            ['nome' => 'Alzata',    'categoria' => 'fondamentale_gioco', 'ordinamento' => 7],
+            ['nome' => 'Difesa',    'categoria' => 'fondamentale_gioco', 'ordinamento' => 8],
         ];
 
         foreach ($gesti as $g) {
