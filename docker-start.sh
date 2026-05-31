@@ -1,18 +1,15 @@
 #!/bin/sh
 
-# Fallback APP_KEY se non impostato
+# Fallback APP_KEY se Railway non ha impostato la variabile
 if [ -z "$APP_KEY" ]; then
     export APP_KEY="base64:72/KL/qkEeS+KQE31iqfLqsq0e6bNqGVFaU39Rywxkc="
 fi
 
-# .env file per compatibilità Laravel
-if [ ! -f .env ]; then
-    cp .env.example .env 2>/dev/null || touch .env
-fi
-
+# Laravel legge direttamente dalle env vars del container — nessun .env file necessario
+php artisan config:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 php artisan migrate --force && echo "Migrate OK" || echo "Migrate warning"
-php artisan db:seed --force && echo "Seed OK" || echo "Seed warning — proseguo"
+php artisan db:seed --force && echo "Seed OK" || echo "Seed warning"
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
