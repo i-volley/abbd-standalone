@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Allenatore\AllenatoreDashboardController;
+use App\Http\Controllers\Allenatore\CategoriaGestoController;
 use App\Http\Controllers\Allenatore\EsercizioController;
 use App\Http\Controllers\Allenatore\GestoTecnicoController;
 use App\Http\Controllers\Allenatore\MacrocicloController;
@@ -56,6 +57,11 @@ Route::prefix('allenatore')->name('allenatore.')
     Route::resource('sports', SportController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('gesti-tecnici', GestoTecnicoController::class)
         ->parameters(['gesti-tecnici' => 'gestoTecnico']);
+
+    // Categorie gesti tecnici
+    Route::post('categorie-gesto', [CategoriaGestoController::class, 'store'])->name('categorie-gesto.store');
+    Route::patch('categorie-gesto/{categoriaGesto}', [CategoriaGestoController::class, 'update'])->name('categorie-gesto.update');
+    Route::delete('categorie-gesto/{categoriaGesto}', [CategoriaGestoController::class, 'destroy'])->name('categorie-gesto.destroy');
 });
 
 // ── AREA ATLETA ──────────────────────────────────────────────────────────────

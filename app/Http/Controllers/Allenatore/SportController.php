@@ -11,7 +11,10 @@ class SportController extends Controller
 {
     public function index()
     {
-        $sports = Sport::with(['gestiTecnici' => fn($q) => $q->orderBy('ordinamento')])->get();
+        $sports = Sport::with([
+            'categorieGesto',
+            'gestiTecnici' => fn($q) => $q->with('categoriaGesto')->orderBy('ordinamento'),
+        ])->get();
         return view('allenatore.impostazioni.sports', compact('sports'));
     }
 

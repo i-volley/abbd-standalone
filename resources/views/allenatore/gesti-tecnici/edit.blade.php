@@ -25,25 +25,22 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Categoria *</label>
-                <div class="d-flex gap-3 mt-1">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="categoria"
-                               value="fondamentale_base" id="cat-base"
-                               {{ old('categoria', $gestoTecnico->categoria) === 'fondamentale_base' ? 'checked' : '' }}>
-                        <label class="form-check-label" for="cat-base">
-                            <span class="badge bg-primary">Fondamentale base</span>
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="categoria"
-                               value="fondamentale_gioco" id="cat-gioco"
-                               {{ old('categoria', $gestoTecnico->categoria) === 'fondamentale_gioco' ? 'checked' : '' }}>
-                        <label class="form-check-label" for="cat-gioco">
-                            <span class="badge bg-success">Fondamentale di gioco</span>
-                        </label>
-                    </div>
+                <label class="form-label">Categoria</label>
+                <select name="categoria_id" class="form-select">
+                    <option value="">Nessuna categoria</option>
+                    @foreach($categorie as $cat)
+                    <option value="{{ $cat->id }}"
+                            {{ old('categoria_id', $gestoTecnico->categoria_id) == $cat->id ? 'selected' : '' }}>
+                        {{ $cat->nome }}
+                    </option>
+                    @endforeach
+                </select>
+                {{-- Preview badge categoria selezionata --}}
+                @if($gestoTecnico->categoriaGesto)
+                <div class="mt-2">
+                    <x-badge-categoria-gesto :categoria="$gestoTecnico->categoriaGesto" />
                 </div>
+                @endif
             </div>
 
             <div class="mb-4">

@@ -34,22 +34,71 @@
 
 <div class="tab-content border border-top-0 rounded-bottom p-4 bg-white shadow-sm">
 
-    {{-- ── PANNELLO PER OGNI SPORT ─────────────────────────────────────────── --}}
     @foreach($sports as $sport)
     <div class="tab-pane fade" id="pane-sport-{{ $sport->id }}" role="tabpanel">
-
         <div class="row g-4">
 
-            {{-- Gesti tecnici esistenti --}}
+            {{-- ── COLONNA SINISTRA: categorie + gesti ──────────────────────── --}}
             <div class="col-lg-7">
-                <h5 class="mb-3 fw-bold">Gesti tecnici — {{ $sport->nome }}</h5>
+
+                {{-- CATEGORIE ────────────────────────────────────────────────── --}}
+                <h6 class="text-uppercase text-muted fw-bold mb-2" style="font-size:.72rem;letter-spacing:.08em">
+                    Categorie
+                </h6>
+
+                @forelse($sport->categorieGesto as $cat)
+                <div class="d-flex align-items-center gap-2 py-2 border-bottom">
+                    {{-- Preview badge --}}
+                    <span class="badge rounded-pill flex-shrink-0"
+                          style="background:{{ $cat->colore }};min-width:5rem;font-size:.75rem">
+                        {{ $cat->nome }}
+                    </span>
+
+                    {{-- Inline edit form --}}
+                    <form action="{{ route('allenatore.categorie-gesto.update', $cat) }}" method="POST"
+                          class="d-flex gap-1 align-items-center flex-grow-1">
+                        @csrf @method('PATCH')
+                        <input type="text" name="nome" value="{{ $cat->nome }}"
+                               class="form-control form-control-sm" style="max-width:180px" required>
+                        <input type="color" name="colore" value="{{ $cat->colore }}"
+                               class="form-control form-control-color form-control-sm"
+                               style="width:2.5rem;height:2rem;padding:.1rem .2rem" title="Scegli colore">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Salva</button>
+                    </form>
+
+                    {{-- Elimina categoria --}}
+                    <form action="{{ route('allenatore.categorie-gesto.destroy', $cat) }}" method="POST"
+                          onsubmit="return confirm('Eliminare la categoria \'{{ addslashes($cat->nome) }}\'? I gesti associati perderanno la categoria.')">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-sm btn-outline-danger">×</button>
+                    </form>
+                </div>
+                @empty
+                <p class="text-muted fst-italic small mb-2">Nessuna categoria. Aggiungine una →</p>
+                @endforelse
+
+                {{-- Aggiungi categoria --}}
+                <form action="{{ route('allenatore.categorie-gesto.store') }}" method="POST"
+                      class="d-flex gap-2 align-items-center mt-2 mb-4">
+                    @csrf
+                    <input type="hidden" name="sport_id" value="{{ $sport->id }}">
+                    <input type="text" name="nome" class="form-control form-control-sm"
+                           placeholder="Nuova categoria..." style="max-width:200px" required>
+                    <input type="color" name="colore" value="#0d6efd"
+                           class="form-control form-control-color form-control-sm"
+                           style="width:2.5rem;height:2rem;padding:.1rem .2rem" title="Scegli colore">
+                    <button type="submit" class="btn btn-sm btn-primary">+ Aggiungi</button>
+                </form>
+
+                {{-- GESTI TECNICI ─────────────────────────────────────────────── --}}
+                <h6 class="text-uppercase text-muted fw-bold mb-2" style="font-size:.72rem;letter-spacing:.08em">
+                    Gesti tecnici <span class="badge bg-secondary rounded-pill">{{ $sport->gestiTecnici->count() }}</span>
+                </h6>
 
                 @forelse($sport->gestiTecnici as $g)
                 <div class="d-flex align-items-center gap-2 py-2 border-bottom">
                     <span class="fw-semibold flex-grow-1">{{ $g->nome }}</span>
-                    <span class="badge {{ $g->categoria === 'fondamentale_base' ? 'bg-primary' : 'bg-success' }} rounded-pill">
-                        {{ $g->categoria === 'fondamentale_base' ? 'Base' : 'Gioco' }}
-                    </span>
+                    <x-badge-categoria-gesto :categoria="$g->categoriaGesto" />
                     <span class="text-muted small" style="min-width:3rem">№ {{ $g->ordinamento }}</span>
                     <a href="{{ route('allenatore.gesti-tecnici.edit', $g) }}"
                        class="btn btn-sm btn-outline-secondary">Modifica</a>
@@ -60,16 +109,15 @@
                     </form>
                 </div>
                 @empty
-                <p class="text-muted fst-italic">Nessun gesto tecnico. Aggiungine uno →</p>
+                <p class="text-muted fst-italic small">Nessun gesto tecnico. Aggiungine uno →</p>
                 @endforelse
+
             </div>
 
-            {{-- Form aggiungi gesto tecnico --}}
+            {{-- ── COLONNA DESTRA: form aggiungi gesto + danger zone ─────────── --}}
             <div class="col-lg-5">
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent fw-semibold">
-                        + Aggiungi gesto tecnico
-                    </div>
+                    <div class="card-header bg-transparent fw-semibold">+ Aggiungi gesto tecnico</div>
                     <div class="card-body">
                         <form action="{{ route('allenatore.gesti-tecnici.store') }}" method="POST">
                             @csrf
@@ -83,49 +131,39 @@
 
                             <div class="mb-2">
                                 <label class="form-label form-label-sm">Categoria *</label>
-                                <div class="d-flex gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="categoria"
-                                               value="fondamentale_base" id="cat-base-{{ $sport->id }}" checked>
-                                        <label class="form-check-label" for="cat-base-{{ $sport->id }}">
-                                            <span class="badge bg-primary">Base</span>
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="categoria"
-                                               value="fondamentale_gioco" id="cat-gioco-{{ $sport->id }}">
-                                        <label class="form-check-label" for="cat-gioco-{{ $sport->id }}">
-                                            <span class="badge bg-success">Gioco</span>
-                                        </label>
-                                    </div>
-                                </div>
+                                <select name="categoria_id" class="form-select form-select-sm" required>
+                                    <option value="">Scegli categoria...</option>
+                                    @foreach($sport->categorieGesto as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->nome }}</option>
+                                    @endforeach
+                                </select>
+                                @if($sport->categorieGesto->isEmpty())
+                                <div class="form-text text-warning">Crea prima almeno una categoria.</div>
+                                @endif
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label form-label-sm">Ordinamento</label>
                                 <input type="number" name="ordinamento" class="form-control form-control-sm"
                                        value="{{ $sport->gestiTecnici->count() + 1 }}" min="1">
-                                <div class="form-text">Posizione nella lista esercizi</div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <button type="submit" class="btn btn-primary btn-sm w-100"
+                                    {{ $sport->categorieGesto->isEmpty() ? 'disabled' : '' }}>
                                 Aggiungi gesto tecnico
                             </button>
                         </form>
                     </div>
                 </div>
 
-                {{-- Danger zone sport --}}
                 <div class="mt-3">
                     <details>
                         <summary class="text-danger small" style="cursor:pointer">Zona pericolosa</summary>
                         <div class="mt-2">
                             <form action="{{ route('allenatore.sports.destroy', $sport) }}" method="POST"
-                                  onsubmit="return confirm('ATTENZIONE: eliminare {{ addslashes($sport->nome) }} eliminerà anche tutti i gesti tecnici associati. Continuare?')">
+                                  onsubmit="return confirm('ATTENZIONE: eliminare {{ addslashes($sport->nome) }} eliminerà anche tutti i gesti tecnici e le categorie associate. Continuare?')">
                                 @csrf @method('DELETE')
-                                <button class="btn btn-sm btn-danger w-100">
-                                    Elimina sport {{ $sport->nome }}
-                                </button>
+                                <button class="btn btn-sm btn-danger w-100">Elimina sport {{ $sport->nome }}</button>
                             </form>
                         </div>
                     </details>
@@ -155,7 +193,7 @@
                     </div>
                 </div>
                 <p class="text-muted small mt-2">
-                    Una volta creato lo sport, selezionalo dal tab per aggiungere i gesti tecnici specifici.
+                    Dopo aver creato lo sport, selezionalo dal tab per aggiungere categorie e gesti tecnici.
                 </p>
             </div>
         </div>
@@ -166,15 +204,13 @@
 
 @push('scripts')
 <script>
-// Apri il tab corretto in base al query param ?open_sport=ID
 (function () {
     const openSport = '{{ request('open_sport') }}';
     let targetId = '';
 
     if (openSport) {
         targetId = 'tab-sport-' + openSport;
-    } else if (document.getElementById('sportTabs')) {
-        // Di default apri il primo sport
+    } else {
         const first = document.querySelector('#sportTabs .nav-link');
         if (first) targetId = first.id;
     }
@@ -183,6 +219,16 @@
         const el = document.getElementById(targetId);
         if (el) new bootstrap.Tab(el).show();
     }
+
+    // Anteprima colore badge in tempo reale
+    document.querySelectorAll('input[type="color"]').forEach(picker => {
+        picker.addEventListener('input', function () {
+            const row = this.closest('.d-flex');
+            if (!row) return;
+            const preview = row.querySelector('.badge');
+            if (preview) preview.style.background = this.value;
+        });
+    });
 })();
 </script>
 @endpush

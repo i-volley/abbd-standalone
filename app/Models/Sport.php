@@ -23,6 +23,11 @@ class Sport extends Model
         return $this->hasMany(GestoTecnico::class);
     }
 
+    public function categorieGesto()
+    {
+        return $this->hasMany(CategoriaGesto::class)->orderBy('ordinamento');
+    }
+
     public function esercizi()
     {
         return $this->hasMany(Esercizio::class);

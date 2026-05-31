@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             SportSeeder::class,
             CapacitaSeeder::class,
             GestoTecnicoSeeder::class,
+            CategoriaGestoSeeder::class,
             UserSeeder::class,
             TeamSeeder::class,
             EsercizioSeeder::class,
