@@ -10,21 +10,23 @@ return new class extends Migration
     {
         // Pivot multi-ruolo: un esercizio puo' valere per piu' ruoli.
         // Assenza di righe = esercizio generico (vale per tutti i ruoli).
-        Schema::create('esercizio_ruolo', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('esercizio_id')->constrained('esercizi')->cascadeOnDelete();
-            $table->enum('ruolo', [
-                'alzatore',
-                'ricevitore_attaccante',
-                'centrale',
-                'opposto',
-                'libero',
-            ]);
-            $table->timestamps();
+        if (!Schema::hasTable('esercizio_ruolo')) {
+            Schema::create('esercizio_ruolo', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('esercizio_id')->constrained('esercizi')->cascadeOnDelete();
+                $table->enum('ruolo', [
+                    'alzatore',
+                    'ricevitore_attaccante',
+                    'centrale',
+                    'opposto',
+                    'libero',
+                ]);
+                $table->timestamps();
 
-            $table->unique(['esercizio_id', 'ruolo']);
-            $table->index('ruolo');
-        });
+                $table->unique(['esercizio_id', 'ruolo']);
+                $table->index('ruolo');
+            });
+        }
     }
 
     public function down(): void

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Allenatore;
 use App\Http\Controllers\Controller;
 use App\Models\Esercizio;
 use App\Models\GestoTecnico;
+use App\Models\Sport;
 use App\Models\Team;
 use Illuminate\Http\Request;
 
@@ -47,7 +48,9 @@ class WizardController extends Controller
 
     private function sportId(): int
     {
-        return Team::where('allenatore_id', auth()->id())->value('sport_id') ?? 1;
+        return Team::where('allenatore_id', auth()->id())->value('sport_id')
+            ?? Sport::where('slug', 'pallavolo')->value('id')
+            ?? 1;
     }
 
     public function index()

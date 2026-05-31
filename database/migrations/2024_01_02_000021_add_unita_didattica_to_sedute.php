@@ -9,15 +9,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sedute', function (Blueprint $table) {
-            $table->foreignId('unita_didattica_id')
-                  ->nullable()
-                  ->after('microciclo_id')
-                  ->constrained('unita_didattiche')
-                  ->nullOnDelete();
-            // Obiettivo principale variabile per questa seduta nell'unità
-            $table->text('obiettivo_seduta')->nullable()->after('titolo');
-            $table->index('unita_didattica_id');
+            if (!Schema::hasColumn('sedute', 'unita_didattica_id')) {
+                $table->foreignId('unita_didattica_id')
+                      ->nullable()
+                      ->after('microciclo_id')
+                      ->constrained('unita_didattiche')
+                      ->nullOnDelete();
+            }
+            if (!Schema::hasColumn('sedute', 'obiettivo_seduta')) {
+                // Obiettivo principale variabile per questa seduta nell'unità
+                $table->text('obiettivo_seduta')->nullable()->after('titolo');
+            }
         });
+        try {
+            Schema::table('sedute', fn (Blueprint $t) => $t->index('unita_didattica_id'));
+        } catch (\Exception $e) {
+            // Indice già presente — ok
+        }
     }
 
     public function down(): void

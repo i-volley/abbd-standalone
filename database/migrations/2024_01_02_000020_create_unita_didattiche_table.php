@@ -8,6 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('unita_didattiche')) {
+            return;
+        }
         // Manuale FIPAV Primo Grado, Metodologia 1-6:
         // "Obiettivo permanente costante — obiettivo principale variabile"
         // "Numero di sedute necessarie in base agli obiettivi tecnici"

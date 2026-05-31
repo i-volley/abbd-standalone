@@ -14,7 +14,9 @@ class EsercizioController extends Controller
 {
     private function sportId(): int
     {
-        return Team::where('allenatore_id', auth()->id())->value('sport_id') ?? 1;
+        return Team::where('allenatore_id', auth()->id())->value('sport_id')
+            ?? Sport::where('slug', 'pallavolo')->value('id')
+            ?? 1;
     }
 
     public function index()
