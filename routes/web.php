@@ -28,6 +28,40 @@ Route::prefix('allenatore')->name('allenatore.')
 
     Route::get('/dashboard', [AllenatoreDashboardController::class, 'index'])->name('dashboard');
 
+    // ── SEED DIAGNOSTICO (temporaneo — rimuovere dopo verifica) ─────────────
+    Route::get('debug-seed', function () {
+        $lines = [];
+        $lines[] = 'PHP: ' . phpversion();
+        $lines[] = 'DB esercizi PRIMA: ' . \App\Models\Esercizio::count();
+        $lines[] = 'Sport pallavolo ID: ' . (\App\Models\Sport::where('slug', 'pallavolo')->value('id') ?? 'NULL');
+        $lines[] = 'User::first email: ' . (\App\Models\User::first()?->email ?? 'NULL');
+        $lines[] = 'allenatore@demo.it: ' . (\App\Models\User::where('email', 'allenatore@demo.it')->exists() ? 'SI' : 'NO');
+        $lines[] = 'esercizio_ruolo table: ' . (\Illuminate\Support\Facades\Schema::hasTable('esercizio_ruolo') ? 'SI' : 'NO');
+        $lines[] = 'obiettivo column: ' . (\Illuminate\Support\Facades\Schema::hasColumn('esercizi', 'obiettivo') ? 'SI' : 'NO');
+        try {
+            \Artisan::call('db:seed', ['--class' => 'RoleSeeder',           '--force' => true]);
+            $lines[] = 'RoleSeeder: OK';
+            \Artisan::call('db:seed', ['--class' => 'SportSeeder',          '--force' => true]);
+            $lines[] = 'SportSeeder: OK';
+            \Artisan::call('db:seed', ['--class' => 'CapacitaSeeder',       '--force' => true]);
+            $lines[] = 'CapacitaSeeder: OK';
+            \Artisan::call('db:seed', ['--class' => 'GestoTecnicoSeeder',   '--force' => true]);
+            $lines[] = 'GestoTecnicoSeeder: OK';
+            \Artisan::call('db:seed', ['--class' => 'UserSeeder',           '--force' => true]);
+            $lines[] = 'UserSeeder: OK';
+            \Artisan::call('db:seed', ['--class' => 'EsercizioSeeder',      '--force' => true]);
+            $lines[] = 'EsercizioSeeder: OK';
+            \Artisan::call('db:seed', ['--class' => 'EsercizioFipavSeeder', '--force' => true]);
+            $lines[] = 'EsercizioFipavSeeder: OK';
+        } catch (\Throwable $e) {
+            $lines[] = 'ERRORE: ' . $e->getMessage();
+            $lines[] = 'File: ' . $e->getFile() . ':' . $e->getLine();
+        }
+        $lines[] = 'DB esercizi DOPO: ' . \App\Models\Esercizio::count();
+        return '<pre>' . implode("\n", $lines) . '</pre>';
+    })->name('debug.seed');
+    // ────────────────────────────────────────────────────────────────────────
+
     // Wizard diagnostico FIPAV
     Route::get('wizard', [WizardController::class, 'index'])->name('wizard.index');
     Route::get('wizard/risultati', [WizardController::class, 'risultati'])->name('wizard.risultati');
