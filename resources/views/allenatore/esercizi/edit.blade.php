@@ -80,6 +80,30 @@
             <textarea name="descrizione" class="form-control" rows="3">{{ old('descrizione', $esercizio->descrizione) }}</textarea>
         </div>
 
+        <div class="col-md-4">
+            <label class="form-label">Categoria età</label>
+            <select name="categoria_eta" class="form-select">
+                <option value="">Nessuna (trasversale)</option>
+                @foreach($categorie as $cat)
+                    @php $col = \App\Models\Esercizio::catEtaColore($cat); @endphp
+                    <option value="{{ $cat }}"
+                            {{ old('categoria_eta', $esercizio->categoria_eta) === $cat ? 'selected' : '' }}
+                            style="color:{{ $col }};font-weight:600">{{ $cat }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-md-8 d-flex align-items-end">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="is_pubblico" id="is_pubblico" value="1"
+                       {{ old('is_pubblico', $esercizio->is_pubblico) ? 'checked' : '' }}>
+                <label class="form-check-label" for="is_pubblico">
+                    Rendi pubblico nel catalogo generale
+                    <small class="text-muted d-block">Visibile a tutti gli allenatori</small>
+                </label>
+            </div>
+        </div>
+
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Salva modifiche</button>
             <a href="{{ route('allenatore.esercizi.index') }}" class="btn btn-outline-secondary ms-2">Annulla</a>

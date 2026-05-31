@@ -19,13 +19,15 @@ class EsercizioController extends Controller
 
     public function index()
     {
-        $sportId   = $this->sportId();
-        $esercizi  = Esercizio::with(['gestoTecnico', 'capacita'])
-            ->where('sport_id', $sportId)->orderBy('nome')->paginate(20);
-        $gesti     = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
-        $capacita  = Capacita::all();
+        $sportId  = $this->sportId();
+        $base     = Esercizio::with(['gestoTecnico', 'capacita'])->where('sport_id', $sportId);
 
-        return view('allenatore.esercizi.index', compact('esercizi', 'gesti', 'capacita'));
+        $miei     = (clone $base)->where('creato_da', auth()->id())->orderBy('nome')->get();
+        $catalogo = (clone $base)->where('is_pubblico', true)->orderBy('nome')->get();
+        $gesti    = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
+        $categorie = Esercizio::categorieEta();
+
+        return view('allenatore.esercizi.index', compact('miei', 'catalogo', 'gesti', 'categorie'));
     }
 
     public function create()
@@ -33,8 +35,9 @@ class EsercizioController extends Controller
         $sportId  = $this->sportId();
         $gesti    = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
         $capacita = Capacita::all();
+        $categorie = Esercizio::categorieEta();
 
-        return view('allenatore.esercizi.create', compact('gesti', 'capacita'));
+        return view('allenatore.esercizi.create', compact('gesti', 'capacita', 'categorie'));
     }
 
     public function store(Request $request)
@@ -49,14 +52,17 @@ class EsercizioController extends Controller
             'durata_min'        => 'integer|min:1',
             'video_url'         => 'nullable|url',
             'descrizione'       => 'nullable|string|max:2000',
+            'categoria_eta'     => 'nullable|in:' . implode(',', Esercizio::categorieEta()),
+            'is_pubblico'       => 'boolean',
             'capacita_ids'      => 'nullable|array',
             'capacita_ids.*'    => 'exists:capacita,id',
         ]);
 
         $esercizio = Esercizio::create([
             ...$data,
-            'sport_id'  => $this->sportId(),
-            'creato_da' => auth()->id(),
+            'sport_id'    => $this->sportId(),
+            'creato_da'   => auth()->id(),
+            'is_pubblico' => $request->boolean('is_pubblico'),
         ]);
 
         if (!empty($data['capacita_ids'])) {
@@ -77,8 +83,9 @@ class EsercizioController extends Controller
         $sportId  = $this->sportId();
         $gesti    = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
         $capacita = Capacita::all();
+        $categorie = Esercizio::categorieEta();
 
-        return view('allenatore.esercizi.edit', compact('esercizio', 'gesti', 'capacita'));
+        return view('allenatore.esercizi.edit', compact('esercizio', 'gesti', 'capacita', 'categorie'));
     }
 
     public function update(Request $request, Esercizio $esercizio)
@@ -93,11 +100,16 @@ class EsercizioController extends Controller
             'durata_min'        => 'integer|min:1',
             'video_url'         => 'nullable|url',
             'descrizione'       => 'nullable|string|max:2000',
+            'categoria_eta'     => 'nullable|in:' . implode(',', Esercizio::categorieEta()),
+            'is_pubblico'       => 'boolean',
             'capacita_ids'      => 'nullable|array',
             'capacita_ids.*'    => 'exists:capacita,id',
         ]);
 
-        $esercizio->update($data);
+        $esercizio->update([
+            ...$data,
+            'is_pubblico' => $request->boolean('is_pubblico'),
+        ]);
         $esercizio->capacita()->sync($data['capacita_ids'] ?? []);
 
         return redirect()->route('allenatore.esercizi.index')->with('success', 'Esercizio aggiornato.');
@@ -114,42 +126,46 @@ class EsercizioController extends Controller
         $sportId = $this->sportId();
         $query   = Esercizio::with(['gestoTecnico', 'capacita'])->where('sport_id', $sportId);
 
-        if ($request->filled('gesto_tecnico_id')) {
-            $query->whereIn('gesto_tecnico_id', (array) $request->gesto_tecnico_id);
-        }
-
-        if ($request->filled('categoria')) {
-            $query->whereHas('gestoTecnico', fn($q) => $q->where('categoria', $request->categoria));
-        }
-
-        if ($request->filled('fase')) {
-            $query->whereIn('fase', (array) $request->fase);
-        }
-
         if ($request->filled('metodologia')) {
             $query->whereIn('metodologia', (array) $request->metodologia);
         }
-
+        if ($request->filled('gesto_tecnico_id')) {
+            $query->whereIn('gesto_tecnico_id', (array) $request->gesto_tecnico_id);
+        }
+        if ($request->filled('fase')) {
+            $query->whereIn('fase', (array) $request->fase);
+        }
+        if ($request->filled('categoria_eta')) {
+            $query->where('categoria_eta', $request->categoria_eta);
+        }
         if ($request->filled('capacita_ids')) {
             foreach ((array) $request->capacita_ids as $cid) {
                 $query->whereHas('capacita', fn($q) => $q->where('capacita.id', $cid));
             }
         }
-
         if ($request->filled('q')) {
             $q = $request->q;
             $query->where(fn($sq) => $sq->where('nome', 'like', "%$q%")->orWhere('descrizione', 'like', "%$q%"));
         }
 
-        $esercizi     = $query->orderBy('nome')->get();
-        $sedutaId     = $request->integer('seduta_id');
-        $aggiuntiIds  = [];
+        $sedutaId = $request->integer('seduta_id');
 
         if ($sedutaId) {
+            // Contesto seduta builder: mostra tutti gli esercizi accessibili
+            $esercizi = (clone $query)
+                ->where(fn($q) => $q->where('creato_da', auth()->id())->orWhere('is_pubblico', true))
+                ->orderBy('nome')->get();
+
             $aggiuntiIds = \App\Models\SedutaEsercizio::where('seduta_id', $sedutaId)
                 ->pluck('esercizio_id')->toArray();
+
+            return view('allenatore.esercizi._partial-risultati', compact('esercizi', 'sedutaId', 'aggiuntiIds'));
         }
 
-        return view('allenatore.esercizi._partial-risultati', compact('esercizi', 'sedutaId', 'aggiuntiIds'));
+        // Contesto catalogo: due sezioni
+        $miei     = (clone $query)->where('creato_da', auth()->id())->orderBy('nome')->get();
+        $catalogo = (clone $query)->where('is_pubblico', true)->orderBy('nome')->get();
+
+        return view('allenatore.esercizi._partial-catalogo', compact('miei', 'catalogo'));
     }
 }
