@@ -22,7 +22,8 @@ class EsercizioFipavSeeder extends Seeder
     public function run(): void
     {
         $sport      = Sport::where('slug', 'pallavolo')->first();
-        $allenatore = User::where('email', 'allenatore@demo.it')->first();
+        // In prod non esiste allenatore@demo.it — usa il primo utente disponibile
+        $allenatore = User::where('email', 'allenatore@demo.it')->first() ?? User::first();
 
         if (!$sport || !$allenatore) return;
 

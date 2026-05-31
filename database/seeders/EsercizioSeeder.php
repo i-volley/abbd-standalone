@@ -14,7 +14,7 @@ class EsercizioSeeder extends Seeder
     public function run(): void
     {
         $sport      = Sport::where('slug', 'pallavolo')->first();
-        $allenatore = User::where('email', 'allenatore@demo.it')->first();
+        $allenatore = User::where('email', 'allenatore@demo.it')->first() ?? User::first();
 
         if (!$sport || !$allenatore) return;
 
