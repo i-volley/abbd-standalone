@@ -50,6 +50,12 @@
                 Sedute
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('allenatore.unita-didattiche*') ? 'active' : '' }}"
+               href="{{ route('allenatore.unita-didattiche.index') }}">
+                Unità Didattiche
+            </a>
+        </li>
         <li class="nav-item mt-3">
             <a class="nav-link {{ request()->routeIs('allenatore.sports*') ? 'active' : '' }}"
                href="{{ route('allenatore.sports.index') }}">

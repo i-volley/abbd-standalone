@@ -10,6 +10,7 @@ use App\Http\Controllers\Allenatore\SeduteController;
 use App\Http\Controllers\Allenatore\SportController;
 use App\Http\Controllers\Allenatore\StagioneController;
 use App\Http\Controllers\Allenatore\TeamController;
+use App\Http\Controllers\Allenatore\UnitaDidatticaController;
 use App\Http\Controllers\Allenatore\WizardController;
 use App\Http\Controllers\Atleta\AtletaSeduteController;
 use App\Http\Controllers\FeedbackController;
@@ -30,6 +31,10 @@ Route::prefix('allenatore')->name('allenatore.')
     // Wizard diagnostico FIPAV
     Route::get('wizard', [WizardController::class, 'index'])->name('wizard.index');
     Route::get('wizard/risultati', [WizardController::class, 'risultati'])->name('wizard.risultati');
+
+    // Unità didattiche
+    Route::resource('unita-didattiche', UnitaDidatticaController::class)
+         ->parameters(['unita-didattiche' => 'unitaDidattica']);
 
     // Catalogo esercizi
     Route::get('esercizi/cerca', [EsercizioController::class, 'cerca'])->name('esercizi.cerca');

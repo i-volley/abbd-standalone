@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Feedback;
 use App\Models\Seduta;
 use App\Models\Team;
+use App\Services\InsightService;
 use Illuminate\Support\Facades\DB;
 
 class AllenatoreDashboardController extends Controller
@@ -43,6 +44,8 @@ class AllenatoreDashboardController extends Controller
                 ->get();
         }
 
-        return view('allenatore.dashboard', compact('team', 'stats', 'ultimeFeedback', 'rpePerSeduta'));
+        $insights = (new InsightService())->forAllenatore(auth()->id());
+
+        return view('allenatore.dashboard', compact('team', 'stats', 'ultimeFeedback', 'rpePerSeduta', 'insights'));
     }
 }

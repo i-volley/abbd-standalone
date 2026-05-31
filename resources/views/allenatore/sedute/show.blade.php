@@ -101,6 +101,10 @@
                             <span class="drag-handle mt-1">&#9776;</span>
                             <div class="flex-grow-1">
                                 <strong class="small">{{ $se->esercizio->nome }}</strong>
+                            @if(($se->track ?? 'completo') !== 'completo')
+                            @php $trackLabel=['alzatore'=>'ALZ','ricevitore_attaccante'=>'R-A','centrale'=>'CEN','opposto'=>'OPP','libero'=>'LIB']; @endphp
+                            <span class="badge bg-dark rounded-pill ms-1" style="font-size:.6rem">{{ $trackLabel[$se->track] ?? $se->track }}</span>
+                            @endif
                                 <div class="d-flex gap-2 mt-1">
                                     <input type="number" placeholder="Serie" class="form-control form-control-sm" style="width:70px" value="{{ $se->serie }}">
                                     <input type="number" placeholder="Rip." class="form-control form-control-sm" style="width:70px" value="{{ $se->ripetizioni }}">
@@ -247,20 +251,21 @@
         });
     });
 
-    // Aggiungi esercizio (delegato su catalogo-risultati)
+    // Aggiungi esercizio con track (delegato su catalogo-risultati)
     document.getElementById('catalogo-risultati').addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-aggiungi');
         if (!btn || btn.disabled) return;
+        const trackSel = btn.closest('.d-flex')?.querySelector('.track-select');
+        const track    = trackSel ? trackSel.value : 'completo';
         btn.disabled = true;
         fetch('/allenatore/sedute/' + SEDUTA_ID + '/esercizi', {
             method: 'POST',
             headers: {'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
-            body: JSON.stringify({esercizio_id: btn.dataset.esercizioId})
+            body: JSON.stringify({esercizio_id: btn.dataset.esercizioId, track: track})
         }).then(r => r.json()).then(function(data) {
             btn.textContent = 'Aggiunto ✓';
             document.getElementById('durata-display').textContent = data.durata_tot;
             document.getElementById('empty-msg').classList.add('d-none');
-            // Ricarica intera pagina seduta per mostrare nuovo esercizio nella lista
             location.reload();
         });
     });

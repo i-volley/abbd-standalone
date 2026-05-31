@@ -36,6 +36,43 @@
     </div>
 </div>
 
+{{-- ── INSIGHT DIAGNOSTICI ────────────────────────────────────────────── --}}
+@if($insights->isNotEmpty())
+<div class="card border-0 shadow-sm mb-4" style="border-left:4px solid #dc3545 !important">
+    <div class="card-header bg-transparent py-2 d-flex align-items-center gap-2">
+        <span>🔍</span>
+        <small class="fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Insight diagnostici — ultimi 30 giorni</small>
+        <small class="text-muted ms-auto">Basati sul feedback degli atleti · Metodo FIPAV</small>
+    </div>
+    <div class="card-body py-2">
+        @foreach($insights as $ins)
+        @php
+        $metodBadge = ['analitico'=>'bg-primary','sintetico'=>'bg-warning text-dark','globale'=>'bg-success'];
+        @endphp
+        <div class="d-flex align-items-start gap-3 py-2 {{ !$loop->last ? 'border-bottom' : '' }}">
+            <div class="flex-grow-1">
+                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                    @if($ins['fondamentale'])
+                        <strong>{{ $ins['fondamentale'] }}</strong>
+                    @else
+                        <strong>Generale</strong>
+                    @endif
+                    <span class="badge {{ $metodBadge[$ins['metodologia_consigliata']] ?? 'bg-secondary' }} rounded-pill" style="font-size:.7rem">
+                        → {{ strtoupper($ins['metodologia_consigliata']) }}
+                    </span>
+                    <small class="text-muted">{{ $ins['num_sedute'] }} sedute · avg miglioramento {{ $ins['avg_miglioramento'] }}/5 · RPE {{ $ins['avg_rpe'] }}</small>
+                </div>
+                <small class="text-muted">{{ $ins['descrizione'] }}</small>
+            </div>
+            <a href="{{ route('allenatore.wizard.risultati') }}?{{ $ins['wizard_params'] }}" class="btn btn-sm btn-outline-primary flex-shrink-0">
+                Prescrivi →
+            </a>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 <div class="row g-4">
     <div class="col-lg-7">
         <div class="card shadow-sm">

@@ -9,7 +9,8 @@ class Seduta extends Model
     protected $table = 'sedute';
 
     protected $fillable = [
-        'microciclo_id', 'team_id', 'allenatore_id', 'titolo', 'data',
+        'microciclo_id', 'unita_didattica_id', 'team_id', 'allenatore_id',
+        'titolo', 'obiettivo_seduta', 'data',
         'durata_tot_min', 'stato', 'visibile_atleti', 'scadenza_feedback',
         'reminder_inviato', 'note_allenatore',
     ];
@@ -39,10 +40,15 @@ class Seduta extends Model
         return $this->belongsTo(Microciclo::class);
     }
 
+    public function unitaDidattica()
+    {
+        return $this->belongsTo(UnitaDidattica::class);
+    }
+
     public function esercizi()
     {
         return $this->belongsToMany(Esercizio::class, 'seduta_esercizi')
-            ->withPivot(['id', 'ordinamento', 'serie', 'ripetizioni', 'recupero_sec', 'voto_abilitato', 'note'])
+            ->withPivot(['id', 'ordinamento', 'track', 'serie', 'ripetizioni', 'recupero_sec', 'voto_abilitato', 'note'])
             ->orderByPivot('ordinamento');
     }
 

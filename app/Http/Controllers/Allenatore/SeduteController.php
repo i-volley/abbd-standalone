@@ -34,13 +34,15 @@ class SeduteController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'team_id'           => 'required|exists:teams,id',
-            'titolo'            => 'required|string|max:255',
-            'data'              => 'required|date',
-            'microciclo_id'     => 'nullable|exists:microcicli,id',
-            'scadenza_feedback' => 'nullable|date',
-            'visibile_atleti'   => 'boolean',
-            'note_allenatore'   => 'nullable|string',
+            'team_id'              => 'required|exists:teams,id',
+            'titolo'               => 'required|string|max:255',
+            'data'                 => 'required|date',
+            'microciclo_id'        => 'nullable|exists:microcicli,id',
+            'unita_didattica_id'   => 'nullable|exists:unita_didattiche,id',
+            'obiettivo_seduta'     => 'nullable|string|max:500',
+            'scadenza_feedback'    => 'nullable|date',
+            'visibile_atleti'      => 'boolean',
+            'note_allenatore'      => 'nullable|string',
         ]);
 
         $seduta = Seduta::create([
@@ -113,7 +115,10 @@ class SeduteController extends Controller
 
     public function aggiungiEsercizio(Request $request, Seduta $seduta)
     {
-        $request->validate(['esercizio_id' => 'required|exists:esercizi,id']);
+        $request->validate([
+            'esercizio_id' => 'required|exists:esercizi,id',
+            'track'        => 'nullable|in:completo,alzatore,ricevitore_attaccante,centrale,opposto,libero',
+        ]);
 
         $maxOrdine = SedutaEsercizio::where('seduta_id', $seduta->id)->max('ordinamento') ?? 0;
 
@@ -121,6 +126,7 @@ class SeduteController extends Controller
             'seduta_id'    => $seduta->id,
             'esercizio_id' => $request->esercizio_id,
             'ordinamento'  => $maxOrdine + 1,
+            'track'        => $request->input('track', 'completo'),
         ]);
 
         $esercizio = Esercizio::find($request->esercizio_id);

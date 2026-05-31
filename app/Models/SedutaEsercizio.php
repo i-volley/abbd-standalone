@@ -11,7 +11,7 @@ class SedutaEsercizio extends Model
     protected $table = 'seduta_esercizi';
 
     protected $fillable = [
-        'seduta_id', 'esercizio_id', 'ordinamento',
+        'seduta_id', 'esercizio_id', 'ordinamento', 'track',
         'serie', 'ripetizioni', 'recupero_sec', 'voto_abilitato', 'note',
     ];
 

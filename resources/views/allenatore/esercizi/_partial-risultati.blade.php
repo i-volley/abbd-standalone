@@ -32,12 +32,24 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centr
             </div>
         </div>
         @if($sedutaId)
-            <button class="btn btn-sm btn-success ms-2 btn-aggiungi flex-shrink-0"
+        <div class="d-flex flex-column gap-1 flex-shrink-0 ms-2">
+            @if(!in_array($e->id, $aggiuntiIds))
+            <select class="form-select form-select-sm track-select" style="width:130px;font-size:.72rem">
+                <option value="completo">👥 Tutti</option>
+                <option value="alzatore">🖐️ Alzatore</option>
+                <option value="ricevitore_attaccante">🤸 Ric.-Att.</option>
+                <option value="centrale">🏛️ Centrale</option>
+                <option value="opposto">⚔️ Opposto</option>
+                <option value="libero">🛡️ Libero</option>
+            </select>
+            @endif
+            <button class="btn btn-sm btn-success btn-aggiungi"
                     data-esercizio-id="{{ $e->id }}"
                     data-seduta-id="{{ $sedutaId }}"
                     {{ in_array($e->id, $aggiuntiIds) ? 'disabled' : '' }}>
                 {{ in_array($e->id, $aggiuntiIds) ? 'Aggiunto ✓' : '+ Aggiungi' }}
             </button>
+        </div>
         @endif
     </div>
 </div>
