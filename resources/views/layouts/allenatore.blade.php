@@ -20,6 +20,13 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('allenatore.wizard*') ? 'active' : '' }}"
+               href="{{ route('allenatore.wizard.index') }}"
+               style="{{ request()->routeIs('allenatore.wizard*') ? '' : 'color:#f59e0b;font-weight:600' }}">
+                🔍 Wizard Diagnostico
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('allenatore.esercizi*') ? 'active' : '' }}"
                href="{{ route('allenatore.esercizi.index') }}">
                 Catalogo Esercizi

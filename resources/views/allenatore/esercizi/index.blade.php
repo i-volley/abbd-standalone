@@ -73,6 +73,18 @@
             @endforeach
         </div>
 
+        {{-- Prevenzione --}}
+        <div class="mb-1">
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Prevenzione distretto</small>
+        </div>
+        <div class="d-flex gap-1 flex-wrap mb-3">
+            <button type="button" class="btn btn-sm btn-secondary filtro-prev active-all" data-val="">Tutti</button>
+            @php $labDist = ['caviglia'=>'🦶 Caviglia','ginocchio'=>'🦵 Ginocchio','lombare'=>'🔙 Lombare','spalla'=>'💪 Spalla']; @endphp
+            @foreach($distretti as $d)
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-prev" data-val="{{ $d }}">{{ $labDist[$d] }}</button>
+            @endforeach
+        </div>
+
         {{-- Testo libero --}}
         <input type="text" id="cerca-nome" class="form-control"
                placeholder="Cerca per nome o descrizione...">
@@ -89,7 +101,7 @@
 <script>
 const CERCA_URL = '{{ route('allenatore.esercizi.cerca') }}';
 
-let filtri = { metodologia: '', gesto_tecnico_id: '', categoria_eta: '', fase_gioco: '', ruolo: '', q: '' };
+let filtri = { metodologia: '', gesto_tecnico_id: '', categoria_eta: '', fase_gioco: '', ruolo: '', prevenzione_distretto: '', q: '' };
 
 function aggiorna() {
     const params = new URLSearchParams();
@@ -232,6 +244,24 @@ document.querySelectorAll('.filtro-ruolo').forEach(btn => {
         } else {
             document.querySelector('.filtro-ruolo[data-val=""]').classList.remove('btn-outline-secondary');
             document.querySelector('.filtro-ruolo[data-val=""]').classList.add('btn-secondary');
+        }
+        aggiorna();
+    });
+});
+
+// ── Prevenzione ───────────────────────────────────────────────────────────
+document.querySelectorAll('.filtro-prev').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        filtri.prevenzione_distretto = filtri.prevenzione_distretto === val && val !== '' ? '' : val;
+        document.querySelectorAll('.filtro-prev').forEach(b => {
+            b.classList.remove('btn-secondary'); b.classList.add('btn-outline-secondary');
+        });
+        if (filtri.prevenzione_distretto) {
+            btn.classList.remove('btn-outline-secondary'); btn.classList.add('btn-secondary');
+        } else {
+            const all = document.querySelector('.filtro-prev[data-val=""]');
+            all.classList.remove('btn-outline-secondary'); all.classList.add('btn-secondary');
         }
         aggiorna();
     });

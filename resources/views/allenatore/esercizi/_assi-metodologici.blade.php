@@ -5,6 +5,8 @@
 --}}
 @php
     $e = $esercizio ?? null;
+    $distretti     = $distretti ?? \App\Models\Esercizio::distretti();
+    $labDistretto  = ['caviglia' => '🦶 Caviglia', 'ginocchio' => '🦵 Ginocchio', 'lombare' => '🔙 Lombare', 'spalla' => '💪 Spalla'];
     $labObiettivo  = ['permanente' => 'Permanente', 'principale' => 'Principale', 'secondario' => 'Secondario'];
     $labFaseSeduta = ['preparatoria' => 'Preparatoria', 'centrale' => 'Centrale', 'finale' => 'Finale'];
     $labFaseGioco  = ['cambio_palla' => 'Cambio palla', 'break_point' => 'Break point', 'ricostruzione' => 'Ricostruzione'];
@@ -104,6 +106,20 @@
                 <input type="text" name="n_giocatori" class="form-control form-control-sm"
                        value="{{ old('n_giocatori', $e?->n_giocatori) }}"
                        placeholder="es. 6vs6">
+            </div>
+
+            {{-- Prevenzione distretto --}}
+            <div class="col-md-4">
+                <label class="form-label">Prevenzione distretto</label>
+                <select name="prevenzione_distretto" class="form-select form-select-sm">
+                    <option value="">– nessuno –</option>
+                    @foreach($distretti as $d)
+                        <option value="{{ $d }}" {{ old('prevenzione_distretto', $e?->prevenzione_distretto) === $d ? 'selected' : '' }}>
+                            {{ $labDistretto[$d] ?? ucfirst($d) }}
+                        </option>
+                    @endforeach
+                </select>
+                <div class="form-text">Esercizio specifico di prevenzione (Metodologia 3)</div>
             </div>
 
             {{-- Ruoli --}}

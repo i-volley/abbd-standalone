@@ -91,7 +91,12 @@
             <div class="card-body p-0">
                 <ul id="lista-seduta" class="list-group list-group-flush">
                     @foreach($seduta->sedutaEsercizi as $se)
-                    <li class="list-group-item" data-pivot="{{ $se->id }}" data-durata="{{ $se->esercizio->durata_min }}">
+                    <li class="list-group-item" data-pivot="{{ $se->id }}"
+                        data-durata="{{ $se->esercizio->durata_min }}"
+                        data-salti="{{ $se->esercizio->n_salti }}"
+                        data-gesti="{{ $se->esercizio->n_gesti }}"
+                        data-serie="{{ $se->serie ?? 1 }}"
+                        data-rip="{{ $se->ripetizioni ?? 1 }}">
                         <div class="d-flex align-items-start gap-2">
                             <span class="drag-handle mt-1">&#9776;</span>
                             <div class="flex-grow-1">
@@ -120,6 +125,31 @@
                 <p class="text-muted text-center py-4 {{ $seduta->sedutaEsercizi->count() ? 'd-none' : '' }}" id="empty-msg">
                     Aggiungi esercizi dal catalogo
                 </p>
+            </div>
+        </div>
+
+        {{-- Pannello carico seduta --}}
+        <div class="card shadow-sm mt-3" id="card-carico">
+            <div class="card-header py-2 d-flex align-items-center justify-content-between">
+                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">Carico seduta</small>
+                <small class="text-muted" id="carico-updated" style="font-size:.7rem"></small>
+            </div>
+            <div class="card-body py-2">
+                <div class="d-flex gap-3 flex-wrap">
+                    <div class="text-center">
+                        <div class="fw-bold fs-5" id="carico-durata">0</div>
+                        <div class="text-muted" style="font-size:.7rem">MIN</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="fw-bold fs-5" id="carico-salti">0</div>
+                        <div class="text-muted" style="font-size:.7rem">SALTI</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="fw-bold fs-5" id="carico-gesti">0</div>
+                        <div class="text-muted" style="font-size:.7rem">GESTI</div>
+                    </div>
+                </div>
+                <div id="carico-warning" class="mt-2" style="display:none"></div>
             </div>
         </div>
 
@@ -264,6 +294,52 @@
     });
 
     cercaEsercizi();
+
+    // ── CARICO SEDUTA ─────────────────────────────────────────────────────
+    function calcolaCarico() {
+        var items = lista.querySelectorAll('[data-pivot]');
+        var totDurata = 0, totSalti = 0, totGesti = 0;
+        items.forEach(function(li) {
+            var inputs   = li.querySelectorAll('input[type=number]');
+            var serie    = parseInt(inputs[0]?.value) || parseInt(li.dataset.serie) || 1;
+            var rip      = parseInt(inputs[1]?.value) || parseInt(li.dataset.rip)   || 1;
+            var salti    = parseInt(li.dataset.salti) || 0;
+            var gesti    = parseInt(li.dataset.gesti) || 0;
+            var durata   = parseInt(li.dataset.durata) || 0;
+            totDurata += durata;
+            totSalti  += salti * serie * rip;
+            totGesti  += gesti * serie * rip;
+        });
+        document.getElementById('carico-durata').textContent = totDurata;
+        document.getElementById('carico-salti').textContent  = totSalti;
+        document.getElementById('carico-gesti').textContent  = totGesti;
+
+        // Colorazione + warning (soglie da Metodologia 3)
+        var warns = [];
+        var elSalti = document.getElementById('carico-salti');
+        var elGesti = document.getElementById('carico-gesti');
+        elSalti.className = totSalti > 400 ? 'fw-bold fs-5 text-danger' : totSalti > 250 ? 'fw-bold fs-5 text-warning' : 'fw-bold fs-5 text-success';
+        elGesti.className = totGesti > 600 ? 'fw-bold fs-5 text-danger' : totGesti > 400 ? 'fw-bold fs-5 text-warning' : 'fw-bold fs-5 text-success';
+        if (totSalti > 400) warns.push('⚠️ Volume salti molto elevato — prevedi 48h di recupero prima della prossima sessione di attacco/muro');
+        else if (totSalti > 250) warns.push('⚡ Volume salti alto');
+        if (totGesti > 600) warns.push('⚠️ Volume gesti elevato — rischio sovraccarico tendine');
+
+        var wEl = document.getElementById('carico-warning');
+        if (warns.length) {
+            wEl.innerHTML = warns.map(function(w){ return '<small class="text-danger d-block">' + w + '</small>'; }).join('');
+            wEl.style.display = '';
+        } else {
+            wEl.style.display = 'none';
+        }
+        document.getElementById('carico-updated').textContent = new Date().toLocaleTimeString('it-IT', {hour:'2-digit',minute:'2-digit'});
+    }
+
+    // Ricalcola al cambiamento di serie/ripetizioni
+    lista.addEventListener('input', function(e) {
+        if (e.target.type === 'number') calcolaCarico();
+    });
+    calcolaCarico();
+
 })();
 </script>
 @endpush

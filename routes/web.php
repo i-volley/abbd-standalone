@@ -10,6 +10,7 @@ use App\Http\Controllers\Allenatore\SeduteController;
 use App\Http\Controllers\Allenatore\SportController;
 use App\Http\Controllers\Allenatore\StagioneController;
 use App\Http\Controllers\Allenatore\TeamController;
+use App\Http\Controllers\Allenatore\WizardController;
 use App\Http\Controllers\Atleta\AtletaSeduteController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
@@ -25,6 +26,10 @@ Route::prefix('allenatore')->name('allenatore.')
     ->middleware(['auth', 'role:allenatore'])->group(function () {
 
     Route::get('/dashboard', [AllenatoreDashboardController::class, 'index'])->name('dashboard');
+
+    // Wizard diagnostico FIPAV
+    Route::get('wizard', [WizardController::class, 'index'])->name('wizard.index');
+    Route::get('wizard/risultati', [WizardController::class, 'risultati'])->name('wizard.risultati');
 
     // Catalogo esercizi
     Route::get('esercizi/cerca', [EsercizioController::class, 'cerca'])->name('esercizi.cerca');

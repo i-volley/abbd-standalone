@@ -15,6 +15,7 @@ class Esercizio extends Model
         // Assi metodologici FIPAV (docs/metodologia-eserciziario.md)
         'obiettivo', 'fase_seduta', 'fase_gioco', 'componente',
         'rendimento', 'livello', 'n_giocatori',
+        'prevenzione_distretto',
     ];
 
     protected function casts(): array
@@ -37,6 +38,12 @@ class Esercizio extends Model
     public static function ruoliDisponibili(): array
     {
         return ['alzatore', 'ricevitore_attaccante', 'centrale', 'opposto', 'libero'];
+    }
+
+    /** Distretti prevenzione (Metodologia 3-12/13/14/15) */
+    public static function distretti(): array
+    {
+        return ['caviglia', 'ginocchio', 'lombare', 'spalla'];
     }
 
     /** Colore HEX per una categoria età */

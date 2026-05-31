@@ -27,8 +27,9 @@ class EsercizioController extends Controller
         $gesti    = GestoTecnico::where('sport_id', $sportId)->orderBy('ordinamento')->get();
         $categorie       = Esercizio::categorieEta();
         $ruoliDisponibili = Esercizio::ruoliDisponibili();
+        $distretti        = Esercizio::distretti();
 
-        return view('allenatore.esercizi.index', compact('miei', 'catalogo', 'gesti', 'categorie', 'ruoliDisponibili'));
+        return view('allenatore.esercizi.index', compact('miei', 'catalogo', 'gesti', 'categorie', 'ruoliDisponibili', 'distretti'));
     }
 
     public function create()
@@ -38,8 +39,9 @@ class EsercizioController extends Controller
         $capacita         = Capacita::all();
         $categorie        = Esercizio::categorieEta();
         $ruoliDisponibili = Esercizio::ruoliDisponibili();
+        $distretti        = Esercizio::distretti();
 
-        return view('allenatore.esercizi.create', compact('gesti', 'capacita', 'categorie', 'ruoliDisponibili'));
+        return view('allenatore.esercizi.create', compact('gesti', 'capacita', 'categorie', 'ruoliDisponibili', 'distretti'));
     }
 
     public function store(Request $request)
@@ -66,8 +68,9 @@ class EsercizioController extends Controller
             'rendimento'        => 'nullable|in:positivita,gestione_errore,efficienza',
             'livello'           => 'nullable|in:base,medio,alto',
             'n_giocatori'       => 'nullable|string|max:10',
-            'ruoli'             => 'nullable|array',
-            'ruoli.*'           => 'in:' . implode(',', Esercizio::ruoliDisponibili()),
+            'ruoli'                  => 'nullable|array',
+            'ruoli.*'                => 'in:' . implode(',', Esercizio::ruoliDisponibili()),
+            'prevenzione_distretto'  => 'nullable|in:' . implode(',', Esercizio::distretti()),
         ]);
 
         $esercizio = Esercizio::create([
@@ -98,9 +101,10 @@ class EsercizioController extends Controller
         $capacita         = Capacita::all();
         $categorie        = Esercizio::categorieEta();
         $ruoliDisponibili = Esercizio::ruoliDisponibili();
+        $distretti        = Esercizio::distretti();
         $esercizio->load(['gestoTecnico', 'capacita', 'ruoli']);
 
-        return view('allenatore.esercizi.edit', compact('esercizio', 'gesti', 'capacita', 'categorie', 'ruoliDisponibili'));
+        return view('allenatore.esercizi.edit', compact('esercizio', 'gesti', 'capacita', 'categorie', 'ruoliDisponibili', 'distretti'));
     }
 
     public function update(Request $request, Esercizio $esercizio)
@@ -181,6 +185,9 @@ class EsercizioController extends Controller
         }
         if ($request->filled('obiettivo')) {
             $query->where('obiettivo', $request->obiettivo);
+        }
+        if ($request->filled('prevenzione_distretto')) {
+            $query->where('prevenzione_distretto', $request->prevenzione_distretto);
         }
         if ($request->filled('q')) {
             $q = $request->q;
