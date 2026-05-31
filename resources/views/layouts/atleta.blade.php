@@ -32,38 +32,6 @@
     @yield('content')
 </div>
 
-<script>
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-    navigator.serviceWorker.register('/sw.js').then(function(reg) {
-        return reg.pushManager.getSubscription().then(function(sub) {
-            if (sub) return sub;
-            return reg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array('{{ config("webpush.vapid.public_key") }}')
-            });
-        });
-    }).then(function(sub) {
-        fetch('/push/subscribe', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify(sub)
-        });
-    }).catch(function(err) { console.warn('Push non disponibile:', err); });
-}
-
-function urlBase64ToUint8Array(base64String) {
-    var padding = '='.repeat((4 - base64String.length % 4) % 4);
-    var base64   = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-    var rawData  = window.atob(base64);
-    var arr      = new Uint8Array(rawData.length);
-    for (var i = 0; i < rawData.length; ++i) arr[i] = rawData.charCodeAt(i);
-    return arr;
-}
-</script>
-
 @stack('scripts')
 </body>
 </html>

@@ -6,8 +6,6 @@ use App\Models\Seduta;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\WebPush\WebPushChannel;
-use NotificationChannels\WebPush\WebPushMessage;
 
 class SedutaPubblicataNotification extends Notification
 {
@@ -17,15 +15,7 @@ class SedutaPubblicataNotification extends Notification
 
     public function via($notifiable): array
     {
-        return [WebPushChannel::class, 'mail'];
-    }
-
-    public function toWebPush($notifiable, $notification): WebPushMessage
-    {
-        return (new WebPushMessage)
-            ->title('Nuova seduta disponibile!')
-            ->body("L'allenatore ha pubblicato: {$this->seduta->titolo}")
-            ->action('Vedi seduta', route('atleta.sedute.show', $this->seduta));
+        return ['mail'];
     }
 
     public function toMail($notifiable): MailMessage
