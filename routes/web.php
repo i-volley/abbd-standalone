@@ -27,7 +27,7 @@ Route::prefix('allenatore')->name('allenatore.')
 
     // Catalogo esercizi
     Route::get('esercizi/cerca', [EsercizioController::class, 'cerca'])->name('esercizi.cerca');
-    Route::resource('esercizi', EsercizioController::class);
+    Route::resource('esercizi', EsercizioController::class)->parameters(['esercizi' => 'esercizio']);
 
     // Team
     Route::resource('teams', TeamController::class);
@@ -35,9 +35,12 @@ Route::prefix('allenatore')->name('allenatore.')
     Route::delete('teams/{team}/atleti/{atleta}', [TeamController::class, 'rimuoviAtleta'])->name('teams.atleti.remove');
 
     // Pianificazione
-    Route::resource('stagioni', StagioneController::class);
-    Route::resource('stagioni.macrocicli', MacrocicloController::class)->shallow();
-    Route::resource('macrocicli.microcicli', MicrocicloController::class)->shallow();
+    Route::resource('stagioni', StagioneController::class)
+        ->parameters(['stagioni' => 'stagione']);
+    Route::resource('stagioni.macrocicli', MacrocicloController::class)->shallow()
+        ->parameters(['stagioni' => 'stagione', 'macrocicli' => 'macrociclo']);
+    Route::resource('macrocicli.microcicli', MicrocicloController::class)->shallow()
+        ->parameters(['macrocicli' => 'macrociclo', 'microcicli' => 'microciclo']);
 
     // Sedute
     Route::post('sedute/{seduta}/pubblica', [SeduteController::class, 'pubblica'])->name('sedute.pubblica');
@@ -46,11 +49,13 @@ Route::prefix('allenatore')->name('allenatore.')
     Route::delete('sedute/{seduta}/esercizi/{pivot}', [SeduteController::class, 'rimuoviEsercizio'])->name('sedute.esercizi.destroy');
     Route::post('sedute/{seduta}/ordine', [SeduteController::class, 'aggiornaOrdine'])->name('sedute.ordine');
     Route::patch('sedute/{seduta}/esercizi/{pivot}/voto', [SeduteController::class, 'toggleVotoEsercizio'])->name('sedute.esercizi.voto');
-    Route::resource('sedute', SeduteController::class);
+    Route::resource('sedute', SeduteController::class)
+        ->parameters(['sedute' => 'seduta']);
 
     // Impostazioni
     Route::resource('sports', SportController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('gesti-tecnici', GestoTecnicoController::class);
+    Route::resource('gesti-tecnici', GestoTecnicoController::class)
+        ->parameters(['gesti-tecnici' => 'gestoTecnico']);
 });
 
 // ── AREA ATLETA ──────────────────────────────────────────────────────────────
