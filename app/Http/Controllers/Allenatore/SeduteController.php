@@ -27,8 +27,10 @@ class SeduteController extends Controller
 
     public function create()
     {
-        $teams = Team::where('allenatore_id', auth()->id())->get();
-        return view('allenatore.sedute.create', compact('teams'));
+        $teams           = Team::where('allenatore_id', auth()->id())->get();
+        $unitaDidattiche = \App\Models\UnitaDidattica::where('allenatore_id', auth()->id())
+                            ->orderByDesc('created_at')->get();
+        return view('allenatore.sedute.create', compact('teams', 'unitaDidattiche'));
     }
 
     public function store(Request $request)

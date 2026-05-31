@@ -59,7 +59,7 @@ $progLabel  = \App\Models\UnitaDidattica::progressioni()[$unitaDidattica->progre
 @forelse($unitaDidattica->sedute as $i => $s)
 @php
 $metodologiePrev = $sequenza[$i] ?? null;
-$metodologie = $s->sedutaEsercizi->map(fn($se) => $se->esercizio->metodologia)->unique()->filter()->values();
+$metodologie = $s->sedutaEsercizi->map(fn($se) => $se->esercizio?->metodologia)->unique()->filter()->values();
 $inLinea = !$metodologiePrev || $metodologie->contains($metodologiePrev);
 @endphp
 <div class="card shadow-sm border-0 mb-2 {{ !$inLinea ? 'border-warning border-opacity-50' : '' }}">

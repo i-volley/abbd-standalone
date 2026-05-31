@@ -25,6 +25,30 @@
     </div>
 </div>
 
+{{-- Collegamento unità didattica (opzionale) --}}
+@if($unitaDidattiche->isNotEmpty())
+<div class="row g-3 mb-3">
+    <div class="col-md-7">
+        <label class="form-label">Collega a unità didattica <small class="text-muted">(opzionale)</small></label>
+        <select name="unita_didattica_id" class="form-select">
+            <option value="">– nessuna –</option>
+            @foreach($unitaDidattiche as $u)
+                <option value="{{ $u->id }}"
+                    {{ (old('unita_didattica_id', request('unita_didattica_id')) == $u->id) ? 'selected' : '' }}>
+                    {{ $u->titolo }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-5">
+        <label class="form-label">Obiettivo di questa seduta</label>
+        <input type="text" name="obiettivo_seduta" class="form-control"
+               value="{{ old('obiettivo_seduta') }}"
+               placeholder="Obiettivo principale (variabile)">
+    </div>
+</div>
+@endif
+
 <button type="submit" class="btn btn-outline-secondary mb-4">Crea seduta bozza e apri costruttore</button>
 </form>
 
