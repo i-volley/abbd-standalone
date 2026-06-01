@@ -8,7 +8,17 @@ class Macrociclo extends Model
 {
     protected $table = 'macrocicli';
 
-    protected $fillable = ['stagione_id', 'nome', 'fase', 'obiettivi', 'data_inizio', 'data_fine'];
+    protected $fillable = ['stagione_id', 'nome', 'fase', 'colore', 'obiettivi', 'data_inizio', 'data_fine'];
+
+    /** Colori predefiniti per i 3 macrocicli standard */
+    public static function coloriDefault(): array
+    {
+        return [
+            'preparazione' => '#3b82f6',  // blu
+            'competizione' => '#10b981',  // verde
+            'transizione'  => '#f59e0b',  // ambra
+        ];
+    }
 
     protected function casts(): array
     {

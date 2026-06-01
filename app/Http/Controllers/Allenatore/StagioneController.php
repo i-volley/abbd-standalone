@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Allenatore;
 
 use App\Http\Controllers\Controller;
+use App\Models\Seduta;
 use App\Models\Stagione;
 use App\Models\Team;
+use App\Models\UnitaDidattica;
 use Illuminate\Http\Request;
 
 class StagioneController extends Controller
@@ -40,8 +42,22 @@ class StagioneController extends Controller
 
     public function show(Stagione $stagione)
     {
-        $stagione->load('macrocicli');
-        return view('allenatore.stagioni.show', compact('stagione'));
+        $stagione->load(['macrocicli' => fn($q) => $q->orderBy('data_inizio')]);
+
+        // Sedute del team nell'arco della stagione (per il calendario)
+        $sedute = Seduta::where('team_id', $stagione->team_id)
+            ->whereBetween('data', [$stagione->data_inizio, $stagione->data_fine])
+            ->orderBy('data')
+            ->get(['id', 'data', 'titolo', 'stato']);
+
+        // Unità didattiche del team con data_inizio nella stagione
+        $unitaDidattiche = UnitaDidattica::where('team_id', $stagione->team_id)
+            ->whereNotNull('data_inizio')
+            ->whereBetween('data_inizio', [$stagione->data_inizio, $stagione->data_fine])
+            ->orderBy('data_inizio')
+            ->get(['id', 'titolo', 'data_inizio', 'progressione']);
+
+        return view('allenatore.stagioni.show', compact('stagione', 'sedute', 'unitaDidattiche'));
     }
 
     public function edit(Stagione $stagione)

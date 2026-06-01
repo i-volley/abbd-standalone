@@ -19,12 +19,16 @@ class MacrocicloController extends Controller
         $data = $request->validate([
             'nome'        => 'required|string|max:255',
             'fase'        => 'required|in:preparazione,competizione,transizione',
+            'colore'      => 'nullable|string|max:9',
             'obiettivi'   => 'nullable|string',
             'data_inizio' => 'required|date',
             'data_fine'   => 'required|date|after:data_inizio',
         ]);
 
-        $stagione->macrocicli()->create($data);
+        $stagione->macrocicli()->create([
+            ...$data,
+            'colore' => $data['colore'] ?: (\App\Models\Macrociclo::coloriDefault()[$data['fase']] ?? '#4f46e5'),
+        ]);
 
         return redirect()->route('allenatore.stagioni.show', $stagione)->with('success', 'Macrociclo creato.');
     }
@@ -45,12 +49,16 @@ class MacrocicloController extends Controller
         $data = $request->validate([
             'nome'        => 'required|string|max:255',
             'fase'        => 'required|in:preparazione,competizione,transizione',
+            'colore'      => 'nullable|string|max:9',
             'obiettivi'   => 'nullable|string',
             'data_inizio' => 'required|date',
             'data_fine'   => 'required|date|after:data_inizio',
         ]);
 
-        $macrociclo->update($data);
+        $macrociclo->update([
+            ...$data,
+            'colore' => $data['colore'] ?: $macrociclo->colore,
+        ]);
 
         return redirect()->route('allenatore.macrocicli.show', $macrociclo)->with('success', 'Macrociclo aggiornato.');
     }
