@@ -43,6 +43,8 @@ Route::prefix('allenatore')->name('allenatore.')
 
     // Team
     Route::resource('teams', TeamController::class);
+    Route::get('teams/{team}/entra',  [TeamController::class, 'entra'])->name('teams.entra');
+    Route::get('teams/{team}/hub',    [TeamController::class, 'hub'])->name('teams.hub');
     Route::post('teams/{team}/atleti', [TeamController::class, 'aggiungiAtleta'])->name('teams.atleti.add');
     Route::delete('teams/{team}/atleti/{atleta}', [TeamController::class, 'rimuoviAtleta'])->name('teams.atleti.remove');
 

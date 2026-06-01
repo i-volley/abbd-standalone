@@ -12,18 +12,24 @@ class UnitaDidatticaController extends Controller
 {
     private function teamId(): int
     {
-        return Team::where('allenatore_id', auth()->id())->value('id') ?? 0;
+        return session('current_team_id')
+            ?? Team::where('allenatore_id', auth()->id())->value('id')
+            ?? 0;
     }
 
     public function index()
     {
-        $unita = UnitaDidattica::where('allenatore_id', auth()->id())
-            ->with(['sedute', 'team'])
-            ->orderByDesc('data_inizio')
-            ->orderByDesc('created_at')
-            ->paginate(15);
+        $query = UnitaDidattica::where('allenatore_id', auth()->id())
+            ->with(['sedute', 'team']);
 
-        return view('allenatore.unita-didattiche.index', compact('unita'));
+        if (session('current_team_id')) {
+            $query->where('team_id', session('current_team_id'));
+        }
+
+        $unita       = $query->orderByDesc('data_inizio')->orderByDesc('created_at')->paginate(15);
+        $currentTeam = session('current_team_id') ? Team::find(session('current_team_id')) : null;
+
+        return view('allenatore.unita-didattiche.index', compact('unita', 'currentTeam'));
     }
 
     public function create()
@@ -31,10 +37,13 @@ class UnitaDidatticaController extends Controller
         $teams      = Team::where('allenatore_id', auth()->id())->get();
         $microcicli = Microciclo::whereHas('macrociclo.stagione.team', fn($q) =>
             $q->where('allenatore_id', auth()->id())
+        )->when(session('current_team_id'), fn($q) =>
+            $q->whereHas('macrociclo.stagione.team', fn($q2) => $q2->where('id', session('current_team_id')))
         )->orderByDesc('data_inizio')->get();
-        $progressioni = UnitaDidattica::progressioni();
+        $progressioni  = UnitaDidattica::progressioni();
+        $defaultTeamId = session('current_team_id');
 
-        return view('allenatore.unita-didattiche.create', compact('teams', 'microcicli', 'progressioni'));
+        return view('allenatore.unita-didattiche.create', compact('teams', 'microcicli', 'progressioni', 'defaultTeamId'));
     }
 
     public function store(Request $request)

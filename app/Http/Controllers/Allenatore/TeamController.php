@@ -66,6 +66,32 @@ class TeamController extends Controller
         return redirect()->route('allenatore.teams.index')->with('success', 'Team eliminato.');
     }
 
+    /** Imposta il team attivo in sessione e reindirizza al suo hub */
+    public function entra(Team $team)
+    {
+        // Verifica che il team appartenga all'allenatore loggato
+        abort_unless($team->allenatore_id === auth()->id(), 403);
+
+        session(['current_team_id' => $team->id, 'current_team_nome' => $team->nome]);
+
+        return redirect()->route('allenatore.teams.hub', $team)
+            ->with('success', "Team «{$team->nome}» selezionato.");
+    }
+
+    /** Hub del team: mostra stagioni + statistiche rapide */
+    public function hub(Team $team)
+    {
+        abort_unless($team->allenatore_id === auth()->id(), 403);
+
+        $team->load(['sport', 'atleti', 'stagioni' => fn($q) => $q->orderByDesc('data_inizio')]);
+
+        // Sedute recenti del team
+        $seduteRecenti = \App\Models\Seduta::where('team_id', $team->id)
+            ->orderByDesc('data')->limit(5)->get(['id', 'titolo', 'data', 'stato']);
+
+        return view('allenatore.teams.hub', compact('team', 'seduteRecenti'));
+    }
+
     public function aggiungiAtleta(Request $request, Team $team)
     {
         $request->validate(['user_id' => 'required|exists:users,id']);

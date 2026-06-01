@@ -13,16 +13,25 @@ class StagioneController extends Controller
 {
     public function index()
     {
-        $stagioni = Stagione::whereHas('team', fn($q) => $q->where('allenatore_id', auth()->id()))
-            ->with('team')->orderByDesc('data_inizio')->get();
+        $query = Stagione::whereHas('team', fn($q) => $q->where('allenatore_id', auth()->id()))
+            ->with('team');
 
-        return view('allenatore.stagioni.index', compact('stagioni'));
+        // Filtra per team attivo in sessione
+        if (session('current_team_id')) {
+            $query->whereHas('team', fn($q) => $q->where('id', session('current_team_id')));
+        }
+
+        $stagioni    = $query->orderByDesc('data_inizio')->get();
+        $currentTeam = session('current_team_id') ? Team::find(session('current_team_id')) : null;
+
+        return view('allenatore.stagioni.index', compact('stagioni', 'currentTeam'));
     }
 
     public function create()
     {
-        $teams = Team::where('allenatore_id', auth()->id())->get();
-        return view('allenatore.stagioni.create', compact('teams'));
+        $teams         = Team::where('allenatore_id', auth()->id())->get();
+        $defaultTeamId = session('current_team_id');
+        return view('allenatore.stagioni.create', compact('teams', 'defaultTeamId'));
     }
 
     public function store(Request $request)

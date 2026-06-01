@@ -19,7 +19,10 @@
         <label class="form-label">Team *</label>
         <select name="team_id" class="form-select" required>
             @foreach($teams as $t)
-                <option value="{{ $t->id }}">{{ $t->nome }}</option>
+                <option value="{{ $t->id }}"
+                    {{ old('team_id', $defaultTeamId ?? '') == $t->id ? 'selected' : '' }}>
+                    {{ $t->nome }}
+                </option>
             @endforeach
         </select>
     </div>

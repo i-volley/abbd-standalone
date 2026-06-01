@@ -14,23 +14,39 @@ class SeduteController extends Controller
 {
     private function teamId(): int
     {
-        return Team::where('allenatore_id', auth()->id())->value('id') ?? 0;
+        return session('current_team_id')
+            ?? Team::where('allenatore_id', auth()->id())->value('id')
+            ?? 0;
     }
 
     public function index()
     {
-        $sedute = Seduta::where('allenatore_id', auth()->id())
-            ->with('team')->orderByDesc('data')->paginate(20);
+        $query = Seduta::where('allenatore_id', auth()->id())->with('team');
 
-        return view('allenatore.sedute.index', compact('sedute'));
+        // Filtra per team attivo in sessione
+        if (session('current_team_id')) {
+            $query->where('team_id', session('current_team_id'));
+        }
+
+        $sedute      = $query->orderByDesc('data')->paginate(20);
+        $currentTeam = session('current_team_id')
+            ? Team::find(session('current_team_id'))
+            : null;
+
+        return view('allenatore.sedute.index', compact('sedute', 'currentTeam'));
     }
 
     public function create()
     {
         $teams           = Team::where('allenatore_id', auth()->id())->get();
         $unitaDidattiche = \App\Models\UnitaDidattica::where('allenatore_id', auth()->id())
+                            ->when(session('current_team_id'), fn($q) => $q->where('team_id', session('current_team_id')))
                             ->orderByDesc('created_at')->get();
-        return view('allenatore.sedute.create', compact('teams', 'unitaDidattiche'));
+
+        // Pre-seleziona il team attivo in sessione nel form
+        $defaultTeamId = session('current_team_id');
+
+        return view('allenatore.sedute.create', compact('teams', 'unitaDidattiche', 'defaultTeamId'));
     }
 
     public function store(Request $request)
