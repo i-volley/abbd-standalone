@@ -78,18 +78,35 @@ class TeamController extends Controller
             ->with('success', "Team «{$team->nome}» selezionato.");
     }
 
-    /** Hub del team: mostra stagioni + statistiche rapide */
+    /** Hub del team: riepilogo + calendario sedute */
     public function hub(Team $team)
     {
         abort_unless($team->allenatore_id === auth()->id(), 403);
 
-        $team->load(['sport', 'atleti', 'stagioni' => fn($q) => $q->orderByDesc('data_inizio')]);
+        $team->load(['sport', 'atleti']);
 
-        // Sedute recenti del team
-        $seduteRecenti = \App\Models\Seduta::where('team_id', $team->id)
-            ->orderByDesc('data')->limit(5)->get(['id', 'titolo', 'data', 'stato']);
+        // Tutte le sedute del team (per il calendario JS)
+        // Formato: { "YYYY-MM-DD": [{id, titolo, stato, url}] }
+        $sedute = \App\Models\Seduta::where('team_id', $team->id)
+            ->orderBy('data')
+            ->get(['id', 'titolo', 'data', 'stato']);
 
-        return view('allenatore.teams.hub', compact('team', 'seduteRecenti'));
+        $sedutePerData = $sedute
+            ->groupBy(fn($s) => $s->data->format('Y-m-d'))
+            ->map(fn($gruppo) => $gruppo->map(fn($s) => [
+                'id'     => $s->id,
+                'titolo' => $s->titolo,
+                'stato'  => $s->stato,
+                'url'    => route('allenatore.sedute.show', $s->id),
+            ])->values());
+
+        // Prossime 3 sedute (per la lista rapida)
+        $prossime = $sedute->filter(fn($s) => $s->data->gte(today()))->take(3);
+
+        // Ultima seduta completata
+        $ultimaCompletata = $sedute->where('stato', 'completata')->sortByDesc('data')->first();
+
+        return view('allenatore.teams.hub', compact('team', 'sedutePerData', 'prossime', 'ultimaCompletata'));
     }
 
     public function aggiungiAtleta(Request $request, Team $team)
