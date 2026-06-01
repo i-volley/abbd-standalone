@@ -85,8 +85,7 @@ class TeamController extends Controller
 
         $team->load(['sport', 'atleti']);
 
-        // Tutte le sedute del team (per il calendario JS)
-        // Formato: { "YYYY-MM-DD": [{id, titolo, stato, url}] }
+        // Tutte le sedute del team per il calendario JS
         $sedute = \App\Models\Seduta::where('team_id', $team->id)
             ->orderBy('data')
             ->get(['id', 'titolo', 'data', 'stato']);
@@ -100,13 +99,22 @@ class TeamController extends Controller
                 'url'    => route('allenatore.sedute.show', $s->id),
             ])->values());
 
-        // Prossime 3 sedute (per la lista rapida)
+        // Macrocicli attivi — bande colorate nel calendario JS
+        // Formato: [{colore, da, a, nome}]
+        $macrocicli = \App\Models\Macrociclo::whereHas('stagione', fn($q) => $q->where('team_id', $team->id))
+            ->orderBy('data_inizio')
+            ->get(['id', 'nome', 'colore', 'data_inizio', 'data_fine'])
+            ->map(fn($m) => [
+                'nome'   => $m->nome,
+                'colore' => $m->colore ?? '#4f46e5',
+                'da'     => $m->data_inizio->format('Y-m-d'),
+                'a'      => $m->data_fine->format('Y-m-d'),
+            ]);
+
+        // Prossime 3 sedute (lista rapida)
         $prossime = $sedute->filter(fn($s) => $s->data->gte(today()))->take(3);
 
-        // Ultima seduta completata
-        $ultimaCompletata = $sedute->where('stato', 'completata')->sortByDesc('data')->first();
-
-        return view('allenatore.teams.hub', compact('team', 'sedutePerData', 'prossime', 'ultimaCompletata'));
+        return view('allenatore.teams.hub', compact('team', 'sedutePerData', 'macrocicli', 'prossime'));
     }
 
     public function aggiungiAtleta(Request $request, Team $team)

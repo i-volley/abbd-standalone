@@ -25,12 +25,14 @@
     /**
      * Calcola left% e width% di un elemento nel calendario.
      * Clamp: non va oltre i bordi della stagione.
+     * Usa metodi Carbon per evitare max()/min() built-in PHP con oggetti.
      */
     $pos = function ($da, $a) use ($inizio, $fine, $totGiorni) {
-        $da    = max($da, $inizio);
-        $a     = min($a,  $fine);
+        $da = $da->lt($inizio) ? $inizio->copy() : $da->copy();
+        $a  = $a->gt($fine)   ? $fine->copy()   : $a->copy();
+        if ($da->gte($a)) return ['left' => 0, 'width' => 0];
         $left  = $inizio->diffInDays($da) / $totGiorni * 100;
-        $width = max(0.4, $da->diffInDays($a) / $totGiorni * 100);
+        $width = max(0.5, $da->diffInDays($a) / $totGiorni * 100);
         return ['left' => round($left, 2), 'width' => round($width, 2)];
     };
 
@@ -91,10 +93,13 @@
             <div style="position:relative;height:2rem;margin-bottom:.25rem">
                 @foreach($mesi as $mese)
                 @php
+                    // Usa Carbon max()/min() instance methods — non PHP built-in
                     $meseInizio = $mese->copy()->max($inizio);
                     $meseFine   = $mese->copy()->endOfMonth()->min($fine);
                     $p          = $pos($meseInizio, $meseFine);
                     $tooNarrow  = $p['width'] < 5;
+                    // 'M' = Jan/Feb (3 lettere), 'F' = January (intero), 'Y' = 2024
+                    $labelMese  = $tooNarrow ? $mese->format('M') : $mese->format('M Y');
                 @endphp
                 <div style="
                     position:absolute;
@@ -112,7 +117,7 @@
                     letter-spacing:.05em;
                     overflow:hidden;
                     white-space:nowrap;
-                ">{{ $tooNarrow ? $mese->format('M') : $mese->format('MMM Y') }}</div>
+                ">{{ $labelMese }}</div>
                 @endforeach
             </div>
 
@@ -120,8 +125,8 @@
             <div style="position:absolute;top:2rem;left:0;right:0;bottom:0;pointer-events:none;z-index:0">
                 @foreach($mesi as $mese)
                 @php
-                    $meseInizio = $mese->copy()->max($inizio);
-                    $p2 = $pos($meseInizio, $meseInizio->copy()->addDay());
+                    $meseInizio2 = $mese->copy()->max($inizio);
+                    $p2 = $pos($meseInizio2, $meseInizio2->copy()->addDay());
                 @endphp
                 <div style="
                     position:absolute;

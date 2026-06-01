@@ -15,7 +15,14 @@
             <small class="text-muted">{{ $s->team->nome }} · {{ $s->data_inizio->format('d/m/Y') }} → {{ $s->data_fine->format('d/m/Y') }}</small>
             @if($s->attiva)<span class="badge bg-success ms-2">Attiva</span>@endif
         </div>
-        <a href="{{ route('allenatore.stagioni.show', $s) }}" class="btn btn-sm btn-outline-primary">Apri</a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('allenatore.stagioni.show', $s) }}" class="btn btn-sm btn-outline-primary">Apri</a>
+            <form action="{{ route('allenatore.stagioni.destroy', $s) }}" method="POST"
+                  onsubmit="return confirm('Eliminare la stagione «{{ addslashes($s->nome) }}»? Verranno eliminati anche macrocicli e microcicli collegati.')">
+                @csrf @method('DELETE')
+                <button class="btn btn-sm btn-outline-danger">Elimina</button>
+            </form>
+        </div>
     </div>
 </div>
 @empty

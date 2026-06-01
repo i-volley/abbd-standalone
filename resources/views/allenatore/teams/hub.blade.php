@@ -63,8 +63,17 @@
     </div>
 </div>
 
-{{-- Legenda stati --}}
-<div class="d-flex gap-3 mb-4" style="font-size:.8rem">
+{{-- Legenda --}}
+<div class="d-flex flex-wrap gap-3 mb-4" style="font-size:.8rem">
+    @foreach($macrocicli as $m)
+    <span class="d-flex align-items-center gap-1">
+        <span class="rounded-pill d-inline-block"
+              style="width:.9rem;height:.9rem;background:{{ $m['colore'] }}"></span>
+        <span class="fw-semibold">{{ $m['nome'] }}</span>
+        <span class="text-muted">{{ \Carbon\Carbon::parse($m['da'])->format('M') }}–{{ \Carbon\Carbon::parse($m['a'])->format('M Y') }}</span>
+    </span>
+    @endforeach
+    @if($macrocicli->isNotEmpty())<span class="text-muted" style="font-size:.7rem">|</span>@endif
     <span><span class="badge rounded-pill me-1" style="background:#94a3b8">●</span>Bozza</span>
     <span><span class="badge rounded-pill me-1" style="background:#3b82f6">●</span>Pubblicata</span>
     <span><span class="badge rounded-pill me-1" style="background:#10b981">●</span>Completata</span>
@@ -240,7 +249,8 @@
 <script>
 (function () {
     // ── Dati dal PHP ──────────────────────────────────────────────────────────
-    const SEDUTE = @json($sedutePerData);
+    const SEDUTE     = @json($sedutePerData);
+    const MACROCICLI = @json($macrocicli);   // [{nome, colore, da, a}]
     const STATO_COLORE = {
         bozza:      '#94a3b8',
         pubblicata: '#3b82f6',
@@ -278,6 +288,28 @@
                    title="${s.titolo} (${s.stato})">${s.titolo}</a>`;
     }
 
+    /** Restituisce il colore (con alpha) del macrociclo che copre `dateKey`, null se nessuno */
+    function macroBgColor(key) {
+        for (const m of MACROCICLI) {
+            if (key >= m.da && key <= m.a) {
+                // Converte hex in rgba con opacity 0.12
+                const r = parseInt(m.colore.slice(1,3),16);
+                const g = parseInt(m.colore.slice(3,5),16);
+                const b = parseInt(m.colore.slice(5,7),16);
+                return `rgba(${r},${g},${b},0.13)`;
+            }
+        }
+        return null;
+    }
+
+    /** Restituisce il colore del bordo superiore del macrociclo (accent strip) */
+    function macroBorderColor(key) {
+        for (const m of MACROCICLI) {
+            if (key >= m.da && key <= m.a) return m.colore;
+        }
+        return null;
+    }
+
     // ── Render mese ──────────────────────────────────────────────────────────
     function renderMonth() {
         titleEl.textContent = `${MESI[curMonth]} ${curYear}`;
@@ -296,12 +328,17 @@
 
         let day = new Date(start);
         while (day <= lastDay || day.getDay() !== 1) {
-            const key  = dateKey(day);
-            const oth  = day.getMonth() !== curMonth;
-            const tod  = isToday(day);
-            const evts = SEDUTE[key] || [];
+            const key   = dateKey(day);
+            const oth   = day.getMonth() !== curMonth;
+            const tod   = isToday(day);
+            const evts  = SEDUTE[key] || [];
+            const bgCol = !oth ? macroBgColor(key) : null;
+            const brCol = !oth ? macroBorderColor(key) : null;
+            const inlineStyle = bgCol
+                ? `style="background:${bgCol};${brCol ? `border-top:2px solid ${brCol};` : ''}"`
+                : '';
 
-            html += `<div class="cal-cell ${oth ? 'other-month' : ''} ${tod ? 'today-cell' : ''}">`;
+            html += `<div class="cal-cell ${oth ? 'other-month' : ''} ${tod ? 'today-cell' : ''}" ${inlineStyle}>`;
             html += `<div class="cal-day-num">`;
             if (tod) {
                 html += `<span class="today-badge">${day.getDate()}</span>`;
@@ -339,13 +376,18 @@
 
         let html = '<div class="cal-week-grid">';
         for (let i = 0; i < 7; i++) {
-            const day  = new Date(monday);
+            const day   = new Date(monday);
             day.setDate(day.getDate() + i);
-            const key  = dateKey(day);
-            const evts = SEDUTE[key] || [];
-            const tod  = isToday(day);
+            const key   = dateKey(day);
+            const evts  = SEDUTE[key] || [];
+            const tod   = isToday(day);
+            const bgCol = macroBgColor(key);
+            const brCol = macroBorderColor(key);
+            const inlineStyle = bgCol
+                ? `style="background:${bgCol};${brCol ? `border-top:3px solid ${brCol};` : ''}"`
+                : '';
 
-            html += `<div class="cal-week-cell ${tod ? 'today-cell' : ''}">`;
+            html += `<div class="cal-week-cell ${tod ? 'today-cell' : ''}" ${inlineStyle}>`;
             html += `<div class="week-day-header">${GIORNI_SHORT[day.getDay()]}</div>`;
             html += `<div class="week-day-num">${day.getDate()}</div>`;
             evts.forEach(s => html += `

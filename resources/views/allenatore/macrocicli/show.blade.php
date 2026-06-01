@@ -3,8 +3,19 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>{{ $macrociclo->nome }}</h2>
-    <a href="{{ route('allenatore.macrocicli.microcicli.create', $macrociclo) }}" class="btn btn-primary">+ Microciclo</a>
+    <div>
+        <h2 class="mb-0">{{ $macrociclo->nome }}</h2>
+        <small class="text-muted">
+            <span class="d-inline-block rounded-pill me-1"
+                  style="width:.8rem;height:.8rem;background:{{ $macrociclo->colore ?? '#4f46e5' }};vertical-align:middle"></span>
+            {{ ucfirst($macrociclo->fase) }} ·
+            {{ $macrociclo->data_inizio->format('d/m/Y') }} → {{ $macrociclo->data_fine->format('d/m/Y') }}
+        </small>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ route('allenatore.macrocicli.edit', $macrociclo) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+        <a href="{{ route('allenatore.macrocicli.microcicli.create', $macrociclo) }}" class="btn btn-primary btn-sm">+ Microciclo</a>
+    </div>
 </div>
 
 @forelse($macrociclo->microcicli as $m)

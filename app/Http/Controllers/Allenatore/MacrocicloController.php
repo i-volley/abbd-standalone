@@ -41,6 +41,7 @@ class MacrocicloController extends Controller
 
     public function edit(Macrociclo $macrociclo)
     {
+        $macrociclo->load('stagione');
         return view('allenatore.macrocicli.edit', compact('macrociclo'));
     }
 
