@@ -88,7 +88,7 @@
                 Ultimi feedback
                 <a href="{{ route('allenatore.sedute.index') }}" class="btn btn-sm btn-outline-primary">Vedi sedute</a>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body p-0 table-responsive">
                 <table class="table table-sm mb-0">
                     <thead><tr><th>Seduta</th><th>Atleta</th><th>RPE</th></tr></thead>
                     <tbody>

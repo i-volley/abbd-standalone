@@ -19,7 +19,7 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-header">Esercizi</div>
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
         <table class="table table-sm mb-0">
             <thead class="table-light">
                 <tr><th>#</th><th>Esercizio</th><th>Fase</th><th>Serie</th><th>Rip.</th><th>Rec.(s)</th><th>Video</th></tr>

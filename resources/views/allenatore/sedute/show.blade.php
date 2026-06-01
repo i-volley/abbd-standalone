@@ -182,7 +182,7 @@
 @if($seduta->feedback->count() > 0)
 <div class="card shadow-sm mt-4">
     <div class="card-header">Feedback ricevuti ({{ $seduta->feedback->count() }})</div>
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
         <table class="table table-sm mb-0">
             <thead class="table-light">
                 <tr><th>Atleta</th><th>RPE</th><th>Qualità</th><th>Impegno</th><th>Fond.</th><th>Nota</th></tr>
