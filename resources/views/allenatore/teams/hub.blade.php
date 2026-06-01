@@ -47,14 +47,24 @@
 
 {{-- ── CALENDARIO ──────────────────────────────────────────────────────────── --}}
 <div class="card shadow-sm mb-4">
-    <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-2">
+    <div class="card-header bg-transparent d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">
         <div class="d-flex align-items-center gap-2">
             <button id="btnPrev" class="btn btn-sm btn-outline-secondary px-2" style="line-height:1">‹</button>
-            <span id="calTitle" class="fw-semibold" style="min-width:12rem;text-align:center"></span>
+            <span id="calTitle" class="fw-semibold text-center" style="min-width:9rem"></span>
             <button id="btnNext" class="btn btn-sm btn-outline-secondary px-2" style="line-height:1">›</button>
             <button id="btnToday" class="btn btn-sm btn-outline-secondary ms-1">Oggi</button>
         </div>
-        <div class="btn-group btn-group-sm" role="group">
+
+        {{-- Mobile (< md): dropdown — i bottoni sforano in larghezza --}}
+        <select id="viewSelect" class="form-select form-select-sm d-md-none" style="width:auto">
+            <option value="month" selected>Mese</option>
+            <option value="week">Settimana</option>
+            <option value="year">Anno</option>
+            <option value="season" {{ $stagioneDates ? '' : 'disabled' }}>Stagione</option>
+        </select>
+
+        {{-- Tablet/Desktop (≥ md): gruppo bottoni --}}
+        <div class="btn-group btn-group-sm d-none d-md-inline-flex" role="group">
             <button id="btnMonth"   type="button" class="btn btn-primary">Mese</button>
             <button id="btnWeek"    type="button" class="btn btn-outline-primary">Settimana</button>
             <button id="btnYear"    type="button" class="btn btn-outline-primary">Anno</button>
@@ -606,6 +616,9 @@
             const el = document.getElementById(b);
             if (el) el.className = (b === id) ? 'btn btn-primary' : 'btn btn-outline-primary';
         });
+        // Sync dropdown mobile (btnMonth -> "month", ecc.)
+        const vs = document.getElementById('viewSelect');
+        if (vs) vs.value = id.replace('btn', '').toLowerCase();
     }
 
     document.getElementById('btnMonth').onclick  = () => { view = 'month';  setActive('btnMonth');  render(); };
@@ -614,6 +627,16 @@
     const btnSeason = document.getElementById('btnSeason');
     if (btnSeason && !btnSeason.disabled) {
         btnSeason.onclick = () => { view = 'season'; setActive('btnSeason'); render(); };
+    }
+
+    // Dropdown mobile: stessa logica dei bottoni
+    const viewSelect = document.getElementById('viewSelect');
+    if (viewSelect) {
+        viewSelect.onchange = () => {
+            view = viewSelect.value; // month | week | year | season
+            setActive('btn' + view.charAt(0).toUpperCase() + view.slice(1));
+            render();
+        };
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────
