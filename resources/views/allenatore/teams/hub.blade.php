@@ -365,8 +365,7 @@
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
-    /* Larghezza minima celle giorno -> non si schiacciano, il calendario scorre lateralmente */
-    .cal-grid,
+    /* Vista settimana: larghezza minima -> scorre lateralmente (mese/anno/stagione invece entrano a schermo) */
     .cal-week-grid {
         min-width: 600px;
     }
@@ -661,27 +660,48 @@
                 ? `style="background:${bgCol};${brCol?`border-top:${compact?'2':'2'}px solid ${brCol};`:''}"` : '';
 
             if (compact) {
-                if (evts.length === 1) {
-                    // Cella intera = link alla seduta
-                    html += `<a href="${evts[0].url}"
+                if (IS_MOBILE()) {
+                    // Mobile (anno/stagione): cella intera = link alla pagina GIORNO,
+                    // pallini per ogni evento (stessa logica della vista mese mobile)
+                    const numCls = evts.length
+                        ? `mini-day-num ${tod?'today-mini':''} mini-day-num--event`
+                        : `mini-day-num ${tod?'today-mini':''}`;
+                    html += `<a href="${dayUrl(key)}"
                                 class="cal-cell-mini cal-cell-mini--link ${oth?'other-month':''} ${tod?'today-cell':''}"
-                                ${sty}
-                                title="${evts[0].titolo}">`;
+                                ${sty}>`;
+                    html += `<span class="${numCls}">${day.getDate()}</span>`;
+                    if (evts.length) {
+                        html += '<div class="mini-dots">';
+                        evts.slice(0, 4).forEach(s =>
+                            html += `<span class="mini-dot" style="background:${STATO_COLORE[s.stato]||'#64748b'}" title="${s.titolo}"></span>`);
+                        if (evts.length > 4) html += `<span class="mini-dot-more">+${evts.length-4}</span>`;
+                        html += '</div>';
+                    }
+                    html += '</a>';
                 } else {
-                    html += `<div class="cal-cell-mini ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
+                    // Desktop anno/stagione: comportamento esistente
+                    if (evts.length === 1) {
+                        // Cella intera = link alla seduta
+                        html += `<a href="${evts[0].url}"
+                                    class="cal-cell-mini cal-cell-mini--link ${oth?'other-month':''} ${tod?'today-cell':''}"
+                                    ${sty}
+                                    title="${evts[0].titolo}">`;
+                    } else {
+                        html += `<div class="cal-cell-mini ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
+                    }
+                    const numCls = evts.length === 1
+                        ? `mini-day-num ${tod?'today-mini':''} mini-day-num--event`
+                        : `mini-day-num ${tod?'today-mini':''}`;
+                    html += `<span class="${numCls}">${day.getDate()}</span>`;
+                    if (evts.length > 1) {
+                        // Più sedute: pallini cliccabili con tooltip
+                        html += '<div class="mini-dots">';
+                        evts.slice(0, 4).forEach(s => html += eventChip(s, true));
+                        if (evts.length > 4) html += `<span class="mini-dot-more">+${evts.length-4}</span>`;
+                        html += '</div>';
+                    }
+                    html += evts.length === 1 ? '</a>' : '</div>';
                 }
-                const numCls = evts.length === 1
-                    ? `mini-day-num ${tod?'today-mini':''} mini-day-num--event`
-                    : `mini-day-num ${tod?'today-mini':''}`;
-                html += `<span class="${numCls}">${day.getDate()}</span>`;
-                if (evts.length > 1) {
-                    // Più sedute: pallini cliccabili con tooltip
-                    html += '<div class="mini-dots">';
-                    evts.slice(0, 4).forEach(s => html += eventChip(s, true));
-                    if (evts.length > 4) html += `<span class="mini-dot-more">+${evts.length-4}</span>`;
-                    html += '</div>';
-                }
-                html += evts.length === 1 ? '</a>' : '</div>';
             } else {
                 html += `<div class="cal-cell ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
                 html += '<div class="cal-day-num">';
