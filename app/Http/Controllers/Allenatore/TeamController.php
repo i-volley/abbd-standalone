@@ -128,6 +128,31 @@ class TeamController extends Controller
         return view('allenatore.teams.hub', compact('team', 'sedutePerData', 'macrocicli', 'prossime', 'stagioneDates'));
     }
 
+    /** Dettaglio di un singolo giorno: sedute di quella data (vista mobile calendario) */
+    public function giorno(Team $team, string $data)
+    {
+        abort_unless($team->allenatore_id === auth()->id(), 403);
+
+        try {
+            $giorno = \Illuminate\Support\Carbon::parse($data);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
+        $sedute = \App\Models\Seduta::where('team_id', $team->id)
+            ->whereDate('data', $giorno->toDateString())
+            ->orderBy('data')
+            ->get();
+
+        // Macrociclo che copre il giorno (per contesto periodo)
+        $macrociclo = \App\Models\Macrociclo::whereHas('stagione', fn($q) => $q->where('team_id', $team->id))
+            ->whereDate('data_inizio', '<=', $giorno->toDateString())
+            ->whereDate('data_fine', '>=', $giorno->toDateString())
+            ->first();
+
+        return view('allenatore.teams.giorno', compact('team', 'giorno', 'sedute', 'macrociclo'));
+    }
+
     public function aggiungiAtleta(Request $request, Team $team)
     {
         $request->validate(['user_id' => 'required|exists:users,id']);

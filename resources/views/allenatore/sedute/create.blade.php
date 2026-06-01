@@ -13,7 +13,7 @@
     </div>
     <div class="col-md-3">
         <label class="form-label">Data *</label>
-        <input type="date" name="data" class="form-control" required value="{{ old('data', date('Y-m-d')) }}">
+        <input type="date" name="data" class="form-control" required value="{{ old('data', request('data', date('Y-m-d'))) }}">
     </div>
     <div class="col-md-5">
         <label class="form-label">Team *</label>

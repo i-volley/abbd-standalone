@@ -377,6 +377,63 @@
         text-overflow: clip;
         line-height: 1.25;
     }
+
+    /* ── Vista MESE mobile: griglia fissa a schermo, pallini, tap → giorno ── */
+    .mob-month-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-left: 1px solid #e9ecef;
+        border-top: 1px solid #e9ecef;
+    }
+    .mob-month-head {
+        text-align: center;
+        font-size: .6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #6c757d;
+        background: #f8f9fa;
+        padding: .3rem 0;
+        border-right: 1px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .mob-month-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 52px;
+        padding: .25rem 0;
+        text-decoration: none;
+        color: #343a40;
+        background: #fff;
+        border-right: 1px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .mob-month-cell.other-month { background: #fafafa; color: #adb5bd; }
+    .mob-month-cell.today-cell  { background: #eff6ff; }
+    .mob-day-num { font-size: .85rem; font-weight: 600; line-height: 1.4; }
+    .mob-day-num.today-mini {
+        background: #3b82f6;
+        color: #fff;
+        border-radius: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .mob-dots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+        justify-content: center;
+        margin-top: 3px;
+    }
+    .mob-dot {
+        width: .45rem;
+        height: .45rem;
+        border-radius: 50%;
+    }
+    .mob-dot-more { font-size: .55rem; color: #6c757d; line-height: 1; }
 }
 </style>
 @endpush
@@ -388,6 +445,9 @@
     const SEDUTE     = @json($sedutePerData);
     const MACROCICLI = @json($macrocicli);
     const STAGIONE   = @json($stagioneDates);   // {nome, da, a, url} | null
+    const DAY_URL    = @json(route('allenatore.teams.giorno', ['team' => $team->id, 'data' => '__DATA__']));
+    const IS_MOBILE  = () => window.matchMedia('(max-width: 767.98px)').matches;
+    function dayUrl(key) { return DAY_URL.replace('__DATA__', key); }
     const STATO_COLORE = { bozza:'#94a3b8', pubblicata:'#3b82f6', completata:'#10b981' };
     const GIORNI_SHORT = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
     const MESI_LONG  = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
@@ -450,7 +510,49 @@
     // ── Render mese (pieno) ──────────────────────────────────────────────────
     function renderMonth() {
         titleEl.textContent = `${MESI_LONG[curMonth]} ${curYear}`;
-        container.innerHTML = buildMonthGrid(curYear, curMonth, false);
+        // Mobile: griglia compatta a larghezza schermo, pallini colorati, tap → pagina giorno
+        container.innerHTML = IS_MOBILE()
+            ? buildMonthGridMobile(curYear, curMonth)
+            : buildMonthGrid(curYear, curMonth, false);
+    }
+
+    // ── Griglia mese MOBILE: celle fisse a schermo, pallini eventi, tap → giorno ──
+    function buildMonthGridMobile(year, month) {
+        const firstDay = new Date(year, month, 1);
+        const lastDay  = new Date(year, month + 1, 0);
+        const fd       = firstDay.getDay();
+        let start = new Date(firstDay);
+        start.setDate(start.getDate() - (fd === 0 ? 6 : fd - 1));
+
+        let html = '<div class="mob-month-grid">';
+        GIORNI_SHORT.forEach(g => html += `<div class="mob-month-head">${g}</div>`);
+
+        let day = new Date(start);
+        while (day <= lastDay || day.getDay() !== 1) {
+            const key   = dateKey(day);
+            const oth   = day.getMonth() !== month;
+            const tod   = isToday(day);
+            const evts  = SEDUTE[key] || [];
+            const bgCol = !oth ? macroBgColor(key) : null;
+            const brCol = !oth ? macroBorderColor(key) : null;
+            const sty   = bgCol ? `background:${bgCol};${brCol ? `border-top:3px solid ${brCol};` : ''}` : '';
+
+            html += `<a href="${dayUrl(key)}" class="mob-month-cell ${oth ? 'other-month' : ''} ${tod ? 'today-cell' : ''}" style="${sty}">`;
+            html += `<span class="mob-day-num ${tod ? 'today-mini' : ''}">${day.getDate()}</span>`;
+            if (evts.length) {
+                html += '<span class="mob-dots">';
+                evts.slice(0, 4).forEach(s =>
+                    html += `<span class="mob-dot" style="background:${STATO_COLORE[s.stato] || '#64748b'}" title="${s.titolo}"></span>`);
+                if (evts.length > 4) html += `<span class="mob-dot-more">+${evts.length - 4}</span>`;
+                html += '</span>';
+            }
+            html += '</a>';
+
+            day.setDate(day.getDate() + 1);
+            if (day > lastDay && day.getDay() === 1) break;
+        }
+        html += '</div>';
+        return html;
     }
 
     // ── Render settimana ─────────────────────────────────────────────────────
