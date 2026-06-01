@@ -19,16 +19,16 @@
         <div class="col-md-4">
             <label class="form-label">Fase *</label>
             <select name="fase" class="form-select" required>
-                @foreach(['riscaldamento','potenziamento','stretching'] as $f)
-                    <option value="{{ $f }}" {{ old('fase', $esercizio->fase) === $f ? 'selected' : '' }}>{{ ucfirst($f) }}</option>
+                @foreach(($parametri['fase'] ?? collect()) as $p)
+                    <option value="{{ $p->valore }}" {{ old('fase', $esercizio->fase) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
                 @endforeach
             </select>
         </div>
         <div class="col-md-4">
             <label class="form-label">Metodologia *</label>
             <select name="metodologia" class="form-select" required>
-                @foreach(['analitico','sintetico','globale'] as $m)
-                    <option value="{{ $m }}" {{ old('metodologia', $esercizio->metodologia) === $m ? 'selected' : '' }}>{{ ucfirst($m) }}</option>
+                @foreach(($parametri['metodologia'] ?? collect()) as $p)
+                    <option value="{{ $p->valore }}" {{ old('metodologia', $esercizio->metodologia) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
                 @endforeach
             </select>
         </div>

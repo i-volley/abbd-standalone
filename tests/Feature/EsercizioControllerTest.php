@@ -25,6 +25,10 @@ class EsercizioControllerTest extends TestCase
         // Seed ruoli Spatie (necessari per middleware role:allenatore)
         $this->seed(\Database\Seeders\RoleSeeder::class);
 
+        // Parametri scheda esercizio: la validazione di fase/metodologia/assi
+        // legge i valori validi da parametri_esercizio (non più enum fissi).
+        $this->seed(\Database\Seeders\ParametroEsercizioSeeder::class);
+
         // Crea sport + allenatore + team (necessari per sportId() nel controller)
         $this->sport = Sport::create(['nome' => 'Pallavolo', 'slug' => 'pallavolo']);
 

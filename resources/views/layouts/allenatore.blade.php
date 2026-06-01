@@ -62,6 +62,13 @@
                 Impostazioni
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link ps-4 {{ request()->routeIs('allenatore.parametri*') ? 'active' : '' }}"
+               href="{{ route('allenatore.parametri.index') }}"
+               style="font-size:.9rem">
+                ↳ Parametri esercizio
+            </a>
+        </li>
     </ul>
     <div class="mt-auto p-3" style="position:absolute;bottom:0;width:100%">
         <small class="text-muted d-block mb-1">{{ auth()->user()->name }}</small>

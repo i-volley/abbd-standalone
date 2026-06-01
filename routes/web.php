@@ -6,6 +6,7 @@ use App\Http\Controllers\Allenatore\EsercizioController;
 use App\Http\Controllers\Allenatore\GestoTecnicoController;
 use App\Http\Controllers\Allenatore\MacrocicloController;
 use App\Http\Controllers\Allenatore\MicrocicloController;
+use App\Http\Controllers\Allenatore\ParametroEsercizioController;
 use App\Http\Controllers\Allenatore\SeduteController;
 use App\Http\Controllers\Allenatore\SportController;
 use App\Http\Controllers\Allenatore\StagioneController;
@@ -49,6 +50,8 @@ Route::prefix('allenatore')->name('allenatore.')
             $lines[] = 'GestoTecnicoSeeder: OK';
             \Artisan::call('db:seed', ['--class' => 'UserSeeder',           '--force' => true]);
             $lines[] = 'UserSeeder: OK';
+            \Artisan::call('db:seed', ['--class' => 'ParametroEsercizioSeeder', '--force' => true]);
+            $lines[] = 'ParametroEsercizioSeeder: OK (' . \App\Models\ParametroEsercizio::count() . ' parametri)';
             \Artisan::call('db:seed', ['--class' => 'EsercizioSeeder',      '--force' => true]);
             $lines[] = 'EsercizioSeeder: OK';
             \Artisan::call('db:seed', ['--class' => 'EsercizioFipavSeeder', '--force' => true]);
@@ -99,6 +102,12 @@ Route::prefix('allenatore')->name('allenatore.')
 
     // Impostazioni
     Route::resource('sports', SportController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // Parametri scheda esercizio (fase, metodologia, assi FIPAV)
+    Route::get('parametri', [ParametroEsercizioController::class, 'index'])->name('parametri.index');
+    Route::post('parametri', [ParametroEsercizioController::class, 'store'])->name('parametri.store');
+    Route::patch('parametri/{parametro}', [ParametroEsercizioController::class, 'update'])->name('parametri.update');
+    Route::delete('parametri/{parametro}', [ParametroEsercizioController::class, 'destroy'])->name('parametri.destroy');
     Route::resource('gesti-tecnici', GestoTecnicoController::class)
         ->parameters(['gesti-tecnici' => 'gestoTecnico']);
 

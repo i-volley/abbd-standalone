@@ -1,18 +1,13 @@
 {{--
     Partial: assi metodologici FIPAV.
-    Richiede: $ruoliDisponibili (array stringhe)
+    Richiede: $ruoliDisponibili (array stringhe), $parametri (Collection groupBy tipo)
     Opzionale: $esercizio (per edit — popola old values)
 --}}
 @php
     $e = $esercizio ?? null;
+    $parametri     = $parametri ?? collect();
     $distretti     = $distretti ?? \App\Models\Esercizio::distretti();
     $labDistretto  = ['caviglia' => '🦶 Caviglia', 'ginocchio' => '🦵 Ginocchio', 'lombare' => '🔙 Lombare', 'spalla' => '💪 Spalla'];
-    $labObiettivo  = ['permanente' => 'Permanente', 'principale' => 'Principale', 'secondario' => 'Secondario'];
-    $labFaseSeduta = ['preparatoria' => 'Preparatoria', 'centrale' => 'Centrale', 'finale' => 'Finale'];
-    $labFaseGioco  = ['cambio_palla' => 'Cambio palla', 'break_point' => 'Break point', 'ricostruzione' => 'Ricostruzione'];
-    $labComponente = ['tecnica' => 'Tecnica', 'tattica' => 'Tattica'];
-    $labRendimento = ['positivita' => 'Positività', 'gestione_errore' => 'Gestione errore', 'efficienza' => 'Efficienza'];
-    $labLivello    = ['base' => 'Base', 'medio' => 'Medio', 'alto' => 'Alto'];
     $labRuoli      = [
         'alzatore'             => 'Alzatore',
         'ricevitore_attaccante'=> 'Ric.-Attaccante',
@@ -21,6 +16,9 @@
         'libero'               => 'Libero',
     ];
     $ruoliSelezionati = old('ruoli', $e ? $e->getRuoliListAttribute() : []);
+
+    // Helper: voci attive di un tipo
+    $voci = fn($tipo) => $parametri[$tipo] ?? collect();
 @endphp
 
 <div class="card border-secondary border-opacity-25 mt-4 mb-2">
@@ -28,7 +26,7 @@
         <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">
             Assi metodologici FIPAV
             <a href="#" class="ms-1 text-muted" data-bs-toggle="tooltip"
-               title="Dal Manuale Allenatore Primo Grado FIPAV. Tutti opzionali — usati per ricerca e filtro.">ⓘ</a>
+               title="Dal Manuale Allenatore Primo Grado FIPAV. Tutti opzionali — usati per ricerca e filtro. Gestibili da Impostazioni → Parametri esercizio.">ⓘ</a>
         </small>
     </div>
     <div class="card-body">
@@ -39,8 +37,8 @@
                 <label class="form-label">Obiettivo nella seduta</label>
                 <select name="obiettivo" class="form-select form-select-sm">
                     <option value="">– non specificato –</option>
-                    @foreach($labObiettivo as $val => $lab)
-                        <option value="{{ $val }}" {{ old('obiettivo', $e?->obiettivo) === $val ? 'selected' : '' }}>{{ $lab }}</option>
+                    @foreach($voci('obiettivo') as $p)
+                        <option value="{{ $p->valore }}" {{ old('obiettivo', $e?->obiettivo) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
                     @endforeach
                 </select>
             </div>
@@ -50,8 +48,8 @@
                 <label class="form-label">Fase seduta</label>
                 <select name="fase_seduta" class="form-select form-select-sm">
                     <option value="">– non specificata –</option>
-                    @foreach($labFaseSeduta as $val => $lab)
-                        <option value="{{ $val }}" {{ old('fase_seduta', $e?->fase_seduta) === $val ? 'selected' : '' }}>{{ $lab }}</option>
+                    @foreach($voci('fase_seduta') as $p)
+                        <option value="{{ $p->valore }}" {{ old('fase_seduta', $e?->fase_seduta) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
                     @endforeach
                 </select>
             </div>
@@ -61,8 +59,8 @@
                 <label class="form-label">Componente</label>
                 <select name="componente" class="form-select form-select-sm">
                     <option value="">– non specificata –</option>
-                    @foreach($labComponente as $val => $lab)
-                        <option value="{{ $val }}" {{ old('componente', $e?->componente) === $val ? 'selected' : '' }}>{{ $lab }}</option>
+                    @foreach($voci('componente') as $p)
+                        <option value="{{ $p->valore }}" {{ old('componente', $e?->componente) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
                     @endforeach
                 </select>
             </div>
@@ -72,8 +70,8 @@
                 <label class="form-label">Fase di gioco</label>
                 <select name="fase_gioco" class="form-select form-select-sm">
                     <option value="">– non specificata –</option>
-                    @foreach($labFaseGioco as $val => $lab)
-                        <option value="{{ $val }}" {{ old('fase_gioco', $e?->fase_gioco) === $val ? 'selected' : '' }}>{{ $lab }}</option>
+                    @foreach($voci('fase_gioco') as $p)
+                        <option value="{{ $p->valore }}" {{ old('fase_gioco', $e?->fase_gioco) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
                     @endforeach
                 </select>
             </div>
@@ -83,8 +81,8 @@
                 <label class="form-label">Obiettivo rendimento</label>
                 <select name="rendimento" class="form-select form-select-sm">
                     <option value="">– non specificato –</option>
-                    @foreach($labRendimento as $val => $lab)
-                        <option value="{{ $val }}" {{ old('rendimento', $e?->rendimento) === $val ? 'selected' : '' }}>{{ $lab }}</option>
+                    @foreach($voci('rendimento') as $p)
+                        <option value="{{ $p->valore }}" {{ old('rendimento', $e?->rendimento) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
                     @endforeach
                 </select>
             </div>
@@ -94,8 +92,8 @@
                 <label class="form-label">Livello</label>
                 <select name="livello" class="form-select form-select-sm">
                     <option value="">–</option>
-                    @foreach($labLivello as $val => $lab)
-                        <option value="{{ $val }}" {{ old('livello', $e?->livello) === $val ? 'selected' : '' }}>{{ $lab }}</option>
+                    @foreach($voci('livello') as $p)
+                        <option value="{{ $p->valore }}" {{ old('livello', $e?->livello) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
                     @endforeach
                 </select>
             </div>

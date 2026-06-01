@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             CategoriaGestoSeeder::class,
             UserSeeder::class,
             TeamSeeder::class,
+            ParametroEsercizioSeeder::class,
             EsercizioSeeder::class,
             EsercizioFipavSeeder::class,
             PianificazioneSeeder::class,

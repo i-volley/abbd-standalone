@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Capacita;
 use App\Models\Esercizio;
 use App\Models\GestoTecnico;
+use App\Models\ParametroEsercizio;
 use App\Models\Sport;
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class EsercizioController extends Controller
 {
@@ -17,6 +19,26 @@ class EsercizioController extends Controller
         return Team::where('allenatore_id', auth()->id())->value('sport_id')
             ?? Sport::where('slug', 'pallavolo')->value('id')
             ?? 1;
+    }
+
+    /** Parametri attivi raggruppati per tipo, per popolare i menu del form */
+    private function parametri()
+    {
+        return ParametroEsercizio::attiviRaggruppati();
+    }
+
+    /** Regole di validazione per i campi parametrici (valori dinamici da DB) */
+    private function regoleParametri(): array
+    {
+        $assi = ['obiettivo', 'fase_seduta', 'fase_gioco', 'componente', 'rendimento', 'livello'];
+        $rules = [
+            'fase'        => ['required', Rule::in(ParametroEsercizio::valoriValidi('fase'))],
+            'metodologia' => ['required', Rule::in(ParametroEsercizio::valoriValidi('metodologia'))],
+        ];
+        foreach ($assi as $asse) {
+            $rules[$asse] = ['nullable', Rule::in(ParametroEsercizio::valoriValidi($asse))];
+        }
+        return $rules;
     }
 
     public function index()
@@ -42,16 +64,15 @@ class EsercizioController extends Controller
         $categorie        = Esercizio::categorieEta();
         $ruoliDisponibili = Esercizio::ruoliDisponibili();
         $distretti        = Esercizio::distretti();
+        $parametri        = $this->parametri();
 
-        return view('allenatore.esercizi.create', compact('gesti', 'capacita', 'categorie', 'ruoliDisponibili', 'distretti'));
+        return view('allenatore.esercizi.create', compact('gesti', 'capacita', 'categorie', 'ruoliDisponibili', 'distretti', 'parametri'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'nome'              => 'required|string|max:255',
-            'fase'              => 'required|in:riscaldamento,potenziamento,stretching',
-            'metodologia'       => 'required|in:analitico,sintetico,globale',
             'gesto_tecnico_id'  => 'nullable|exists:gesti_tecnici,id',
             'n_salti'           => 'integer|min:0',
             'n_gesti'           => 'integer|min:0',
@@ -62,17 +83,12 @@ class EsercizioController extends Controller
             'is_pubblico'       => 'boolean',
             'capacita_ids'      => 'nullable|array',
             'capacita_ids.*'    => 'exists:capacita,id',
-            // Assi metodologici FIPAV
-            'obiettivo'         => 'nullable|in:permanente,principale,secondario',
-            'fase_seduta'       => 'nullable|in:preparatoria,centrale,finale',
-            'fase_gioco'        => 'nullable|in:cambio_palla,break_point,ricostruzione',
-            'componente'        => 'nullable|in:tecnica,tattica',
-            'rendimento'        => 'nullable|in:positivita,gestione_errore,efficienza',
-            'livello'           => 'nullable|in:base,medio,alto',
             'n_giocatori'       => 'nullable|string|max:10',
             'ruoli'                  => 'nullable|array',
             'ruoli.*'                => 'in:' . implode(',', Esercizio::ruoliDisponibili()),
             'prevenzione_distretto'  => 'nullable|in:' . implode(',', Esercizio::distretti()),
+            // fase, metodologia + assi FIPAV: valori dinamici da parametri_esercizio
+            ...$this->regoleParametri(),
         ]);
 
         $esercizio = Esercizio::create([
@@ -105,16 +121,15 @@ class EsercizioController extends Controller
         $ruoliDisponibili = Esercizio::ruoliDisponibili();
         $distretti        = Esercizio::distretti();
         $esercizio->load(['gestoTecnico', 'capacita', 'ruoli']);
+        $parametri        = $this->parametri();
 
-        return view('allenatore.esercizi.edit', compact('esercizio', 'gesti', 'capacita', 'categorie', 'ruoliDisponibili', 'distretti'));
+        return view('allenatore.esercizi.edit', compact('esercizio', 'gesti', 'capacita', 'categorie', 'ruoliDisponibili', 'distretti', 'parametri'));
     }
 
     public function update(Request $request, Esercizio $esercizio)
     {
         $data = $request->validate([
             'nome'              => 'required|string|max:255',
-            'fase'              => 'required|in:riscaldamento,potenziamento,stretching',
-            'metodologia'       => 'required|in:analitico,sintetico,globale',
             'gesto_tecnico_id'  => 'nullable|exists:gesti_tecnici,id',
             'n_salti'           => 'integer|min:0',
             'n_gesti'           => 'integer|min:0',
@@ -125,16 +140,12 @@ class EsercizioController extends Controller
             'is_pubblico'       => 'boolean',
             'capacita_ids'      => 'nullable|array',
             'capacita_ids.*'    => 'exists:capacita,id',
-            // Assi metodologici FIPAV
-            'obiettivo'         => 'nullable|in:permanente,principale,secondario',
-            'fase_seduta'       => 'nullable|in:preparatoria,centrale,finale',
-            'fase_gioco'        => 'nullable|in:cambio_palla,break_point,ricostruzione',
-            'componente'        => 'nullable|in:tecnica,tattica',
-            'rendimento'        => 'nullable|in:positivita,gestione_errore,efficienza',
-            'livello'           => 'nullable|in:base,medio,alto',
             'n_giocatori'       => 'nullable|string|max:10',
             'ruoli'             => 'nullable|array',
             'ruoli.*'           => 'in:' . implode(',', Esercizio::ruoliDisponibili()),
+            'prevenzione_distretto'  => 'nullable|in:' . implode(',', Esercizio::distretti()),
+            // fase, metodologia + assi FIPAV: valori dinamici da parametri_esercizio
+            ...$this->regoleParametri(),
         ]);
 
         $esercizio->update([
