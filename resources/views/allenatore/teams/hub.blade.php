@@ -357,6 +357,27 @@
     line-height: 1.2;
     align-self: center;
 }
+
+/* ── Mobile: celle a larghezza fissa + scroll laterale del solo calendario ── */
+@media (max-width: 767.98px) {
+    /* Lo scroll orizzontale resta DENTRO il calendario: la pagina scorre fino in fondo */
+    #calendar {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    /* Larghezza minima celle giorno -> non si schiacciano, il calendario scorre lateralmente */
+    .cal-grid,
+    .cal-week-grid {
+        min-width: 600px;
+    }
+    /* Sedute ed eventi: vanno a capo e si adattano invece di troncare con i puntini */
+    .cal-event {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.25;
+    }
+}
 </style>
 @endpush
 

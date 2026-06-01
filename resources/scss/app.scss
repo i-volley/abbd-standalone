@@ -84,7 +84,8 @@ body {
     .main-content {
         margin-left: 0;
         padding: 1rem;
-        padding-top: 4.25rem; // spazio per la topbar fissa
+        padding-top: 4.25rem;   // spazio per la topbar fissa
+        padding-bottom: 3rem;   // margine per scrollare comodamente fino in fondo
     }
 
     .mobile-topbar {
