@@ -31,7 +31,7 @@ class EsercizioSeeder extends Seeder
                 'categoria_eta' => 'U13',
                 'capacita' => ['Coordinazione', 'Percezione'],
                 // assi FIPAV
-                'obiettivo' => 'preparatoria', 'fase_seduta' => 'preparatoria',
+                'obiettivo' => null, 'fase_seduta' => 'preparatoria',
                 'componente' => 'tecnica', 'livello' => 'base',
                 'ruoli' => ['ricevitore_attaccante', 'libero'],
             ],
