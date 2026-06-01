@@ -5,6 +5,11 @@ if [ -z "$APP_KEY" ]; then
     export APP_KEY="base64:72/KL/qkEeS+KQE31iqfLqsq0e6bNqGVFaU39Rywxkc="
 fi
 
+# Garantisce che il file SQLite esista (necessario quando /app/database è un
+# volume Railway montato vuoto al primo avvio — abilita la persistenza dati)
+mkdir -p /app/database
+[ -f /app/database/database.sqlite ] || touch /app/database/database.sqlite
+
 # Laravel legge direttamente dalle env vars del container — nessun .env file necessario
 php artisan config:clear
 php artisan route:clear
