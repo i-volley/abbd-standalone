@@ -266,8 +266,9 @@
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('allenatore.macrocicli.show', $m) }}" class="btn btn-sm btn-outline-primary">Apri</a>
+            <a href="{{ route('allenatore.macrocicli.edit', $m) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
             <form action="{{ route('allenatore.macrocicli.destroy', $m) }}" method="POST"
-                  data-confirm="Eliminare {{ addslashes($m->nome) }}?">
+                  data-confirm="Eliminare il macrociclo «{{ addslashes($m->nome) }}»? Verranno eliminati anche i microcicli collegati.">
                 @csrf @method('DELETE')
                 <button class="btn btn-sm btn-outline-danger">×</button>
             </form>

@@ -157,30 +157,28 @@
 
 @stack('scripts')
 <script>
-(function () {
-    let _pendingForm = null;
-    let _countdownTimer = null;
+/*
+ * ABBD — Doppia conferma eliminazione (globale)
+ * Bootstrap è caricato via Vite come ES module (deferred).
+ * window 'load' garantisce che bootstrap sia disponibile prima di usarlo.
+ */
+window.addEventListener('load', function () {
+    var _pendingForm   = null;
+    var _countdownTimer = null;
+    var modalEl  = document.getElementById('abbd-confirm-modal');
+    var msgEl    = document.getElementById('abbd-confirm-msg');
+    var confirmBtn  = document.getElementById('abbd-confirm-btn');
+    var countdownEl = document.getElementById('abbd-confirm-countdown');
 
-    const modal      = new bootstrap.Modal(document.getElementById('abbd-confirm-modal'));
-    const msgEl      = document.getElementById('abbd-confirm-msg');
-    const confirmBtn = document.getElementById('abbd-confirm-btn');
-    const countdownEl= document.getElementById('abbd-confirm-countdown');
+    function getModal() {
+        // Lazy: crea o riusa l'istanza Bootstrap Modal
+        return bootstrap.Modal.getOrCreateInstance(modalEl);
+    }
 
-    // Intercetta tutti i submit su form con data-confirm
-    document.addEventListener('submit', function (e) {
-        const form = e.target.closest('form[data-confirm]');
-        if (!form) return;
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        _pendingForm = form;
-        msgEl.textContent = form.dataset.confirm;
-
-        // Reset bottone: disabilitato per 2 secondi (evita doppio click accidentale)
+    function startCountdown() {
         confirmBtn.disabled = true;
-        let secs = 2;
-        countdownEl.textContent = `(${secs}s)`;
+        var secs = 2;
+        countdownEl.textContent = '(' + secs + 's)';
         clearInterval(_countdownTimer);
         _countdownTimer = setInterval(function () {
             secs--;
@@ -189,32 +187,43 @@
                 confirmBtn.disabled = false;
                 countdownEl.textContent = '';
             } else {
-                countdownEl.textContent = `(${secs}s)`;
+                countdownEl.textContent = '(' + secs + 's)';
             }
         }, 1000);
+    }
 
-        modal.show();
-    });
+    // Intercetta submit su qualsiasi form con data-confirm
+    document.addEventListener('submit', function (e) {
+        var form = e.target;
+        if (!form.matches || !form.matches('form[data-confirm]')) return;
 
-    // Conferma: sottomette il form originale
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        _pendingForm = form;
+        msgEl.textContent = form.dataset.confirm || 'Sei sicuro?';
+        startCountdown();
+        getModal().show();
+    }, true); // capture phase — intercetta prima di qualsiasi handler inline
+
+    // Bottone conferma: sottomette il form
     confirmBtn.addEventListener('click', function () {
         if (!_pendingForm) return;
-        const form = _pendingForm;
+        var form = _pendingForm;
         _pendingForm = null;
-        modal.hide();
-        // Rimuove l'attributo per evitare loop infinito
-        delete form.dataset.confirm;
+        getModal().hide();
+        delete form.dataset.confirm; // evita loop
         form.submit();
     });
 
-    // Reset su chiusura modale
-    document.getElementById('abbd-confirm-modal').addEventListener('hidden.bs.modal', function () {
+    // Reset stato alla chiusura
+    modalEl.addEventListener('hidden.bs.modal', function () {
         clearInterval(_countdownTimer);
-        _pendingForm = null;
+        _pendingForm   = null;
         confirmBtn.disabled = true;
         countdownEl.textContent = '';
     });
-})();
+});
 </script>
 </body>
 </html>
