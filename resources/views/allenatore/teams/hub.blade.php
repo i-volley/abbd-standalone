@@ -55,8 +55,14 @@
             <button id="btnToday" class="btn btn-sm btn-outline-secondary ms-1">Oggi</button>
         </div>
         <div class="btn-group btn-group-sm" role="group">
-            <button id="btnMonth" type="button" class="btn btn-primary">Mese</button>
-            <button id="btnWeek"  type="button" class="btn btn-outline-primary">Settimana</button>
+            <button id="btnMonth"   type="button" class="btn btn-primary">Mese</button>
+            <button id="btnWeek"    type="button" class="btn btn-outline-primary">Settimana</button>
+            <button id="btnYear"    type="button" class="btn btn-outline-primary">Anno</button>
+            <button id="btnSeason"  type="button" class="btn btn-outline-primary"
+                    {{ $stagioneDates ? '' : 'disabled' }}
+                    title="{{ $stagioneDates ? $stagioneDates['nome'] : 'Nessuna stagione' }}">
+                Stagione
+            </button>
         </div>
     </div>
     <div class="card-body p-0">
@@ -243,6 +249,78 @@
     justify-content: center;
     margin: 0 auto .4rem;
 }
+
+/* ── Vista Anno / Stagione (mini mesi) ─────────────────── */
+.mini-year-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.25rem;
+    background: #f8f9fa;
+}
+.mini-month-wrap {
+    background: #fff;
+    border-radius: .4rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.07);
+    overflow: hidden;
+}
+.mini-month-title {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #495057;
+    padding: .35rem .5rem .2rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+.cal-grid-mini {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.cal-cell-mini {
+    padding: .15rem .1rem;
+    border-right: 1px solid #f1f3f5;
+    border-bottom: 1px solid #f1f3f5;
+    min-height: 26px;
+    position: relative;
+}
+.cal-cell-mini.other-month { background: #fafafa; opacity:.5; }
+.cal-cell-mini.today-cell  { background: #eff6ff; }
+.mini-day-num {
+    font-size: .6rem;
+    font-weight: 600;
+    color: #6c757d;
+    display: block;
+    text-align: center;
+    line-height: 1.4;
+}
+.mini-day-num.today-mini {
+    background: #3b82f6;
+    color: #fff;
+    border-radius: 50%;
+    width: 1.1rem;
+    height: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: .55rem;
+}
+.mini-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    justify-content: center;
+    padding: .05rem 0;
+}
+.mini-dot {
+    width: .45rem;
+    height: .45rem;
+    border-radius: 50%;
+    display: inline-block;
+    text-decoration: none;
+    flex-shrink: 0;
+}
 </style>
 @endpush
 
@@ -251,20 +329,18 @@
 (function () {
     // ── Dati dal PHP ──────────────────────────────────────────────────────────
     const SEDUTE     = @json($sedutePerData);
-    const MACROCICLI = @json($macrocicli);   // [{nome, colore, da, a}]
-    const STATO_COLORE = {
-        bozza:      '#94a3b8',
-        pubblicata: '#3b82f6',
-        completata: '#10b981',
-    };
+    const MACROCICLI = @json($macrocicli);
+    const STAGIONE   = @json($stagioneDates);   // {nome, da, a, url} | null
+    const STATO_COLORE = { bozza:'#94a3b8', pubblicata:'#3b82f6', completata:'#10b981' };
     const GIORNI_SHORT = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
-    const MESI = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
-                  'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+    const MESI_LONG  = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
+                        'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+    const MESI_SHORT = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
 
-    let view      = 'month';   // 'month' | 'week'
-    let curYear   = new Date().getFullYear();
-    let curMonth  = new Date().getMonth();  // 0-based
-    let curWeek   = weekStart(new Date());  // Monday of current week
+    let view     = 'month';
+    let curYear  = new Date().getFullYear();
+    let curMonth = new Date().getMonth();
+    let curWeek  = weekStart(new Date());
 
     const container = document.getElementById('calendar');
     const titleEl   = document.getElementById('calTitle');
@@ -275,25 +351,29 @@
     function isToday(d) { return dateKey(d) === dateKey(new Date()); }
 
     function weekStart(d) {
-        const day = d.getDay(); // 0=sun
-        const diff = (day === 0 ? -6 : 1 - day); // Monday
+        const day = d.getDay();
+        const diff = (day === 0 ? -6 : 1 - day);
         const m = new Date(d);
         m.setDate(m.getDate() + diff);
         m.setHours(0,0,0,0);
         return m;
     }
 
-    function eventChip(s) {
+    function eventChip(s, compact) {
+        if (compact) {
+            // Vista anno/stagione: solo pallino colorato
+            return `<a href="${s.url}" class="mini-dot"
+                       style="background:${STATO_COLORE[s.stato]||'#64748b'}"
+                       title="${s.titolo}"></a>`;
+        }
         return `<a href="${s.url}" class="cal-event"
-                   style="background:${STATO_COLORE[s.stato] || '#64748b'}"
+                   style="background:${STATO_COLORE[s.stato]||'#64748b'}"
                    title="${s.titolo} (${s.stato})">${s.titolo}</a>`;
     }
 
-    /** Restituisce il colore (con alpha) del macrociclo che copre `dateKey`, null se nessuno */
     function macroBgColor(key) {
         for (const m of MACROCICLI) {
             if (key >= m.da && key <= m.a) {
-                // Converte hex in rgba con opacity 0.12
                 const r = parseInt(m.colore.slice(1,3),16);
                 const g = parseInt(m.colore.slice(3,5),16);
                 const b = parseInt(m.colore.slice(5,7),16);
@@ -303,7 +383,6 @@
         return null;
     }
 
-    /** Restituisce il colore del bordo superiore del macrociclo (accent strip) */
     function macroBorderColor(key) {
         for (const m of MACROCICLI) {
             if (key >= m.da && key <= m.a) return m.colore;
@@ -311,59 +390,10 @@
         return null;
     }
 
-    // ── Render mese ──────────────────────────────────────────────────────────
+    // ── Render mese (pieno) ──────────────────────────────────────────────────
     function renderMonth() {
-        titleEl.textContent = `${MESI[curMonth]} ${curYear}`;
-
-        const firstDay = new Date(curYear, curMonth, 1);
-        const lastDay  = new Date(curYear, curMonth + 1, 0);
-
-        // Lunedì della settimana del primo giorno
-        let start = new Date(firstDay);
-        const fd  = firstDay.getDay();
-        start.setDate(start.getDate() - (fd === 0 ? 6 : fd - 1));
-
-        let html = '<div class="cal-grid">';
-        // Header giorni
-        GIORNI_SHORT.forEach(g => html += `<div class="cal-header-cell">${g}</div>`);
-
-        let day = new Date(start);
-        while (day <= lastDay || day.getDay() !== 1) {
-            const key   = dateKey(day);
-            const oth   = day.getMonth() !== curMonth;
-            const tod   = isToday(day);
-            const evts  = SEDUTE[key] || [];
-            const bgCol = !oth ? macroBgColor(key) : null;
-            const brCol = !oth ? macroBorderColor(key) : null;
-            const inlineStyle = bgCol
-                ? `style="background:${bgCol};${brCol ? `border-top:2px solid ${brCol};` : ''}"`
-                : '';
-
-            html += `<div class="cal-cell ${oth ? 'other-month' : ''} ${tod ? 'today-cell' : ''}" ${inlineStyle}>`;
-            html += `<div class="cal-day-num">`;
-            if (tod) {
-                html += `<span class="today-badge">${day.getDate()}</span>`;
-            } else {
-                html += `<span>${day.getDate()}</span>`;
-            }
-            if (evts.length > 0) html += `<span style="font-size:.6rem;color:#94a3b8">${evts.length > 1 ? evts.length + '×' : ''}</span>`;
-            html += '</div>';
-
-            // Max 3 eventi visibili, poi "+N"
-            const visible = evts.slice(0, 3);
-            visible.forEach(s => html += eventChip(s));
-            if (evts.length > 3) {
-                html += `<span style="font-size:.65rem;color:#6c757d">+${evts.length - 3} altri</span>`;
-            }
-
-            html += '</div>';
-            day.setDate(day.getDate() + 1);
-
-            // Evita loop infinito se il mese finisce di domenica
-            if (day > lastDay && day.getDay() === 1) break;
-        }
-        html += '</div>';
-        container.innerHTML = html;
+        titleEl.textContent = `${MESI_LONG[curMonth]} ${curYear}`;
+        container.innerHTML = buildMonthGrid(curYear, curMonth, false);
     }
 
     // ── Render settimana ─────────────────────────────────────────────────────
@@ -371,7 +401,6 @@
         const monday = new Date(curWeek);
         const sunday = new Date(monday);
         sunday.setDate(sunday.getDate() + 6);
-
         const fmt = d => `${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
         titleEl.textContent = `${fmt(monday)} – ${fmt(sunday)} ${sunday.getFullYear()}`;
 
@@ -384,46 +413,144 @@
             const tod   = isToday(day);
             const bgCol = macroBgColor(key);
             const brCol = macroBorderColor(key);
-            const inlineStyle = bgCol
-                ? `style="background:${bgCol};${brCol ? `border-top:3px solid ${brCol};` : ''}"`
-                : '';
+            const sty   = bgCol ? `style="background:${bgCol};${brCol?`border-top:3px solid ${brCol};`:''}"` : '';
 
-            html += `<div class="cal-week-cell ${tod ? 'today-cell' : ''}" ${inlineStyle}>`;
+            html += `<div class="cal-week-cell ${tod?'today-cell':''}" ${sty}>`;
             html += `<div class="week-day-header">${GIORNI_SHORT[day.getDay()]}</div>`;
             html += `<div class="week-day-num">${day.getDate()}</div>`;
-            evts.forEach(s => html += `
-                <a href="${s.url}" class="cal-event d-block mb-1"
-                   style="background:${STATO_COLORE[s.stato]||'#64748b'};white-space:normal;font-size:.72rem;line-height:1.3">
-                    ${s.titolo}
-                </a>`);
+            evts.forEach(s => html += `<a href="${s.url}" class="cal-event d-block mb-1"
+                style="background:${STATO_COLORE[s.stato]||'#64748b'};white-space:normal;font-size:.72rem;line-height:1.3">${s.titolo}</a>`);
             html += '</div>';
         }
         html += '</div>';
         container.innerHTML = html;
     }
 
+    // ── Render anno ──────────────────────────────────────────────────────────
+    function renderYear() {
+        titleEl.textContent = `Anno ${curYear}`;
+        let html = '<div class="mini-year-grid p-3">';
+        for (let m = 0; m < 12; m++) {
+            html += `<div class="mini-month-wrap">`;
+            html += `<div class="mini-month-title">${MESI_SHORT[m]}</div>`;
+            html += buildMonthGrid(curYear, m, true);
+            html += '</div>';
+        }
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    // ── Render stagione ──────────────────────────────────────────────────────
+    function renderSeason() {
+        if (!STAGIONE) return;
+        const da = new Date(STAGIONE.da);
+        const a  = new Date(STAGIONE.a);
+        titleEl.innerHTML = `<a href="${STAGIONE.url}" class="text-decoration-none">${STAGIONE.nome}</a>
+            <small class="text-muted ms-2" style="font-size:.75rem">
+              ${pad(da.getDate())}/${pad(da.getMonth()+1)}/${da.getFullYear()} –
+              ${pad(a.getDate())}/${pad(a.getMonth()+1)}/${a.getFullYear()}
+            </small>`;
+
+        // Mesi che compongono la stagione
+        const months = [];
+        let cur = new Date(da.getFullYear(), da.getMonth(), 1);
+        while (cur <= a) {
+            months.push([cur.getFullYear(), cur.getMonth()]);
+            cur.setMonth(cur.getMonth() + 1);
+        }
+
+        let html = '<div class="mini-year-grid p-3">';
+        months.forEach(([y, m]) => {
+            html += `<div class="mini-month-wrap">`;
+            html += `<div class="mini-month-title">${MESI_SHORT[m]} ${y}</div>`;
+            html += buildMonthGrid(y, m, true);
+            html += '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    // ── Builder griglia mese (riusabile in tutte le viste) ───────────────────
+    // compact=true → celle piccole con solo pallini, compact=false → celle piene con chip
+    function buildMonthGrid(year, month, compact) {
+        const firstDay = new Date(year, month, 1);
+        const lastDay  = new Date(year, month + 1, 0);
+        const fd       = firstDay.getDay();
+
+        let start = new Date(firstDay);
+        start.setDate(start.getDate() - (fd === 0 ? 6 : fd - 1));
+
+        const gridClass = compact ? 'cal-grid cal-grid-mini' : 'cal-grid';
+        let html = `<div class="${gridClass}">`;
+
+        if (!compact) {
+            GIORNI_SHORT.forEach(g => html += `<div class="cal-header-cell">${g}</div>`);
+        } else {
+            GIORNI_SHORT.forEach(g => html += `<div class="cal-header-cell" style="padding:.1rem;font-size:.55rem">${g}</div>`);
+        }
+
+        let day = new Date(start);
+        while (day <= lastDay || day.getDay() !== 1) {
+            const key   = dateKey(day);
+            const oth   = day.getMonth() !== month;
+            const tod   = isToday(day);
+            const evts  = SEDUTE[key] || [];
+            const bgCol = !oth ? macroBgColor(key) : null;
+            const brCol = !oth ? macroBorderColor(key) : null;
+
+            const sty = bgCol
+                ? `style="background:${bgCol};${brCol?`border-top:${compact?'2':'2'}px solid ${brCol};`:''}"` : '';
+
+            if (compact) {
+                html += `<div class="cal-cell-mini ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
+                html += `<span class="mini-day-num ${tod?'today-mini':''}">${day.getDate()}</span>`;
+                if (evts.length > 0) {
+                    html += '<div class="mini-dots">';
+                    evts.slice(0, 3).forEach(s => html += eventChip(s, true));
+                    html += '</div>';
+                }
+                html += '</div>';
+            } else {
+                html += `<div class="cal-cell ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
+                html += '<div class="cal-day-num">';
+                if (tod) html += `<span class="today-badge">${day.getDate()}</span>`;
+                else     html += `<span>${day.getDate()}</span>`;
+                if (evts.length > 1) html += `<span style="font-size:.6rem;color:#94a3b8">${evts.length}×</span>`;
+                html += '</div>';
+                evts.slice(0, 3).forEach(s => html += eventChip(s, false));
+                if (evts.length > 3) html += `<span style="font-size:.65rem;color:#6c757d">+${evts.length-3} altri</span>`;
+                html += '</div>';
+            }
+
+            day.setDate(day.getDate() + 1);
+            if (day > lastDay && day.getDay() === 1) break;
+        }
+        html += '</div>';
+        return html;
+    }
+
+    // ── Render dispatcher ─────────────────────────────────────────────────────
     function render() {
-        if (view === 'month') renderMonth();
-        else                  renderWeek();
+        if      (view === 'month')  renderMonth();
+        else if (view === 'week')   renderWeek();
+        else if (view === 'year')   renderYear();
+        else if (view === 'season') renderSeason();
     }
 
     // ── Navigazione ──────────────────────────────────────────────────────────
     document.getElementById('btnPrev').onclick = () => {
-        if (view === 'month') {
-            curMonth--; if (curMonth < 0) { curMonth = 11; curYear--; }
-        } else {
-            curWeek.setDate(curWeek.getDate() - 7);
-        }
-        render();
+        if (view === 'month')       { curMonth--; if (curMonth < 0) { curMonth = 11; curYear--; } }
+        else if (view === 'week')   { curWeek.setDate(curWeek.getDate() - 7); }
+        else if (view === 'year')   { curYear--; }
+        // season: nav non ha senso
+        if (view !== 'season') render();
     };
 
     document.getElementById('btnNext').onclick = () => {
-        if (view === 'month') {
-            curMonth++; if (curMonth > 11) { curMonth = 0; curYear++; }
-        } else {
-            curWeek.setDate(curWeek.getDate() + 7);
-        }
-        render();
+        if (view === 'month')       { curMonth++; if (curMonth > 11) { curMonth = 0; curYear++; } }
+        else if (view === 'week')   { curWeek.setDate(curWeek.getDate() + 7); }
+        else if (view === 'year')   { curYear++; }
+        if (view !== 'season') render();
     };
 
     document.getElementById('btnToday').onclick = () => {
@@ -431,22 +558,24 @@
         curYear  = now.getFullYear();
         curMonth = now.getMonth();
         curWeek  = weekStart(now);
+        if (view === 'season') { view = 'month'; setActive('btnMonth'); }
         render();
     };
 
-    document.getElementById('btnMonth').onclick = () => {
-        view = 'month';
-        document.getElementById('btnMonth').className = 'btn btn-primary';
-        document.getElementById('btnWeek').className  = 'btn btn-outline-primary';
-        render();
-    };
+    function setActive(id) {
+        ['btnMonth','btnWeek','btnYear','btnSeason'].forEach(b => {
+            const el = document.getElementById(b);
+            if (el) el.className = (b === id) ? 'btn btn-primary' : 'btn btn-outline-primary';
+        });
+    }
 
-    document.getElementById('btnWeek').onclick = () => {
-        view = 'week';
-        document.getElementById('btnWeek').className  = 'btn btn-primary';
-        document.getElementById('btnMonth').className = 'btn btn-outline-primary';
-        render();
-    };
+    document.getElementById('btnMonth').onclick  = () => { view = 'month';  setActive('btnMonth');  render(); };
+    document.getElementById('btnWeek').onclick   = () => { view = 'week';   setActive('btnWeek');   render(); };
+    document.getElementById('btnYear').onclick   = () => { view = 'year';   setActive('btnYear');   render(); };
+    const btnSeason = document.getElementById('btnSeason');
+    if (btnSeason && !btnSeason.disabled) {
+        btnSeason.onclick = () => { view = 'season'; setActive('btnSeason'); render(); };
+    }
 
     // ── Init ─────────────────────────────────────────────────────────────────
     render();

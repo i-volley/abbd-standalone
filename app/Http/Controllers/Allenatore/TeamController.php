@@ -115,7 +115,17 @@ class TeamController extends Controller
         // Prossime 3 sedute (lista rapida)
         $prossime = $sedute->filter(fn($s) => $s->data->gte(today()))->take(3);
 
-        return view('allenatore.teams.hub', compact('team', 'sedutePerData', 'macrocicli', 'prossime'));
+        // Stagione attiva (o più recente) — per la vista stagione nel calendario
+        $stagione = \App\Models\Stagione::where('team_id', $team->id)
+            ->orderByDesc('attiva')->orderByDesc('data_inizio')->first();
+        $stagioneDates = $stagione ? [
+            'nome' => $stagione->nome,
+            'da'   => $stagione->data_inizio->format('Y-m-d'),
+            'a'    => $stagione->data_fine->format('Y-m-d'),
+            'url'  => route('allenatore.stagioni.show', $stagione),
+        ] : null;
+
+        return view('allenatore.teams.hub', compact('team', 'sedutePerData', 'macrocicli', 'prossime', 'stagioneDates'));
     }
 
     public function aggiungiAtleta(Request $request, Team $team)
