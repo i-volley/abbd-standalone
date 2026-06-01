@@ -10,6 +10,13 @@
 </head>
 <body>
 
+{{-- ── TOPBAR MOBILE (visibile solo < 768px via CSS) ──────────────────────── --}}
+<div class="mobile-topbar">
+    <button class="hamburger" id="abbd-sidebar-toggle" aria-label="Apri menu">☰</button>
+    <a class="brand" href="{{ route('allenatore.dashboard') }}">⚡ ABBD</a>
+</div>
+<div class="sidebar-overlay" id="abbd-sidebar-overlay"></div>
+
 @php
     // Team attivo in sessione (letto una volta per il layout intero)
     $currentTeam = session('current_team_id')
@@ -163,6 +170,28 @@
  * window 'load' garantisce che bootstrap sia disponibile prima di usarlo.
  */
 window.addEventListener('load', function () {
+
+    /* ── Sidebar mobile: toggle hamburger + overlay ──────────────────────── */
+    (function () {
+        var sidebar = document.querySelector('.sidebar');
+        var toggle  = document.getElementById('abbd-sidebar-toggle');
+        var overlay = document.getElementById('abbd-sidebar-overlay');
+        if (!sidebar || !toggle || !overlay) return;
+
+        function open()  { sidebar.classList.add('open');  overlay.classList.add('show'); }
+        function close() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+
+        toggle.addEventListener('click', function () {
+            sidebar.classList.contains('open') ? close() : open();
+        });
+        overlay.addEventListener('click', close);
+
+        // Chiudi al click su un link del menu (navigazione)
+        sidebar.querySelectorAll('.nav-link').forEach(function (link) {
+            link.addEventListener('click', close);
+        });
+    })();
+
     var _pendingForm   = null;
     var _countdownTimer = null;
     var modalEl  = document.getElementById('abbd-confirm-modal');
