@@ -21,7 +21,7 @@
             <td>
                 <a href="{{ route('allenatore.gesti-tecnici.edit', $g) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
                 <form action="{{ route('allenatore.gesti-tecnici.destroy', $g) }}" method="POST" class="d-inline"
-                      onsubmit="return confirm('Eliminare?')">
+                      data-confirm="Eliminare?">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-outline-danger">Elimina</button>
                 </form>

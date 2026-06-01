@@ -61,7 +61,7 @@
 
 <hr class="mt-4">
 <form action="{{ route('allenatore.unita-didattiche.destroy', $unitaDidattica) }}" method="POST"
-      onsubmit="return confirm('Eliminare questa unità? Le sedute collegate diventeranno indipendenti.')">
+      data-confirm="Eliminare questa unità? Le sedute collegate diventeranno indipendenti.">
     @csrf @method('DELETE')
     <button type="submit" class="btn btn-sm btn-outline-danger">Elimina unità</button>
 </form>

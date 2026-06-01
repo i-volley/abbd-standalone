@@ -18,7 +18,7 @@
         <div class="d-flex gap-2">
             <a href="{{ route('allenatore.stagioni.show', $s) }}" class="btn btn-sm btn-outline-primary">Apri</a>
             <form action="{{ route('allenatore.stagioni.destroy', $s) }}" method="POST"
-                  onsubmit="return confirm('Eliminare la stagione «{{ addslashes($s->nome) }}»? Verranno eliminati anche macrocicli e microcicli collegati.')">
+                  data-confirm="Eliminare la stagione «{{ addslashes($s->nome) }}»? Verranno eliminati anche macrocicli e microcicli collegati.">
                 @csrf @method('DELETE')
                 <button class="btn btn-sm btn-outline-danger">Elimina</button>
             </form>

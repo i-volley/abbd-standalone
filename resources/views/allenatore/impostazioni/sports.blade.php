@@ -68,7 +68,7 @@
 
                     {{-- Elimina categoria --}}
                     <form action="{{ route('allenatore.categorie-gesto.destroy', $cat) }}" method="POST"
-                          onsubmit="return confirm('Eliminare la categoria \'{{ addslashes($cat->nome) }}\'? I gesti associati perderanno la categoria.')">
+                          data-confirm="Eliminare la categoria {{ addslashes($cat->nome) }}? I gesti associati perderanno la categoria.">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-outline-danger">×</button>
                     </form>
@@ -103,7 +103,7 @@
                     <a href="{{ route('allenatore.gesti-tecnici.edit', $g) }}"
                        class="btn btn-sm btn-outline-secondary">Modifica</a>
                     <form action="{{ route('allenatore.gesti-tecnici.destroy', $g) }}" method="POST"
-                          onsubmit="return confirm('Eliminare {{ addslashes($g->nome) }}?')">
+                          data-confirm="Eliminare {{ addslashes($g->nome) }}?">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-outline-danger">×</button>
                     </form>
@@ -161,7 +161,7 @@
                         <summary class="text-danger small" style="cursor:pointer">Zona pericolosa</summary>
                         <div class="mt-2">
                             <form action="{{ route('allenatore.sports.destroy', $sport) }}" method="POST"
-                                  onsubmit="return confirm('ATTENZIONE: eliminare {{ addslashes($sport->nome) }} eliminerà anche tutti i gesti tecnici e le categorie associate. Continuare?')">
+                                  data-confirm="ATTENZIONE: eliminare {{ addslashes($sport->nome) }}? Verranno eliminati anche tutti i gesti tecnici e le categorie associate.">
                                 @csrf @method('DELETE')
                                 <button class="btn btn-sm btn-danger w-100">Elimina sport {{ $sport->nome }}</button>
                             </form>

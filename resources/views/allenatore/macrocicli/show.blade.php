@@ -27,7 +27,7 @@
                 <span class="badge bg-secondary">{{ $m->intensita }}</span>
             </small>
         </div>
-        <form action="{{ route('allenatore.microcicli.destroy', $m) }}" method="POST" onsubmit="return confirm('Eliminare?')">
+        <form action="{{ route('allenatore.microcicli.destroy', $m) }}" method="POST" data-confirm="Eliminare?">
             @csrf @method('DELETE')
             <button class="btn btn-sm btn-outline-danger">Elimina</button>
         </form>

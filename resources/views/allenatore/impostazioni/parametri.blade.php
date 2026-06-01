@@ -82,7 +82,7 @@
                         <span class="badge bg-light text-muted border" title="Voce FIPAV di sistema">sistema</span>
                     @else
                         <form action="{{ route('allenatore.parametri.destroy', $p) }}" method="POST"
-                              onsubmit="return confirm('Eliminare la voce \'{{ addslashes($p->etichetta) }}\'? Gli esercizi che la usano manterranno il valore ma non sarà più selezionabile.')">
+                              data-confirm="Eliminare la voce {{ addslashes($p->etichetta) }}? Gli esercizi che la usano manterranno il valore ma non sarà più selezionabile.">
                             @csrf @method('DELETE')
                             <button class="btn btn-sm btn-outline-danger">×</button>
                         </form>

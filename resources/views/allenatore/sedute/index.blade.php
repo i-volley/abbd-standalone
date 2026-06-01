@@ -42,7 +42,7 @@
                 <td>
                     <a href="{{ route('allenatore.sedute.show', $s) }}" class="btn btn-sm btn-outline-primary">Apri</a>
                     <form action="{{ route('allenatore.sedute.destroy', $s) }}" method="POST" class="d-inline"
-                          onsubmit="return confirm('Eliminare la seduta?')">
+                          data-confirm="Eliminare la seduta?">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-outline-danger">Elimina</button>
                     </form>

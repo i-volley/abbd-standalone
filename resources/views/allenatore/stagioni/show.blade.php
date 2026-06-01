@@ -267,7 +267,7 @@
         <div class="d-flex gap-2">
             <a href="{{ route('allenatore.macrocicli.show', $m) }}" class="btn btn-sm btn-outline-primary">Apri</a>
             <form action="{{ route('allenatore.macrocicli.destroy', $m) }}" method="POST"
-                  onsubmit="return confirm('Eliminare {{ addslashes($m->nome) }}?')">
+                  data-confirm="Eliminare {{ addslashes($m->nome) }}?">
                 @csrf @method('DELETE')
                 <button class="btn btn-sm btn-outline-danger">×</button>
             </form>

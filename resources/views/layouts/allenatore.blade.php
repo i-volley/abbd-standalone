@@ -127,6 +127,94 @@
     @yield('content')
 </main>
 
+{{-- ── MODAL DOPPIA CONFERMA (globale) ─────────────────────────────────────── --}}
+<div class="modal fade" id="abbd-confirm-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title d-flex align-items-center gap-2">
+                    <span style="font-size:1.4rem">⚠️</span>
+                    <span>Conferma eliminazione</span>
+                </h5>
+            </div>
+            <div class="modal-body pt-2 pb-1">
+                <p id="abbd-confirm-msg" class="mb-2" style="font-size:.95rem"></p>
+                <p class="text-danger small mb-0" style="font-size:.78rem">
+                    Questa operazione <strong>non può essere annullata</strong>.
+                </p>
+            </div>
+            <div class="modal-footer border-0 gap-2">
+                <button type="button" class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">Annulla</button>
+                <button type="button" id="abbd-confirm-btn" class="btn btn-danger" disabled>
+                    <span id="abbd-confirm-countdown" class="me-1" style="font-size:.8rem"></span>
+                    Elimina definitivamente
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @stack('scripts')
+<script>
+(function () {
+    let _pendingForm = null;
+    let _countdownTimer = null;
+
+    const modal      = new bootstrap.Modal(document.getElementById('abbd-confirm-modal'));
+    const msgEl      = document.getElementById('abbd-confirm-msg');
+    const confirmBtn = document.getElementById('abbd-confirm-btn');
+    const countdownEl= document.getElementById('abbd-confirm-countdown');
+
+    // Intercetta tutti i submit su form con data-confirm
+    document.addEventListener('submit', function (e) {
+        const form = e.target.closest('form[data-confirm]');
+        if (!form) return;
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        _pendingForm = form;
+        msgEl.textContent = form.dataset.confirm;
+
+        // Reset bottone: disabilitato per 2 secondi (evita doppio click accidentale)
+        confirmBtn.disabled = true;
+        let secs = 2;
+        countdownEl.textContent = `(${secs}s)`;
+        clearInterval(_countdownTimer);
+        _countdownTimer = setInterval(function () {
+            secs--;
+            if (secs <= 0) {
+                clearInterval(_countdownTimer);
+                confirmBtn.disabled = false;
+                countdownEl.textContent = '';
+            } else {
+                countdownEl.textContent = `(${secs}s)`;
+            }
+        }, 1000);
+
+        modal.show();
+    });
+
+    // Conferma: sottomette il form originale
+    confirmBtn.addEventListener('click', function () {
+        if (!_pendingForm) return;
+        const form = _pendingForm;
+        _pendingForm = null;
+        modal.hide();
+        // Rimuove l'attributo per evitare loop infinito
+        delete form.dataset.confirm;
+        form.submit();
+    });
+
+    // Reset su chiusura modale
+    document.getElementById('abbd-confirm-modal').addEventListener('hidden.bs.modal', function () {
+        clearInterval(_countdownTimer);
+        _pendingForm = null;
+        confirmBtn.disabled = true;
+        countdownEl.textContent = '';
+    });
+})();
+</script>
 </body>
 </html>

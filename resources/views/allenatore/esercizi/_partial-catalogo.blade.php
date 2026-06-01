@@ -47,7 +47,7 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centr
             <div class="d-flex gap-1 flex-shrink-0">
                 <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
                 <form action="{{ route('allenatore.esercizi.destroy', $e) }}" method="POST" class="d-inline"
-                      onsubmit="return confirm('Eliminare {{ addslashes($e->nome) }}?')">
+                      data-confirm="Eliminare {{ addslashes($e->nome) }}?">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-outline-danger">Elimina</button>
                 </form>

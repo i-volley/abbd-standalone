@@ -40,7 +40,7 @@
                     <a href="{{ route('allenatore.teams.show', $team) }}"
                        class="btn btn-sm btn-outline-secondary flex-grow-1">Gestisci atleti</a>
                     <form action="{{ route('allenatore.teams.destroy', $team) }}" method="POST"
-                          onsubmit="return confirm('Eliminare il team {{ addslashes($team->nome) }}?')">
+                          data-confirm="Eliminare il team {{ addslashes($team->nome) }}?">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-outline-danger">×</button>
                     </form>
