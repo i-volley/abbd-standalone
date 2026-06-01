@@ -37,6 +37,8 @@
                 </a>
 
                 <div class="d-flex gap-2">
+                    <a href="{{ route('allenatore.teams.edit', $team) }}"
+                       class="btn btn-sm btn-outline-secondary">Modifica</a>
                     <a href="{{ route('allenatore.teams.show', $team) }}"
                        class="btn btn-sm btn-outline-secondary flex-grow-1">Gestisci atleti</a>
                     <form action="{{ route('allenatore.teams.destroy', $team) }}" method="POST"

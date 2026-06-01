@@ -8,9 +8,10 @@
         <h2 class="mb-0">{{ $team->nome }}</h2>
         <small class="text-muted">{{ $team->sport->nome }} · Stagione {{ $team->stagione }}</small>
     </div>
-    <a href="{{ route('allenatore.teams.show', $team) }}" class="btn btn-sm btn-outline-secondary">
-        Gestisci atleti
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('allenatore.teams.edit', $team) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+        <a href="{{ route('allenatore.teams.show', $team) }}" class="btn btn-sm btn-outline-secondary">Gestisci atleti</a>
+    </div>
 </div>
 
 {{-- ── ACCESSO RAPIDO ──────────────────────────────────────────────────────── --}}

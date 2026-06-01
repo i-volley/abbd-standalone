@@ -30,6 +30,7 @@ class MicrocicloController extends Controller
 
     public function edit(Microciclo $microciclo)
     {
+        $microciclo->load('macrociclo');
         return view('allenatore.microcicli.edit', compact('microciclo'));
     }
 

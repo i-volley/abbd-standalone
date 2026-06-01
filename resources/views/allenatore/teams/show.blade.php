@@ -2,8 +2,13 @@
 @section('title', $team->nome)
 
 @section('content')
-<h2 class="mb-1">{{ $team->nome }}</h2>
-<p class="text-muted">{{ $team->sport->nome }} · {{ $team->stagione }}</p>
+<div class="d-flex justify-content-between align-items-start mb-1">
+    <div>
+        <h2 class="mb-0">{{ $team->nome }}</h2>
+        <p class="text-muted mb-0">{{ $team->sport->nome }} · {{ $team->stagione }}</p>
+    </div>
+    <a href="{{ route('allenatore.teams.edit', $team) }}" class="btn btn-sm btn-outline-secondary">Modifica team</a>
+</div>
 
 <div class="row g-4 mt-2">
     <div class="col-md-6">

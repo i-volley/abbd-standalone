@@ -16,6 +16,7 @@
             @if($s->attiva)<span class="badge bg-success ms-2">Attiva</span>@endif
         </div>
         <div class="d-flex gap-2">
+            <a href="{{ route('allenatore.stagioni.edit', $s) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
             <a href="{{ route('allenatore.stagioni.show', $s) }}" class="btn btn-sm btn-outline-primary">Apri</a>
             <form action="{{ route('allenatore.stagioni.destroy', $s) }}" method="POST"
                   data-confirm="Eliminare la stagione «{{ addslashes($s->nome) }}»? Verranno eliminati anche macrocicli e microcicli collegati.">

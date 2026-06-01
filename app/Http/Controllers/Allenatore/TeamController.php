@@ -53,6 +53,7 @@ class TeamController extends Controller
         $data = $request->validate([
             'nome'     => 'required|string|max:255',
             'stagione' => 'required|string|max:20',
+            'sport_id' => 'nullable|exists:sports,id',
         ]);
 
         $team->update($data);

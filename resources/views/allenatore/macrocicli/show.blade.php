@@ -27,10 +27,13 @@
                 <span class="badge bg-secondary">{{ $m->intensita }}</span>
             </small>
         </div>
-        <form action="{{ route('allenatore.microcicli.destroy', $m) }}" method="POST" data-confirm="Eliminare?">
-            @csrf @method('DELETE')
-            <button class="btn btn-sm btn-outline-danger">Elimina</button>
-        </form>
+        <div class="d-flex gap-2">
+            <a href="{{ route('allenatore.microcicli.edit', $m) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+            <form action="{{ route('allenatore.microcicli.destroy', $m) }}" method="POST" data-confirm="Eliminare?">
+                @csrf @method('DELETE')
+                <button class="btn btn-sm btn-outline-danger">Elimina</button>
+            </form>
+        </div>
     </div>
 </div>
 @empty

@@ -12,9 +12,10 @@
             · {{ $stagione->data_inizio->diffInDays($stagione->data_fine) }} giorni
         </small>
     </div>
-    <a href="{{ route('allenatore.stagioni.macrocicli.create', $stagione) }}" class="btn btn-primary">
-        + Macrociclo
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('allenatore.stagioni.edit', $stagione) }}" class="btn btn-outline-secondary">Modifica stagione</a>
+        <a href="{{ route('allenatore.stagioni.macrocicli.create', $stagione) }}" class="btn btn-primary">+ Macrociclo</a>
+    </div>
 </div>
 
 @php
