@@ -1,22 +1,39 @@
 #!/bin/sh
 
-# Fallback APP_KEY se Railway non ha impostato la variabile
+# ── APP KEY fallback ─────────────────────────────────────────────────────────
 if [ -z "$APP_KEY" ]; then
     export APP_KEY="base64:72/KL/qkEeS+KQE31iqfLqsq0e6bNqGVFaU39Rywxkc="
 fi
 
-# Garantisce che il file SQLite esista (necessario quando /app/database è un
-# volume Railway montato vuoto al primo avvio — abilita la persistenza dati)
-mkdir -p /app/database
-[ -f /app/database/database.sqlite ] || touch /app/database/database.sqlite
+# ── DATABASE: Railway MySQL → variabili Laravel ──────────────────────────────
+# Railway inietta automaticamente MYSQLHOST, MYSQLPORT, MYSQLDATABASE,
+# MYSQLUSER, MYSQLPASSWORD quando colleghi un servizio MySQL al progetto.
+if [ -n "$MYSQLHOST" ]; then
+    export DB_CONNECTION=mysql
+    export DB_HOST=$MYSQLHOST
+    export DB_PORT=${MYSQLPORT:-3306}
+    export DB_DATABASE=$MYSQLDATABASE
+    export DB_USERNAME=$MYSQLUSER
+    export DB_PASSWORD=$MYSQLPASSWORD
+    echo "DB: MySQL @ $DB_HOST:$DB_PORT/$DB_DATABASE"
+else
+    # Fallback SQLite (locale / dev)
+    export DB_CONNECTION=sqlite
+    mkdir -p /app/database
+    [ -f /app/database/database.sqlite ] || touch /app/database/database.sqlite
+    echo "DB: SQLite (fallback — nessun servizio MySQL rilevato)"
+fi
 
-# Laravel legge direttamente dalle env vars del container — nessun .env file necessario
+# ── Laravel cache ────────────────────────────────────────────────────────────
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
-php artisan migrate --force && echo "Migrate OK" || echo "Migrate warning"
-php artisan db:seed --force && echo "Seed OK" || echo "Seed warning"
+
+# ── Migrate + Seed (idempotenti, sicuri su ogni deploy) ──────────────────────
+php artisan migrate --force && echo "Migrate OK" || echo "Migrate WARNING"
+php artisan db:seed --force && echo "Seed OK"    || echo "Seed WARNING"
+
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
