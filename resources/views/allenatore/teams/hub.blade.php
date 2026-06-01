@@ -314,12 +314,38 @@
     padding: .05rem 0;
 }
 .mini-dot {
-    width: .45rem;
-    height: .45rem;
+    width: .55rem;
+    height: .55rem;
     border-radius: 50%;
     display: inline-block;
     text-decoration: none;
     flex-shrink: 0;
+    transition: transform .1s;
+}
+.mini-dot:hover { transform: scale(1.4); }
+
+/* Cella intera cliccabile (1 seduta) */
+.cal-cell-mini--link {
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+}
+.cal-cell-mini--link:hover {
+    box-shadow: inset 0 0 0 2px #3b82f6;
+    border-radius: .15rem;
+}
+/* Numero giorno con seduta (1 seduta): leggero underline colorato */
+.mini-day-num--event {
+    text-decoration: underline;
+    text-decoration-color: #3b82f6;
+    text-decoration-thickness: 2px;
+    color: #1d4ed8;
+}
+.mini-dot-more {
+    font-size: .5rem;
+    color: #6c757d;
+    line-height: 1.2;
+    align-self: center;
 }
 </style>
 @endpush
@@ -502,14 +528,27 @@
                 ? `style="background:${bgCol};${brCol?`border-top:${compact?'2':'2'}px solid ${brCol};`:''}"` : '';
 
             if (compact) {
-                html += `<div class="cal-cell-mini ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
-                html += `<span class="mini-day-num ${tod?'today-mini':''}">${day.getDate()}</span>`;
-                if (evts.length > 0) {
+                if (evts.length === 1) {
+                    // Cella intera = link alla seduta
+                    html += `<a href="${evts[0].url}"
+                                class="cal-cell-mini cal-cell-mini--link ${oth?'other-month':''} ${tod?'today-cell':''}"
+                                ${sty}
+                                title="${evts[0].titolo}">`;
+                } else {
+                    html += `<div class="cal-cell-mini ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
+                }
+                const numCls = evts.length === 1
+                    ? `mini-day-num ${tod?'today-mini':''} mini-day-num--event`
+                    : `mini-day-num ${tod?'today-mini':''}`;
+                html += `<span class="${numCls}">${day.getDate()}</span>`;
+                if (evts.length > 1) {
+                    // Più sedute: pallini cliccabili con tooltip
                     html += '<div class="mini-dots">';
-                    evts.slice(0, 3).forEach(s => html += eventChip(s, true));
+                    evts.slice(0, 4).forEach(s => html += eventChip(s, true));
+                    if (evts.length > 4) html += `<span class="mini-dot-more">+${evts.length-4}</span>`;
                     html += '</div>';
                 }
-                html += '</div>';
+                html += evts.length === 1 ? '</a>' : '</div>';
             } else {
                 html += `<div class="cal-cell ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
                 html += '<div class="cal-day-num">';
