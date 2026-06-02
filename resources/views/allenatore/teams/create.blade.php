@@ -20,7 +20,7 @@
         </div>
         <div class="col-12">
             <label class="form-label">Stagione</label>
-            <input type="text" name="stagione" class="form-control" value="{{ old('stagione', '2024-2025') }}" required>
+            <input type="text" name="stagione" class="form-control" value="{{ old('stagione') }}" required>
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Crea team</button>
