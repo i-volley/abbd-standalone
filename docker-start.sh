@@ -35,15 +35,9 @@ php artisan view:cache
 # ── Migrate ──────────────────────────────────────────────────────────────────
 php artisan migrate --force && echo "Migrate OK" || echo "Migrate WARNING"
 
-# ── Seed SOLO al primo avvio (DB vuoto) ──────────────────────────────────────
-# Con MySQL persistente il seed non deve girare ad ogni deploy: cancellerebbe
-# i dati reali inseriti dall'utente. Gira solo se non ci sono ancora utenti.
-HAS_USERS=$(php artisan tinker --execute="echo App\Models\User::count();" 2>/dev/null | tail -1 | tr -d '[:space:]')
-if [ -z "$HAS_USERS" ] || [ "$HAS_USERS" = "0" ]; then
-    echo "Seed: DB vuoto, eseguo seed iniziale..."
-    php artisan db:seed --force && echo "Seed OK" || echo "Seed WARNING"
-else
-    echo "Seed: skip — DB ha già $HAS_USERS utenti, dati preservati"
-fi
+# ── Seed (il DatabaseSeeder decide autonomamente se è primo avvio o no) ───────
+# Se DB ha già utenti → seed parziale (solo lookup: ruoli/sport/parametri).
+# Se DB è vuoto → seed completo con dati demo.
+php artisan db:seed --force && echo "Seed OK" || echo "Seed WARNING"
 
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
