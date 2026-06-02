@@ -15,7 +15,9 @@ class AllenatoreDashboardController extends Controller
     {
         $team = Team::where('allenatore_id', auth()->id())->with('sport')->first();
 
-        $stats = [];
+        $stats          = [];
+        $ultimeFeedback = collect();
+        $rpePerSeduta   = collect();
 
         if ($team) {
             $stats['totale_sedute']   = Seduta::where('team_id', $team->id)->count();
