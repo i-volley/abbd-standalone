@@ -4,6 +4,7 @@ use App\Http\Controllers\Allenatore\AllenatoreDashboardController;
 use App\Http\Controllers\Allenatore\CategoriaGestoController;
 use App\Http\Controllers\Allenatore\EsercizioController;
 use App\Http\Controllers\Allenatore\GestoTecnicoController;
+use App\Http\Controllers\Allenatore\GiornoAllenamentoController;
 use App\Http\Controllers\Allenatore\MacrocicloController;
 use App\Http\Controllers\Allenatore\MicrocicloController;
 use App\Http\Controllers\Allenatore\ParametroEsercizioController;
@@ -52,6 +53,9 @@ Route::prefix('allenatore')->name('allenatore.')
     // Pianificazione
     Route::resource('stagioni', StagioneController::class)
         ->parameters(['stagioni' => 'stagione']);
+    Route::post('stagioni/{stagione}/giorni', [GiornoAllenamentoController::class, 'store'])->name('stagioni.giorni.store');
+    Route::delete('stagioni/{stagione}/giorni/{giorno}', [GiornoAllenamentoController::class, 'destroy'])->name('stagioni.giorni.destroy');
+    Route::post('stagioni/{stagione}/genera-sedute', [GiornoAllenamentoController::class, 'genera'])->name('stagioni.genera-sedute');
     Route::resource('stagioni.macrocicli', MacrocicloController::class)->shallow()
         ->parameters(['stagioni' => 'stagione', 'macrocicli' => 'macrociclo']);
     Route::resource('macrocicli.microcicli', MicrocicloController::class)->shallow()

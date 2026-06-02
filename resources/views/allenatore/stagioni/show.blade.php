@@ -245,6 +245,145 @@
 @endif{{-- macrocicli non vuoti --}}
 
 
+{{-- ── GIORNI DI ALLENAMENTO PROGRAMMATI ───────────────────────────────────── --}}
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center bg-transparent py-2">
+        <span class="fw-semibold">📅 Giorni di allenamento programmati</span>
+        <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#form-aggiungi-giorno">
+            + Aggiungi giorno
+        </button>
+    </div>
+
+    {{-- Form aggiungi giorno (collassabile) --}}
+    <div class="collapse" id="form-aggiungi-giorno">
+        <div class="card-body border-bottom bg-light">
+            <form action="{{ route('allenatore.stagioni.giorni.store', $stagione) }}" method="POST">
+                @csrf
+                <div class="row g-2 align-items-end">
+                    <div class="col-sm-3">
+                        <label class="form-label small mb-1">Giorno *</label>
+                        <select name="giorno_settimana" class="form-select form-select-sm" required>
+                            @foreach(\App\Models\GiornoAllenamento::labelGiorni() as $val => $label)
+                                <option value="{{ $val }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="form-label small mb-1">Inizio *</label>
+                        <input type="time" name="ora_inizio" class="form-control form-control-sm" required value="18:00">
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="form-label small mb-1">Fine</label>
+                        <input type="time" name="ora_fine" class="form-control form-control-sm" value="20:00">
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="form-label small mb-1">Note</label>
+                        <input type="text" name="note" class="form-control form-control-sm" placeholder="es. Palestra A" maxlength="255">
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-sm btn-success w-100">Salva</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Lista giorni configurati --}}
+    <div class="card-body py-2">
+        @forelse($stagione->giorniAllenamento as $g)
+        <div class="d-flex align-items-center justify-content-between py-1 border-bottom">
+            <div>
+                <span class="fw-semibold me-2">{{ $g->label_giorno }}</span>
+                <span class="badge bg-primary rounded-pill me-1">{{ $g->orario }}</span>
+                @if($g->note)
+                    <small class="text-muted">{{ $g->note }}</small>
+                @endif
+            </div>
+            <form action="{{ route('allenatore.stagioni.giorni.destroy', [$stagione, $g]) }}" method="POST"
+                  data-confirm="Rimuovere {{ $g->label_giorno }} {{ $g->orario }}?">
+                @csrf @method('DELETE')
+                <button class="btn btn-xs btn-outline-danger" style="font-size:.75rem;padding:.15rem .4rem">×</button>
+            </form>
+        </div>
+        @empty
+        <p class="text-muted small mb-0">Nessun giorno configurato. Aggiungine uno con il tasto sopra.</p>
+        @endforelse
+    </div>
+
+    {{-- Bottone genera sedute (solo se ci sono giorni) --}}
+    @if($stagione->giorniAllenamento->isNotEmpty())
+    <div class="card-footer bg-transparent py-2">
+        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modal-genera-sedute">
+            ⚡ Genera sedute automaticamente
+        </button>
+    </div>
+    @endif
+</div>
+
+{{-- ── MODAL GENERA SEDUTE ──────────────────────────────────────────────────── --}}
+<div class="modal fade" id="modal-genera-sedute" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title">⚡ Genera sedute automaticamente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('allenatore.stagioni.genera-sedute', $stagione) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <p class="small text-muted mb-3">
+                        Crea sedute <strong>bozza</strong> per tutti i giorni programmati nel periodo scelto.
+                    </p>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small mb-1">Da *</label>
+                            <input type="date" name="da" class="form-control form-control-sm"
+                                   required value="{{ $stagione->data_inizio->format('Y-m-d') }}"
+                                   min="{{ $stagione->data_inizio->format('Y-m-d') }}"
+                                   max="{{ $stagione->data_fine->format('Y-m-d') }}">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small mb-1">A *</label>
+                            <input type="date" name="a" class="form-control form-control-sm"
+                                   required value="{{ $stagione->data_fine->format('Y-m-d') }}"
+                                   min="{{ $stagione->data_inizio->format('Y-m-d') }}"
+                                   max="{{ $stagione->data_fine->format('Y-m-d') }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small mb-1">Titolo base *</label>
+                        <input type="text" name="titolo_base" class="form-control form-control-sm"
+                               required value="Allenamento" maxlength="120">
+                        <div class="form-text">Il titolo finale sarà: "Allenamento – 18:00"</div>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="salta_esistenti"
+                               id="salta_esistenti" value="1" checked>
+                        <label class="form-check-label small" for="salta_esistenti">
+                            Salta giorni che hanno già una seduta con lo stesso titolo
+                        </label>
+                    </div>
+
+                    {{-- Riepilogo giorni configurati --}}
+                    <div class="mt-3 p-2 bg-light rounded" style="font-size:.82rem">
+                        <strong>Giorni programmati:</strong>
+                        @foreach($stagione->giorniAllenamento as $g)
+                            <span class="badge bg-secondary ms-1">{{ $g->label_giorno }} {{ $g->orario }}</span>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Annulla</button>
+                    <button type="submit" class="btn btn-success btn-sm">⚡ Genera</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {{-- ── LISTA MACROCICLI ────────────────────────────────────────────────────── --}}
 <h5 class="fw-bold mb-3">Macrocicli</h5>
 

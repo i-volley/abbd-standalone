@@ -51,7 +51,10 @@ class StagioneController extends Controller
 
     public function show(Stagione $stagione)
     {
-        $stagione->load(['macrocicli' => fn($q) => $q->orderBy('data_inizio')]);
+        $stagione->load([
+            'macrocicli'       => fn($q) => $q->orderBy('data_inizio'),
+            'giorniAllenamento',
+        ]);
 
         // Sedute del team nell'arco della stagione (per il calendario)
         $sedute = Seduta::where('team_id', $stagione->team_id)

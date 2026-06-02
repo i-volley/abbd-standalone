@@ -28,4 +28,9 @@ class Stagione extends Model
     {
         return $this->hasMany(Macrociclo::class);
     }
+
+    public function giorniAllenamento()
+    {
+        return $this->hasMany(GiornoAllenamento::class)->orderBy('giorno_settimana')->orderBy('ora_inizio');
+    }
 }
