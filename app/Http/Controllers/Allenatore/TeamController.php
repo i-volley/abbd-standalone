@@ -63,6 +63,11 @@ class TeamController extends Controller
 
     public function destroy(Team $team)
     {
+        // Pulisce sessione se il team attivo è quello che stiamo eliminando
+        if (session('current_team_id') == $team->id) {
+            session()->forget(['current_team_id', 'current_team_nome']);
+        }
+
         $team->delete();
         return redirect()->route('allenatore.teams.index')->with('success', 'Team eliminato.');
     }

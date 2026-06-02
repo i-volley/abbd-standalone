@@ -22,6 +22,11 @@
     $currentTeam = session('current_team_id')
         ? \App\Models\Team::find(session('current_team_id'))
         : null;
+
+    // Se il team in sessione non esiste più (es. cancellato), pulisce la sessione
+    if (session('current_team_id') && !$currentTeam) {
+        session()->forget(['current_team_id', 'current_team_nome']);
+    }
 @endphp
 
 <nav class="sidebar">
