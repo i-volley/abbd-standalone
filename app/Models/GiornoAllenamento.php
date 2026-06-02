@@ -8,7 +8,7 @@ class GiornoAllenamento extends Model
 {
     protected $table = 'giorni_allenamento';
 
-    protected $fillable = ['stagione_id', 'giorno_settimana', 'ora_inizio', 'ora_fine', 'note'];
+    protected $fillable = ['stagione_id', 'giorno_settimana', 'ora_inizio', 'ora_fine', 'note', 'luogo'];
 
     protected function casts(): array
     {

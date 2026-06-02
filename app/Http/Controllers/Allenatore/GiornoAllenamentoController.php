@@ -22,6 +22,7 @@ class GiornoAllenamentoController extends Controller
             'giorno_settimana' => 'required|integer|min:0|max:6',
             'ora_inizio'       => 'required|date_format:H:i',
             'ora_fine'         => 'nullable|date_format:H:i|after:ora_inizio',
+            'luogo'            => 'nullable|string|max:255',
             'note'             => 'nullable|string|max:255',
         ]);
 
@@ -33,6 +34,7 @@ class GiornoAllenamentoController extends Controller
             ],
             [
                 'ora_fine' => $request->ora_fine,
+                'luogo'    => $request->luogo,
                 'note'     => $request->note,
             ]
         );
@@ -100,9 +102,9 @@ class GiornoAllenamentoController extends Controller
             foreach ($byGiorno[$dow] as $cfg) {
                 $dataStr = $giorno->toDateString();
 
-                // Titolo: "Allenamento Lun 18:30"
-                $labelGiorno = GiornoAllenamento::labelGiorni()[$dow];
-                $titoloSeduta = $titolo . ' – ' . substr($cfg->ora_inizio, 0, 5);
+                // Titolo univoco: "Allenamento Lunedì 18:00" — ogni seduta ha nome distinto
+                $labelGiorno  = GiornoAllenamento::labelGiorni()[$dow];
+                $titoloSeduta = $titolo . ' ' . $labelGiorno . ' ' . substr($cfg->ora_inizio, 0, 5);
 
                 if ($salta && in_array($dataStr, $esistenti)) {
                     $skip++;
@@ -118,11 +120,12 @@ class GiornoAllenamentoController extends Controller
                 if ($exists) { $skip++; continue; }
 
                 Seduta::create([
-                    'team_id'       => $teamId,
-                    'allenatore_id' => $allenId,
-                    'titolo'        => $titoloSeduta,
-                    'data'          => $dataStr,
-                    'stato'         => 'bozza',
+                    'team_id'         => $teamId,
+                    'allenatore_id'   => $allenId,
+                    'titolo'          => $titoloSeduta,
+                    'data'            => $dataStr,
+                    'stato'           => 'bozza',
+                    'luogo'           => $cfg->luogo,
                     'note_allenatore' => $cfg->note,
                 ]);
                 $create++;

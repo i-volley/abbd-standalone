@@ -55,6 +55,7 @@ class SeduteController extends Controller
             'team_id'              => 'required|exists:teams,id',
             'titolo'               => 'required|string|max:255',
             'data'                 => 'required|date',
+            'luogo'                => 'nullable|string|max:255',
             'microciclo_id'        => 'nullable|exists:microcicli,id',
             'unita_didattica_id'   => 'nullable|exists:unita_didattiche,id',
             'obiettivo_seduta'     => 'nullable|string|max:500',

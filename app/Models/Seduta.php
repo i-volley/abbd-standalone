@@ -10,7 +10,7 @@ class Seduta extends Model
 
     protected $fillable = [
         'microciclo_id', 'unita_didattica_id', 'team_id', 'allenatore_id',
-        'titolo', 'obiettivo_seduta', 'data',
+        'titolo', 'obiettivo_seduta', 'data', 'luogo',
         'durata_tot_min', 'stato', 'visibile_atleti', 'scadenza_feedback',
         'reminder_inviato', 'note_allenatore',
     ];

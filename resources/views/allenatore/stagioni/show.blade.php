@@ -276,9 +276,13 @@
                         <label class="form-label small mb-1">Fine</label>
                         <input type="time" name="ora_fine" class="form-control form-control-sm" value="20:00">
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
+                        <label class="form-label small mb-1">Luogo</label>
+                        <input type="text" name="luogo" class="form-control form-control-sm" placeholder="Palestra A" maxlength="255">
+                    </div>
+                    <div class="col-sm-2">
                         <label class="form-label small mb-1">Note</label>
-                        <input type="text" name="note" class="form-control form-control-sm" placeholder="es. Palestra A" maxlength="255">
+                        <input type="text" name="note" class="form-control form-control-sm" placeholder="note" maxlength="255">
                     </div>
                     <div class="col-sm-2">
                         <button class="btn btn-sm btn-success w-100">Salva</button>
@@ -295,6 +299,9 @@
             <div>
                 <span class="fw-semibold me-2">{{ $g->label_giorno }}</span>
                 <span class="badge bg-primary rounded-pill me-1">{{ $g->orario }}</span>
+                @if($g->luogo)
+                    <span class="badge bg-secondary rounded-pill me-1">📍 {{ $g->luogo }}</span>
+                @endif
                 @if($g->note)
                     <small class="text-muted">{{ $g->note }}</small>
                 @endif

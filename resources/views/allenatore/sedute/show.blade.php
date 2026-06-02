@@ -36,6 +36,11 @@
     <div class="col-auto">
         <small class="text-muted">Data: <strong>{{ $seduta->data->format('d/m/Y') }}</strong></small>
     </div>
+    @if($seduta->luogo)
+    <div class="col-auto">
+        <small class="text-muted">📍 <strong>{{ $seduta->luogo }}</strong></small>
+    </div>
+    @endif
     <div class="col-auto">
         <small class="text-muted">Durata: <strong id="durata-display">{{ $seduta->durata_tot_min }}</strong> min</small>
     </div>
