@@ -32,8 +32,18 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# ── Migrate + Seed (idempotenti, sicuri su ogni deploy) ──────────────────────
+# ── Migrate ──────────────────────────────────────────────────────────────────
 php artisan migrate --force && echo "Migrate OK" || echo "Migrate WARNING"
-php artisan db:seed --force && echo "Seed OK"    || echo "Seed WARNING"
+
+# ── Seed SOLO al primo avvio (DB vuoto) ──────────────────────────────────────
+# Con MySQL persistente il seed non deve girare ad ogni deploy: cancellerebbe
+# i dati reali inseriti dall'utente. Gira solo se non ci sono ancora utenti.
+HAS_USERS=$(php artisan tinker --execute="echo App\Models\User::count();" 2>/dev/null | tail -1 | tr -d '[:space:]')
+if [ -z "$HAS_USERS" ] || [ "$HAS_USERS" = "0" ]; then
+    echo "Seed: DB vuoto, eseguo seed iniziale..."
+    php artisan db:seed --force && echo "Seed OK" || echo "Seed WARNING"
+else
+    echo "Seed: skip — DB ha già $HAS_USERS utenti, dati preservati"
+fi
 
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
