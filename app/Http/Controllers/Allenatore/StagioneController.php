@@ -41,7 +41,6 @@ class StagioneController extends Controller
             'nome'        => 'required|string|max:255',
             'data_inizio' => 'required|date',
             'data_fine'   => 'required|date|after:data_inizio',
-            'attiva'      => 'boolean',
         ]);
 
         Stagione::create([...$data, 'attiva' => $request->boolean('attiva')]);
@@ -84,7 +83,6 @@ class StagioneController extends Controller
             'nome'        => 'required|string|max:255',
             'data_inizio' => 'required|date',
             'data_fine'   => 'required|date|after:data_inizio',
-            'attiva'      => 'boolean',
         ]);
 
         $stagione->update([...$data, 'attiva' => $request->boolean('attiva')]);
