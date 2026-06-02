@@ -34,7 +34,7 @@
         <div class="col-6">
             <label class="form-label">Inizio</label>
             <input type="date" name="data_inizio" class="form-control"
-                   value="{{ old('data_inizio', $stagione->data_inizio->format('Y-m-d')) }}" required>
+                   value="{{ old('data_inizio', $suggerisciInizio) }}" required>
         </div>
         <div class="col-6">
             <label class="form-label">Fine</label>

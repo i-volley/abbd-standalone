@@ -11,7 +11,13 @@ class MacrocicloController extends Controller
 {
     public function create(Stagione $stagione)
     {
-        return view('allenatore.macrocicli.create', compact('stagione'));
+        // Suggerisce data_inizio = giorno dopo l'ultimo macrociclo esistente
+        $ultimoMacro     = $stagione->macrocicli()->orderByDesc('data_fine')->first();
+        $suggerisciInizio = $ultimoMacro
+            ? $ultimoMacro->data_fine->addDay()->format('Y-m-d')
+            : $stagione->data_inizio->format('Y-m-d');
+
+        return view('allenatore.macrocicli.create', compact('stagione', 'suggerisciInizio'));
     }
 
     public function store(Request $request, Stagione $stagione)
