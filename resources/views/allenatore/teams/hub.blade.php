@@ -449,6 +449,8 @@
     function dayUrl(key) { return DAY_URL.replace('__DATA__', key); }
     const STATO_COLORE = { bozza:'#94a3b8', pubblicata:'#3b82f6', completata:'#10b981' };
     const GIORNI_SHORT = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+    // Header griglia mese: parte da Lunedì (la griglia parte sempre da Lun)
+    const GIORNI_MON   = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
     const MESI_LONG  = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
                         'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
     const MESI_SHORT = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
@@ -524,7 +526,7 @@
         start.setDate(start.getDate() - (fd === 0 ? 6 : fd - 1));
 
         let html = '<div class="mob-month-grid">';
-        GIORNI_SHORT.forEach(g => html += `<div class="mob-month-head">${g}</div>`);
+        GIORNI_MON.forEach(g => html += `<div class="mob-month-head">${g}</div>`);
 
         let day = new Date(start);
         while (day <= lastDay || day.getDay() !== 1) {
@@ -642,9 +644,9 @@
         let html = `<div class="${gridClass}">`;
 
         if (!compact) {
-            GIORNI_SHORT.forEach(g => html += `<div class="cal-header-cell">${g}</div>`);
+            GIORNI_MON.forEach(g => html += `<div class="cal-header-cell">${g}</div>`);
         } else {
-            GIORNI_SHORT.forEach(g => html += `<div class="cal-header-cell" style="padding:.1rem;font-size:.55rem">${g}</div>`);
+            GIORNI_MON.forEach(g => html += `<div class="cal-header-cell" style="padding:.1rem;font-size:.55rem">${g}</div>`);
         }
 
         let day = new Date(start);
