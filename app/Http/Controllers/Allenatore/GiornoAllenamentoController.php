@@ -20,6 +20,7 @@ class GiornoAllenamentoController extends Controller
 
         $request->validate([
             'giorno_settimana' => 'required|integer|min:0|max:6',
+            'titolo_base'      => 'required|string|max:120',
             'ora_inizio'       => 'required|date_format:H:i',
             'ora_fine'         => 'nullable|date_format:H:i|after:ora_inizio',
             'luogo'            => 'nullable|string|max:255',
@@ -33,9 +34,10 @@ class GiornoAllenamentoController extends Controller
                 'ora_inizio'       => $request->ora_inizio,
             ],
             [
-                'ora_fine' => $request->ora_fine,
-                'luogo'    => $request->luogo,
-                'note'     => $request->note,
+                'titolo_base' => $request->titolo_base,
+                'ora_fine'    => $request->ora_fine,
+                'luogo'       => $request->luogo,
+                'note'        => $request->note,
             ]
         );
 
@@ -53,86 +55,59 @@ class GiornoAllenamentoController extends Controller
     }
 
     /**
-     * Genera sedute bozza per tutti i giorni programmati nel range scelto.
-     * Idempotente: salta le date che hanno già una seduta con lo stesso titolo.
+     * Genera sedute bozza per UN singolo giorno programmato nel range scelto.
+     * Usa il titolo_base configurato sul giorno stesso.
+     * Idempotente: salta date con seduta già esistente con stesso titolo+data.
      */
-    public function genera(Request $request, Stagione $stagione)
+    public function generaGiorno(Request $request, Stagione $stagione, GiornoAllenamento $giorno)
     {
         abort_unless($stagione->team->allenatore_id === auth()->id(), 403);
+        abort_unless($giorno->stagione_id === $stagione->id, 403);
 
         $request->validate([
-            'da'           => 'required|date',
-            'a'            => 'required|date|after_or_equal:da',
-            'titolo_base'  => 'required|string|max:120',
-            'salta_esistenti' => 'boolean',
+            'da' => 'required|date',
+            'a'  => 'required|date|after_or_equal:da',
         ]);
 
-        $da          = Carbon::parse($request->da)->startOfDay();
-        $a           = Carbon::parse($request->a)->endOfDay();
-        $titolo      = trim($request->titolo_base);
-        $salta       = $request->boolean('salta_esistenti', true);
-        $teamId      = $stagione->team_id;
-        $allenId     = auth()->id();
+        $da      = Carbon::parse($request->da)->startOfDay();
+        $a       = Carbon::parse($request->a)->endOfDay();
+        $teamId  = $stagione->team_id;
+        $allenId = auth()->id();
+        $dow     = $giorno->giorno_settimana;
+        $label   = GiornoAllenamento::labelGiorni()[$dow];
 
-        // Giorni ricorrenti configurati
-        $giorniConfig = $stagione->giorniAllenamento;
-        if ($giorniConfig->isEmpty()) {
-            return back()->with('error', 'Nessun giorno di allenamento configurato. Aggiungine almeno uno.');
-        }
-
-        // Mappa giorno_settimana -> [{ora_inizio, ora_fine, note}]
-        $byGiorno = $giorniConfig->groupBy('giorno_settimana');
-
-        // Sedute già esistenti nel range (per skip)
-        $esistenti = Seduta::where('team_id', $teamId)
-            ->whereBetween('data', [$da->toDateString(), $a->toDateString()])
-            ->pluck('data')
-            ->map(fn($d) => $d->format('Y-m-d'))
-            ->toArray();
+        // Titolo: "Sala Pesi Lunedì 09:00" (titolo_base + giorno + ora)
+        $titoloSeduta = trim($giorno->titolo_base) . ' ' . $label . ' ' . substr($giorno->ora_inizio, 0, 5);
 
         $create = 0;
         $skip   = 0;
 
-        // Itera ogni giorno del range
         $period = CarbonPeriod::create($da, $a);
-        foreach ($period as $giorno) {
-            $dow = $giorno->dayOfWeek; // 0=Dom, 1=Lun, ..., 6=Sab
-            if (!$byGiorno->has($dow)) continue;
+        foreach ($period as $data) {
+            if ($data->dayOfWeek !== $dow) continue;
 
-            foreach ($byGiorno[$dow] as $cfg) {
-                $dataStr = $giorno->toDateString();
+            $dataStr = $data->toDateString();
 
-                // Titolo univoco: "Allenamento Lunedì 18:00" — ogni seduta ha nome distinto
-                $labelGiorno  = GiornoAllenamento::labelGiorni()[$dow];
-                $titoloSeduta = $titolo . ' ' . $labelGiorno . ' ' . substr($cfg->ora_inizio, 0, 5);
+            $exists = Seduta::where('team_id', $teamId)
+                ->whereDate('data', $dataStr)
+                ->where('titolo', $titoloSeduta)
+                ->exists();
 
-                if ($salta && in_array($dataStr, $esistenti)) {
-                    $skip++;
-                    continue;
-                }
+            if ($exists) { $skip++; continue; }
 
-                // Controlla duplicato stesso titolo+data
-                $exists = Seduta::where('team_id', $teamId)
-                    ->whereDate('data', $dataStr)
-                    ->where('titolo', $titoloSeduta)
-                    ->exists();
-
-                if ($exists) { $skip++; continue; }
-
-                Seduta::create([
-                    'team_id'         => $teamId,
-                    'allenatore_id'   => $allenId,
-                    'titolo'          => $titoloSeduta,
-                    'data'            => $dataStr,
-                    'stato'           => 'bozza',
-                    'luogo'           => $cfg->luogo,
-                    'note_allenatore' => $cfg->note,
-                ]);
-                $create++;
-            }
+            Seduta::create([
+                'team_id'         => $teamId,
+                'allenatore_id'   => $allenId,
+                'titolo'          => $titoloSeduta,
+                'data'            => $dataStr,
+                'stato'           => 'bozza',
+                'luogo'           => $giorno->luogo,
+                'note_allenatore' => $giorno->note,
+            ]);
+            $create++;
         }
 
-        $msg = "Sedute create: {$create}.";
+        $msg = "«{$titoloSeduta}»: create {$create} sedute.";
         if ($skip > 0) $msg .= " Saltate (già esistenti): {$skip}.";
 
         return back()->with('success', $msg);

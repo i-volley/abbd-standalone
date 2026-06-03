@@ -55,7 +55,7 @@ Route::prefix('allenatore')->name('allenatore.')
         ->parameters(['stagioni' => 'stagione']);
     Route::post('stagioni/{stagione}/giorni', [GiornoAllenamentoController::class, 'store'])->name('stagioni.giorni.store');
     Route::delete('stagioni/{stagione}/giorni/{giorno}', [GiornoAllenamentoController::class, 'destroy'])->name('stagioni.giorni.destroy');
-    Route::post('stagioni/{stagione}/genera-sedute', [GiornoAllenamentoController::class, 'genera'])->name('stagioni.genera-sedute');
+    Route::post('stagioni/{stagione}/giorni/{giorno}/genera', [GiornoAllenamentoController::class, 'generaGiorno'])->name('stagioni.giorni.genera');
     Route::resource('stagioni.macrocicli', MacrocicloController::class)->shallow()
         ->parameters(['stagioni' => 'stagione', 'macrocicli' => 'macrociclo']);
     Route::resource('macrocicli.microcicli', MicrocicloController::class)->shallow()
