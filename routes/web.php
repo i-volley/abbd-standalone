@@ -70,6 +70,9 @@ Route::prefix('allenatore')->name('allenatore.')
     Route::delete('sedute/{seduta}/esercizi/{pivot}', [SeduteController::class, 'rimuoviEsercizio'])->name('sedute.esercizi.destroy');
     Route::post('sedute/{seduta}/ordine', [SeduteController::class, 'aggiornaOrdine'])->name('sedute.ordine');
     Route::patch('sedute/{seduta}/esercizi/{pivot}/voto', [SeduteController::class, 'toggleVotoEsercizio'])->name('sedute.esercizi.voto');
+    Route::patch('sedute/{seduta}/esercizi/{pivot}/metriche', [SeduteController::class, 'aggiornaMetriche'])->name('sedute.esercizi.metriche');
+    Route::post('sedute/{seduta}/campi', [SeduteController::class, 'aggiungiCampo'])->name('sedute.campi.store');
+    Route::delete('sedute/{seduta}/campi/{campo}', [SeduteController::class, 'rimuoviCampo'])->name('sedute.campi.destroy');
     Route::resource('sedute', SeduteController::class)
         ->parameters(['sedute' => 'seduta']);
 

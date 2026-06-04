@@ -13,6 +13,7 @@ class Seduta extends Model
         'titolo', 'obiettivo_seduta', 'data', 'luogo',
         'durata_tot_min', 'stato', 'visibile_atleti', 'scadenza_feedback',
         'reminder_inviato', 'note_allenatore',
+        'n_atlete', 'obiettivo_principale', 'obiettivo_secondario',
     ];
 
     protected function casts(): array
@@ -55,6 +56,11 @@ class Seduta extends Model
     public function sedutaEsercizi()
     {
         return $this->hasMany(SedutaEsercizio::class)->orderBy('ordinamento');
+    }
+
+    public function campi()
+    {
+        return $this->hasMany(CampoSeduta::class)->orderBy('ordine');
     }
 
     public function feedback()

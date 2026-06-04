@@ -13,6 +13,7 @@ class SedutaEsercizio extends Model
     protected $fillable = [
         'seduta_id', 'esercizio_id', 'ordinamento', 'track',
         'serie', 'ripetizioni', 'recupero_sec', 'voto_abilitato', 'note',
+        'campo_id', 'n_salti', 'minuti_lavoro', 'carico_percepito', 'fondamentale_id',
     ];
 
     protected function casts(): array
@@ -28,6 +29,16 @@ class SedutaEsercizio extends Model
     public function esercizio()
     {
         return $this->belongsTo(Esercizio::class);
+    }
+
+    public function campo()
+    {
+        return $this->belongsTo(CampoSeduta::class, 'campo_id');
+    }
+
+    public function fondamentale()
+    {
+        return $this->belongsTo(GestoTecnico::class, 'fondamentale_id');
     }
 
     public function feedbackEsercizi()

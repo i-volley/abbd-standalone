@@ -33,6 +33,32 @@
     </div>
 </div>
 
+{{-- Parametri seduta --}}
+<div class="row g-3 mb-3">
+    <div class="col-md-1">
+        <label class="form-label">N. campi</label>
+        <input type="number" name="n_campi" class="form-control" min="1" max="6"
+               value="{{ old('n_campi', 1) }}" title="Campi di gioco simultanei (1-6)">
+    </div>
+    <div class="col-md-1">
+        <label class="form-label">N. atlete</label>
+        <input type="number" name="n_atlete" class="form-control" min="1" max="100"
+               value="{{ old('n_atlete') }}" placeholder="es. 12">
+    </div>
+    <div class="col-md-5">
+        <label class="form-label">Obiettivo principale</label>
+        <input type="text" name="obiettivo_principale" class="form-control"
+               value="{{ old('obiettivo_principale') }}"
+               placeholder="es. Ricezione + contrattacco">
+    </div>
+    <div class="col-md-5">
+        <label class="form-label">Obiettivo secondario</label>
+        <input type="text" name="obiettivo_secondario" class="form-control"
+               value="{{ old('obiettivo_secondario') }}"
+               placeholder="es. Gestione del punto da seconda linea">
+    </div>
+</div>
+
 {{-- Collegamento unità didattica (opzionale) --}}
 @if($unitaDidattiche->isNotEmpty())
 <div class="row g-3 mb-3">
