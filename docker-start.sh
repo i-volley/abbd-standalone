@@ -35,16 +35,14 @@ php artisan view:cache
 # ── Migrate ──────────────────────────────────────────────────────────────────
 php artisan migrate --force && echo "Migrate OK" || echo "Migrate WARNING"
 
-# ── Seed: SOLO se SEED_ON_DEPLOY=true nelle variabili Railway ─────────────────
-# In produzione con MySQL persistente il seed NON deve girare automaticamente.
-# Per inizializzare un DB vuoto: imposta SEED_ON_DEPLOY=true in Railway →
-# deploy → rimuovi la variabile. I dati utente non vengono mai toccati.
-if [ "$SEED_ON_DEPLOY" = "true" ]; then
-    echo "Seed: SEED_ON_DEPLOY=true rilevato, eseguo seed..."
-    php artisan db:seed --force && echo "Seed OK" || echo "Seed WARNING"
-    echo "ATTENZIONE: rimuovi SEED_ON_DEPLOY dalle variabili Railway dopo questo deploy."
-else
-    echo "Seed: skip — SEED_ON_DEPLOY non impostato, dati utente preservati."
-fi
+# ── Seed sicuro: crea SOLO utente demo se non esiste ────────────────────────
+# Gira SEMPRE ma è 100% idempotente (firstOrCreate).
+# Non tocca team, stagioni, sedute o altri dati reali dell'allenatore.
+php artisan demo:seed && echo "Demo seed OK" || echo "Demo seed WARNING"
+
+# ── Seed lookup tables (ruoli, sport, parametri) ─────────────────────────────
+php artisan db:seed --class=RoleSeeder --force
+php artisan db:seed --class=SportSeeder --force
+php artisan db:seed --class=ParametroEsercizioSeeder --force
 
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
