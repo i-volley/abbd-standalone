@@ -10,24 +10,41 @@ use Spatie\Permission\Models\Role;
 class SeedDemoUser extends Command
 {
     protected $signature   = 'demo:seed';
-    protected $description = 'Crea utente demo allenatore@demo.it se non esiste (sicuro, idempotente)';
+    protected $description = 'Crea utente demo + account coach da env (idempotente)';
 
     public function handle(): int
     {
-        // Ruoli (sempre sicuri da creare)
+        // Ruoli
         foreach (['allenatore', 'atleta'] as $role) {
             Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
         }
 
-        // Allenatore demo
+        // ── Account reale da env var (COACH_EMAIL + COACH_PASSWORD) ──────────
+        $coachEmail    = env('COACH_EMAIL');
+        $coachPassword = env('COACH_PASSWORD');
+
+        if ($coachEmail && $coachPassword) {
+            $coach = User::firstOrCreate(
+                ['email' => $coachEmail],
+                ['name' => env('COACH_NAME', 'Allenatore'), 'password' => Hash::make($coachPassword)]
+            );
+            // Aggiorna password se cambiata
+            if (!$coach->wasRecentlyCreated) {
+                $coach->update(['password' => Hash::make($coachPassword)]);
+            }
+            $coach->assignRole('allenatore');
+            $this->info("Coach: {$coach->email} " . ($coach->wasRecentlyCreated ? '(creato)' : '(aggiornato)'));
+        }
+
+        // ── Allenatore demo ───────────────────────────────────────────────────
         $allenatore = User::firstOrCreate(
             ['email' => 'allenatore@demo.it'],
             ['name' => 'Coach Demo', 'password' => Hash::make('password')]
         );
         $allenatore->assignRole('allenatore');
-        $this->info("Allenatore: {$allenatore->email} " . ($allenatore->wasRecentlyCreated ? '(creato)' : '(già esistente)'));
+        $this->info("Demo: {$allenatore->email} " . ($allenatore->wasRecentlyCreated ? '(creato)' : '(già esistente)'));
 
-        // Atleti demo
+        // ── Atleti demo ───────────────────────────────────────────────────────
         for ($i = 1; $i <= 6; $i++) {
             $atleta = User::firstOrCreate(
                 ['email' => "atleta{$i}@demo.it"],
