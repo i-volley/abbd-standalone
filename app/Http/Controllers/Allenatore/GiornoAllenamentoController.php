@@ -44,6 +44,26 @@ class GiornoAllenamentoController extends Controller
         return back()->with('success', 'Giorno di allenamento aggiunto.');
     }
 
+    /** Modifica un giorno ricorrente esistente */
+    public function update(Request $request, Stagione $stagione, GiornoAllenamento $giorno)
+    {
+        abort_unless($stagione->team->allenatore_id === auth()->id(), 403);
+        abort_unless($giorno->stagione_id === $stagione->id, 403);
+
+        $request->validate([
+            'giorno_settimana' => 'required|integer|min:0|max:6',
+            'titolo_base'      => 'required|string|max:120',
+            'ora_inizio'       => 'required|date_format:H:i',
+            'ora_fine'         => 'nullable|date_format:H:i|after:ora_inizio',
+            'luogo'            => 'nullable|string|max:255',
+            'note'             => 'nullable|string|max:255',
+        ]);
+
+        $giorno->update($request->only(['giorno_settimana', 'titolo_base', 'ora_inizio', 'ora_fine', 'luogo', 'note']));
+
+        return back()->with('success', 'Giorno di allenamento aggiornato.');
+    }
+
     /** Elimina un giorno ricorrente */
     public function destroy(Stagione $stagione, GiornoAllenamento $giorno)
     {

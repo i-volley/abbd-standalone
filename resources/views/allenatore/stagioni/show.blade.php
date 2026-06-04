@@ -322,6 +322,11 @@
                 </div>
                 {{-- Azioni --}}
                 <div class="d-flex gap-2 align-items-center">
+                    <button class="btn btn-sm btn-outline-secondary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-modifica-{{ $g->id }}">
+                        ✏️
+                    </button>
                     <button class="btn btn-sm btn-outline-success"
                             data-bs-toggle="modal"
                             data-bs-target="#modal-genera-{{ $g->id }}">
@@ -371,6 +376,61 @@
                         <div class="modal-footer border-0">
                             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Annulla</button>
                             <button type="submit" class="btn btn-success btn-sm">⚡ Genera</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {{-- Modal modifica per questo specifico giorno --}}
+        <div class="modal fade" id="modal-modifica-{{ $g->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width:520px">
+                <div class="modal-content shadow-lg border-0">
+                    <div class="modal-header border-0 pb-0">
+                        <h6 class="modal-title">✏️ Modifica giorno — {{ $g->titolo_base ?? 'Allenamento' }}</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ route('allenatore.stagioni.giorni.update', [$stagione, $g]) }}" method="POST">
+                        @csrf @method('PUT')
+                        <div class="modal-body">
+                            <div class="row g-2">
+                                <div class="col-sm-6">
+                                    <label class="form-label small mb-1">Giorno *</label>
+                                    <select name="giorno_settimana" class="form-select form-select-sm" required>
+                                        @foreach(\App\Models\GiornoAllenamento::labelGiorni() as $val => $lbl)
+                                            <option value="{{ $val }}" {{ $g->giorno_settimana == $val ? 'selected' : '' }}>{{ $lbl }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label small mb-1">Nome seduta *</label>
+                                    <input type="text" name="titolo_base" class="form-control form-control-sm"
+                                           required maxlength="120" value="{{ $g->titolo_base }}">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label small mb-1">Inizio *</label>
+                                    <input type="time" name="ora_inizio" class="form-control form-control-sm"
+                                           required value="{{ substr($g->ora_inizio, 0, 5) }}">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label small mb-1">Fine</label>
+                                    <input type="time" name="ora_fine" class="form-control form-control-sm"
+                                           value="{{ $g->ora_fine ? substr($g->ora_fine, 0, 5) : '' }}">
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label small mb-1">Luogo</label>
+                                    <input type="text" name="luogo" class="form-control form-control-sm"
+                                           maxlength="255" value="{{ $g->luogo }}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small mb-1">Note</label>
+                                    <input type="text" name="note" class="form-control form-control-sm"
+                                           maxlength="255" value="{{ $g->note }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Annulla</button>
+                            <button type="submit" class="btn btn-primary btn-sm">💾 Salva modifiche</button>
                         </div>
                     </form>
                 </div>
