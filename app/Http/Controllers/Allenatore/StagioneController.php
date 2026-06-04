@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Seduta;
 use App\Models\Stagione;
 use App\Models\Team;
+use App\Models\TipoAllenamento;
 use App\Models\UnitaDidattica;
 use Illuminate\Http\Request;
 
@@ -68,7 +69,12 @@ class StagioneController extends Controller
             ->orderBy('data_inizio')
             ->get(['id', 'titolo', 'data_inizio', 'progressione']);
 
-        return view('allenatore.stagioni.show', compact('stagione', 'sedute', 'unitaDidattiche'));
+        // Tipi allenamento del team (per il form giorni)
+        TipoAllenamento::creaPerTeam($stagione->team_id); // crea predefiniti se mancano
+        $tipiAllenamento = TipoAllenamento::where('team_id', $stagione->team_id)
+            ->orderBy('ordine')->orderBy('nome')->get();
+
+        return view('allenatore.stagioni.show', compact('stagione', 'sedute', 'unitaDidattiche', 'tipiAllenamento'));
     }
 
     public function edit(Stagione $stagione)

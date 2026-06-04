@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Allenatore;
 use App\Http\Controllers\Controller;
 use App\Models\Sport;
 use App\Models\Team;
+use App\Models\TipoAllenamento;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,8 @@ class TeamController extends Controller
             'stagione' => 'required|string|max:20',
         ]);
 
-        Team::create([...$data, 'allenatore_id' => auth()->id()]);
+        $team = Team::create([...$data, 'allenatore_id' => auth()->id()]);
+        TipoAllenamento::creaPerTeam($team->id);
 
         return redirect()->route('allenatore.teams.index')->with('success', 'Team creato.');
     }

@@ -32,4 +32,9 @@ class Team extends Model
     {
         return $this->hasMany(Stagione::class);
     }
+
+    public function tipiAllenamento()
+    {
+        return $this->hasMany(TipoAllenamento::class)->orderBy('ordine')->orderBy('nome');
+    }
 }

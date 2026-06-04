@@ -12,33 +12,48 @@ use Illuminate\Http\Request;
 
 class GiornoAllenamentoController extends Controller
 {
+    private function validateGiorno(Request $request): array
+    {
+        return $request->validate([
+            'giorno_settimana'   => 'required|integer|min:0|max:6',
+            'titolo_base'        => 'required|string|max:120',
+            'tipo_allenamento_id'=> 'nullable|integer|exists:tipo_allenamenti,id',
+            'ora_inizio'         => 'required|date_format:H:i',
+            'ora_fine'           => 'nullable|date_format:H:i|after:ora_inizio',
+            'ora_ritrovo'        => 'nullable|date_format:H:i',
+            'note_ritrovo'       => 'nullable|string|max:255',
+            'luogo'              => 'nullable|string|max:255',
+            'indirizzo'          => 'nullable|string|max:255',
+            'citta'              => 'nullable|string|max:100',
+            'lat'                => 'nullable|numeric|between:-90,90',
+            'lng'                => 'nullable|numeric|between:-180,180',
+            'note'               => 'nullable|string|max:255',
+        ]);
+    }
+
+    private function campi(): array
+    {
+        return [
+            'giorno_settimana', 'titolo_base', 'tipo_allenamento_id',
+            'ora_inizio', 'ora_fine', 'ora_ritrovo', 'note_ritrovo',
+            'luogo', 'indirizzo', 'citta', 'lat', 'lng', 'note',
+        ];
+    }
+
     /** Aggiunge un giorno ricorrente alla stagione */
     public function store(Request $request, Stagione $stagione)
     {
-        // Verifica proprietà allenatore
         abort_unless($stagione->team->allenatore_id === auth()->id(), 403);
-
-        $request->validate([
-            'giorno_settimana' => 'required|integer|min:0|max:6',
-            'titolo_base'      => 'required|string|max:120',
-            'ora_inizio'       => 'required|date_format:H:i',
-            'ora_fine'         => 'nullable|date_format:H:i|after:ora_inizio',
-            'luogo'            => 'nullable|string|max:255',
-            'note'             => 'nullable|string|max:255',
-        ]);
+        $data = $this->validateGiorno($request);
 
         GiornoAllenamento::firstOrCreate(
             [
                 'stagione_id'      => $stagione->id,
-                'giorno_settimana' => $request->giorno_settimana,
-                'ora_inizio'       => $request->ora_inizio,
+                'giorno_settimana' => $data['giorno_settimana'],
+                'ora_inizio'       => $data['ora_inizio'],
             ],
-            [
-                'titolo_base' => $request->titolo_base,
-                'ora_fine'    => $request->ora_fine,
-                'luogo'       => $request->luogo,
-                'note'        => $request->note,
-            ]
+            array_merge(array_diff_key($data, array_flip(['giorno_settimana', 'ora_inizio'])),
+                ['stagione_id' => $stagione->id])
         );
 
         return back()->with('success', 'Giorno di allenamento aggiunto.');
@@ -50,16 +65,8 @@ class GiornoAllenamentoController extends Controller
         abort_unless($stagione->team->allenatore_id === auth()->id(), 403);
         abort_unless($giorno->stagione_id === $stagione->id, 403);
 
-        $request->validate([
-            'giorno_settimana' => 'required|integer|min:0|max:6',
-            'titolo_base'      => 'required|string|max:120',
-            'ora_inizio'       => 'required|date_format:H:i',
-            'ora_fine'         => 'nullable|date_format:H:i|after:ora_inizio',
-            'luogo'            => 'nullable|string|max:255',
-            'note'             => 'nullable|string|max:255',
-        ]);
-
-        $giorno->update($request->only(['giorno_settimana', 'titolo_base', 'ora_inizio', 'ora_fine', 'luogo', 'note']));
+        $this->validateGiorno($request);
+        $giorno->update($request->only($this->campi()));
 
         return back()->with('success', 'Giorno di allenamento aggiornato.');
     }
@@ -76,8 +83,6 @@ class GiornoAllenamentoController extends Controller
 
     /**
      * Genera sedute bozza per UN singolo giorno programmato nel range scelto.
-     * Usa il titolo_base configurato sul giorno stesso.
-     * Idempotente: salta date con seduta già esistente con stesso titolo+data.
      */
     public function generaGiorno(Request $request, Stagione $stagione, GiornoAllenamento $giorno)
     {
@@ -96,7 +101,6 @@ class GiornoAllenamentoController extends Controller
         $dow     = $giorno->giorno_settimana;
         $label   = GiornoAllenamento::labelGiorni()[$dow];
 
-        // Titolo: "Sala Pesi Lunedì 09:00" (titolo_base + giorno + ora)
         $titoloSeduta = trim($giorno->titolo_base) . ' ' . $label . ' ' . substr($giorno->ora_inizio, 0, 5);
 
         $create = 0;

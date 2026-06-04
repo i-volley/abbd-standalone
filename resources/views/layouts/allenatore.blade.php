@@ -122,6 +122,13 @@
                 ↳ Parametri esercizio
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link ps-4 {{ request()->routeIs('allenatore.tipo-allenamento*') ? 'active' : '' }}"
+               href="{{ route('allenatore.tipo-allenamento.index') }}"
+               style="font-size:.9rem">
+                ↳ Tipi allenamento
+            </a>
+        </li>
 
     </ul>
 

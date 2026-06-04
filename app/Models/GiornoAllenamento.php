@@ -3,12 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GiornoAllenamento extends Model
 {
     protected $table = 'giorni_allenamento';
 
-    protected $fillable = ['stagione_id', 'giorno_settimana', 'titolo_base', 'ora_inizio', 'ora_fine', 'note', 'luogo'];
+    protected $fillable = [
+        'stagione_id', 'giorno_settimana', 'titolo_base',
+        'ora_inizio', 'ora_fine', 'note', 'luogo',
+        'tipo_allenamento_id', 'indirizzo', 'citta', 'lat', 'lng',
+        'ora_ritrovo', 'note_ritrovo',
+    ];
 
     protected function casts(): array
     {
@@ -17,9 +23,14 @@ class GiornoAllenamento extends Model
         ];
     }
 
-    public function stagione()
+    public function stagione(): BelongsTo
     {
         return $this->belongsTo(Stagione::class);
+    }
+
+    public function tipoAllenamento(): BelongsTo
+    {
+        return $this->belongsTo(TipoAllenamento::class, 'tipo_allenamento_id');
     }
 
     // Labels giorni settimana (Carbon usa 0=Dom, 1=Lun, ... 6=Sab)

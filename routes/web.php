@@ -6,6 +6,7 @@ use App\Http\Controllers\Allenatore\EsercizioController;
 use App\Http\Controllers\Allenatore\GestoTecnicoController;
 use App\Http\Controllers\Allenatore\GiornoAllenamentoController;
 use App\Http\Controllers\Allenatore\MacrocicloController;
+use App\Http\Controllers\Allenatore\TipoAllenamentoController;
 use App\Http\Controllers\Allenatore\MicrocicloController;
 use App\Http\Controllers\Allenatore\ParametroEsercizioController;
 use App\Http\Controllers\Allenatore\SeduteController;
@@ -74,6 +75,12 @@ Route::prefix('allenatore')->name('allenatore.')
 
     // Impostazioni
     Route::resource('sports', SportController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // Tipi allenamento (impostazioni per team)
+    Route::get('tipo-allenamento', [TipoAllenamentoController::class, 'index'])->name('tipo-allenamento.index');
+    Route::post('tipo-allenamento', [TipoAllenamentoController::class, 'store'])->name('tipo-allenamento.store');
+    Route::patch('tipo-allenamento/{tipoAllenamento}', [TipoAllenamentoController::class, 'update'])->name('tipo-allenamento.update');
+    Route::delete('tipo-allenamento/{tipoAllenamento}', [TipoAllenamentoController::class, 'destroy'])->name('tipo-allenamento.destroy');
 
     // Parametri scheda esercizio (fase, metodologia, assi FIPAV)
     Route::get('parametri', [ParametroEsercizioController::class, 'index'])->name('parametri.index');
