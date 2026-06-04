@@ -44,5 +44,8 @@ php artisan demo:seed && echo "Demo seed OK" || echo "Demo seed WARNING"
 php artisan db:seed --class=RoleSeeder --force
 php artisan db:seed --class=SportSeeder --force
 php artisan db:seed --class=ParametroEsercizioSeeder --force
+php artisan db:seed --class=CategoriaGestoSeeder --force
+php artisan db:seed --class=GestoTecnicoSeeder --force
+php artisan db:seed --class=EsercizioFipavSeeder --force
 
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
