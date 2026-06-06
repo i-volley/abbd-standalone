@@ -630,10 +630,10 @@ document.querySelectorAll('.cv-add').forEach(function(btn) {
             cy = d.cy + d.ch/2 + (Math.random()*30-15);
             state.players.push({ id:'p'+(nextId++), label:'●', team:'B', x:cx, y:cy });
         } else if (team === 'C') {
-            // Coach: zona libera fondo campo (al centro, fuori dal campo)
-            cx = d.cx + d.cw/2;
+            var cNum = state.players.filter(function(p){ return p.team==='C'; }).length + 1;
+            cx = d.cx + d.cw/2 + (Math.random()*40-20);
             cy = d.cy + d.ch + MARGIN*0.65;
-            state.players.push({ id:'p'+(nextId++), label:'C', team:'C', x:cx, y:cy });
+            state.players.push({ id:'p'+(nextId++), label:'C'+cNum, team:'C', x:cx, y:cy });
         } else if (team === 'X') {
             // Carro palline: zona libera laterale
             cx = d.cx - MARGIN*0.5;
