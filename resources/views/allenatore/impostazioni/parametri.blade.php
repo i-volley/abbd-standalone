@@ -155,46 +155,46 @@
 
 @push('scripts')
 <script>
-(function () {
+window.addEventListener('load', function () {
+
     // Apri il primo tab
-    const first = document.querySelector('#paramTabs .nav-link');
+    var first = document.querySelector('#paramTabs .nav-link');
     if (first) bootstrap.Tab.getOrCreateInstance(first).show();
 
     // Toggle pannello modifica
-    document.querySelectorAll('.param-edit-toggle').forEach(btn => {
+    document.querySelectorAll('.param-edit-toggle').forEach(function (btn) {
         btn.addEventListener('click', function () {
-            const panel = document.getElementById(this.dataset.target);
+            var panel = document.getElementById(this.dataset.target);
             if (!panel) return;
+            var row = panel.previousElementSibling;
             panel.classList.toggle('d-none');
-            // Nascondi la riga compatta mentre si modifica
-            const row = panel.previousElementSibling;
             if (row) row.classList.toggle('d-none');
         });
     });
 
     // Annulla modifica
-    document.querySelectorAll('.param-edit-cancel').forEach(btn => {
+    document.querySelectorAll('.param-edit-cancel').forEach(function (btn) {
         btn.addEventListener('click', function () {
-            const panel = document.getElementById(this.dataset.target);
+            var panel = document.getElementById(this.dataset.target);
             if (!panel) return;
             panel.classList.add('d-none');
-            const row = panel.previousElementSibling;
+            var row = panel.previousElementSibling;
             if (row) row.classList.remove('d-none');
         });
     });
 
     // Anteprima colore badge in tempo reale
-    document.querySelectorAll('input[type="color"]').forEach(picker => {
+    document.querySelectorAll('input[type="color"]').forEach(function (picker) {
         picker.addEventListener('input', function () {
-            const panel = this.closest('.param-edit-panel');
+            var panel = this.closest('.param-edit-panel');
             if (!panel) return;
-            // Aggiorna preview badge nella riga compatta sopra
-            const row = panel.previousElementSibling;
+            var row = panel.previousElementSibling;
             if (!row) return;
-            const badge = row.querySelector('.badge');
+            var badge = row.querySelector('.badge');
             if (badge) badge.style.background = this.value;
         });
     });
-})();
+
+});
 </script>
 @endpush
