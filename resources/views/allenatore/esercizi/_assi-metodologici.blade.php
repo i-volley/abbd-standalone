@@ -10,7 +10,7 @@
     $labDistretto  = ['caviglia' => '🦶 Caviglia', 'ginocchio' => '🦵 Ginocchio', 'lombare' => '🔙 Lombare', 'spalla' => '💪 Spalla'];
     $labRuoli      = [
         'alzatore'             => 'Alzatore',
-        'ricevitore_attaccante'=> 'Ric.-Attaccante',
+        'ricevitore_attaccante'=> 'Schiacciatore',
         'centrale'             => 'Centrale',
         'opposto'              => 'Opposto',
         'libero'               => 'Libero',

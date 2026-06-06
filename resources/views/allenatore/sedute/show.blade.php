@@ -192,7 +192,7 @@
                 @php
                     $trackLabel = [
                         'alzatore'               => 'ALZ',
-                        'ricevitore_attaccante'  => 'R-A',
+                        'ricevitore_attaccante'  => 'SCH',
                         'centrale'               => 'CEN',
                         'opposto'                => 'OPP',
                         'libero'                 => 'LIB',

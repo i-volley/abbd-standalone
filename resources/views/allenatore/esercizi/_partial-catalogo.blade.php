@@ -3,7 +3,7 @@ $metodBadge     = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-
 $faseBadge      = ['riscaldamento' => 'bg-warning text-dark', 'potenziamento' => 'bg-danger', 'stretching' => 'bg-info text-dark'];
 $faseGiocoBadge = ['cambio_palla' => 'bg-info text-dark', 'break_point' => 'bg-danger', 'ricostruzione' => 'bg-warning text-dark'];
 $faseGiocoLab   = ['cambio_palla' => 'CP', 'break_point' => 'BP', 'ricostruzione' => 'RIC'];
-$ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
+$ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
 @endphp
 
 {{-- ── I MIEI ESERCIZI ─────────────────────────────────────────────────────── --}}

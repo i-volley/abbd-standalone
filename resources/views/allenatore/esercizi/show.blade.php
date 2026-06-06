@@ -5,7 +5,7 @@
 @php
 $labFaseGioco  = ['cambio_palla' => 'Cambio palla', 'break_point' => 'Break point', 'ricostruzione' => 'Ricostruzione'];
 $labFaseGiocoBadge = ['cambio_palla' => 'bg-info text-dark', 'break_point' => 'bg-danger', 'ricostruzione' => 'bg-warning text-dark'];
-$labRuoli      = ['alzatore' => 'Alzatore', 'ricevitore_attaccante' => 'Ric.-Attaccante', 'centrale' => 'Centrale', 'opposto' => 'Opposto', 'libero' => 'Libero'];
+$labRuoli      = ['alzatore' => 'Alzatore', 'ricevitore_attaccante' => 'Schiacciatore', 'centrale' => 'Centrale', 'opposto' => 'Opposto', 'libero' => 'Libero'];
 $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-dark', 'globale' => 'bg-success'];
 @endphp
 

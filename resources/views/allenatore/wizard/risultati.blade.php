@@ -6,7 +6,7 @@
 $metodBadge     = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-dark', 'globale' => 'bg-success'];
 $faseGiocoBadge = ['cambio_palla' => 'bg-info text-dark', 'break_point' => 'bg-danger', 'ricostruzione' => 'bg-warning text-dark'];
 $faseGiocoLab   = ['cambio_palla' => 'Cambio palla', 'break_point' => 'Break point', 'ricostruzione' => 'Ricostruzione'];
-$ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
+$ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
 @endphp
 
 {{-- ── DIAGNOSI ─────────────────────────────────────────────────────────────── --}}
@@ -58,7 +58,7 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centr
                 <label class="form-label small mb-1">Ruolo</label>
                 <select name="ruolo" class="form-select form-select-sm">
                     <option value="tutti" {{ request('ruolo', 'tutti') === 'tutti' ? 'selected' : '' }}>Tutti</option>
-                    @foreach(['alzatore' => 'Alzatore', 'ricevitore_attaccante' => 'Ric.-Attaccante', 'centrale' => 'Centrale', 'opposto' => 'Opposto', 'libero' => 'Libero'] as $v => $l)
+                    @foreach(['alzatore' => 'Alzatore', 'ricevitore_attaccante' => 'Schiacciatore', 'centrale' => 'Centrale', 'opposto' => 'Opposto', 'libero' => 'Libero'] as $v => $l)
                         <option value="{{ $v }}" {{ request('ruolo') === $v ? 'selected' : '' }}>{{ $l }}</option>
                     @endforeach
                 </select>

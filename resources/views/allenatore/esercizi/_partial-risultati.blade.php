@@ -2,7 +2,7 @@
 $metodBadge     = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-dark', 'globale' => 'bg-success'];
 $faseGiocoBadge = ['cambio_palla' => 'bg-info text-dark', 'break_point' => 'bg-danger', 'ricostruzione' => 'bg-warning text-dark'];
 $faseGiocoLab   = ['cambio_palla' => 'CP', 'break_point' => 'BP', 'ricostruzione' => 'RIC'];
-$ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
+$ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
 @endphp
 
 @forelse($esercizi as $e)
@@ -37,7 +37,7 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centr
             <select class="form-select form-select-sm track-select" style="width:130px;font-size:.72rem">
                 <option value="completo">👥 Tutti</option>
                 <option value="alzatore">🖐️ Alzatore</option>
-                <option value="ricevitore_attaccante">🤸 Ric.-Att.</option>
+                <option value="ricevitore_attaccante">🤸 Schiacciatore</option>
                 <option value="centrale">🏛️ Centrale</option>
                 <option value="opposto">⚔️ Opposto</option>
                 <option value="libero">🛡️ Libero</option>

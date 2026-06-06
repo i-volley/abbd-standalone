@@ -66,7 +66,7 @@
         <div class="d-flex gap-1 flex-wrap mb-3">
             <button type="button" class="btn btn-sm btn-secondary filtro-ruolo active-all" data-val="">Tutti</button>
             @php
-            $labRuoli = ['alzatore'=>'Alzatore','ricevitore_attaccante'=>'Ric.-Attaccante','centrale'=>'Centrale','opposto'=>'Opposto','libero'=>'Libero'];
+            $labRuoli = ['alzatore'=>'Alzatore','ricevitore_attaccante'=>'Schiacciatore','centrale'=>'Centrale','opposto'=>'Opposto','libero'=>'Libero'];
             @endphp
             @foreach($ruoliDisponibili as $r)
             <button type="button" class="btn btn-sm btn-outline-secondary filtro-ruolo" data-val="{{ $r }}">{{ $labRuoli[$r] }}</button>
