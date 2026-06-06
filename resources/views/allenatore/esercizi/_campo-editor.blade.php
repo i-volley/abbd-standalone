@@ -59,6 +59,27 @@
         <small class="text-muted ms-1" style="font-size:.75rem">· tasto dx su elemento = elimina · Esc = annulla freccia</small>
     </div>
 
+    {{-- Palette ruoli --}}
+    <div class="d-flex align-items-center gap-1 mb-2 flex-wrap">
+        <small class="text-muted me-1">Ruoli:</small>
+        <select id="cv-role-select" class="form-select form-select-sm" style="width:auto;max-width:160px">
+            <option value="">— scegli ruolo —</option>
+            <option value="P">P – Palleggiatore</option>
+            <option value="O">O – Opposto</option>
+            <option value="S1">S1 – Schiacciatore 1</option>
+            <option value="S2">S2 – Schiacciatore 2</option>
+            <option value="C1">C1 – Centrale 1</option>
+            <option value="C2">C2 – Centrale 2</option>
+            <option value="L">L – Libero</option>
+        </select>
+        <button type="button" id="cv-add-r1" class="btn btn-sm fw-bold"
+                style="background:#1e293b;color:#fff;border:none;min-width:3rem"
+                title="Aggiungi ruolo Squadra 1 (pieno)">+ Sq.1</button>
+        <button type="button" id="cv-add-r2" class="btn btn-sm fw-bold"
+                style="background:#fff;color:#1e293b;border:2px solid #1e293b;min-width:3rem"
+                title="Aggiungi ruolo Squadra 2 (outline)">+ Sq.2</button>
+    </div>
+
     {{-- Riga: campo SVG + descrizione --}}
     <div class="d-flex gap-3 align-items-stretch flex-wrap flex-md-nowrap">
 
@@ -118,6 +139,17 @@ if (!svg || !input) return;
 
 // ── Costanti ──────────────────────────────────────────────────────────────
 var MARGIN = 48;  // zona libera attorno al campo (px nel viewBox)
+
+// Colori per ogni ruolo
+var ROLE_COLORS = {
+    P:  '#7c3aed',   // Palleggiatore — viola
+    O:  '#f43f5e',   // Opposto       — rosa/rosso
+    S1: '#ea580c',   // Schiacciatore 1 — arancio scuro
+    S2: '#d97706',   // Schiacciatore 2 — ambra
+    C1: '#0284c7',   // Centrale 1    — azzurro
+    C2: '#0891b2',   // Centrale 2    — cyan
+    L:  '#16a34a'    // Libero        — verde
+};
 
 // ── Stato ─────────────────────────────────────────────────────────────────
 var state  = { layout: 'full', players: [], arrows: [] };
@@ -363,12 +395,40 @@ function drawHalfCourt(d) {
 
 // ── Player render ─────────────────────────────────────────────────────────
 function renderPlayer(p) {
-    var colorMap = { A:'#f97316', D:'#3b82f6', B:'#fbbf24', C:'#1e293b', X:'#6b7280' };
-    var color    = colorMap[p.team] || '#aaa';
-    var r        = (p.team === 'B' || p.team === 'X') ? 10 : 13;
-    var fontSize = (p.team === 'B' || p.team === 'X') ? 10 : 11;
-    var txtColor = (p.team === 'B') ? '#222' : '#fff';
-    var shape    = p.team === 'X' ? 'square' : 'circle';
+    var isRole1 = (p.team === 'R1');
+    var isRole2 = (p.team === 'R2');
+    var isRole  = isRole1 || isRole2;
+
+    var color, strokeColor, strokeW, txtColor, r, fontSize, shape;
+
+    if (isRole) {
+        var roleColor = ROLE_COLORS[p.role] || '#64748b';
+        r        = 14;
+        fontSize = 10;
+        shape    = 'circle';
+        if (isRole1) {
+            // Pieno: sfondo con colore ruolo, testo bianco
+            color       = roleColor;
+            strokeColor = '#fff';
+            strokeW     = 1.5;
+            txtColor    = '#fff';
+        } else {
+            // Outline: sfondo bianco, bordo e testo con colore ruolo
+            color       = '#fff';
+            strokeColor = roleColor;
+            strokeW     = 2.5;
+            txtColor    = roleColor;
+        }
+    } else {
+        var colorMap = { A:'#f97316', D:'#3b82f6', B:'#fbbf24', C:'#1e293b', X:'#6b7280' };
+        color       = colorMap[p.team] || '#aaa';
+        strokeColor = '#fff';
+        strokeW     = 1.5;
+        r           = (p.team === 'B' || p.team === 'X') ? 10 : 13;
+        fontSize    = (p.team === 'B' || p.team === 'X') ? 10 : 11;
+        txtColor    = (p.team === 'B') ? '#222' : '#fff';
+        shape       = p.team === 'X' ? 'square' : 'circle';
+    }
 
     var g = el('g', { 'data-id': p.id, class: 'cv-player',
         cursor: tool === 'move' ? 'grab' : 'default' });
@@ -376,21 +436,23 @@ function renderPlayer(p) {
     if (shape === 'square') {
         g.appendChild(el('rect', {
             x:p.x-r, y:p.y-r, width:r*2, height:r*2,
-            fill:color, stroke:'#fff', 'stroke-width':1.5, rx:3
+            fill:color, stroke:strokeColor, 'stroke-width':strokeW, rx:3
         }));
     } else {
         g.appendChild(el('circle', {
             cx:p.x, cy:p.y, r:r,
-            fill:color, stroke:'#fff', 'stroke-width':1.5
+            fill:color, stroke:strokeColor, 'stroke-width':strokeW
         }));
     }
 
+    // Label: per ruoli mostra codice ruolo + eventuale numero squadra
+    var label = p.label;
     g.appendChild(txt('text', {
         x:p.x, y:p.y,
         'text-anchor':'middle', 'dominant-baseline':'central',
         fill:txtColor, 'font-size':fontSize, 'font-weight':'bold',
         'font-family':'sans-serif', 'pointer-events':'none'
-    }, p.label));
+    }, label));
     svg.appendChild(g);
 
     g.addEventListener('mousedown', startDrag);
@@ -548,6 +610,40 @@ document.querySelectorAll('.cv-add').forEach(function(btn) {
         render(); save();
     });
 });
+
+// ── Aggiungi token ruolo ──────────────────────────────────────────────────
+function addRoleToken(team) {
+    var sel  = document.getElementById('cv-role-select');
+    var role = sel ? sel.value : '';
+    if (!role) { sel && sel.focus(); return; }
+
+    var d  = dims();
+    var cx, cy;
+
+    // Posizionamento di default: Sq1 a sinistra/alto, Sq2 a destra/basso
+    if (state.layout === 'full') {
+        cx = (team === 'R1') ? d.cx + d.cw * 0.22 : d.cx + d.cw * 0.78;
+        cy = d.cy + d.ch * 0.5 + (Math.random() * 80 - 40);
+    } else {
+        cx = d.cx + d.cw * 0.5 + (Math.random() * 60 - 30);
+        cy = (team === 'R1') ? d.cy + d.ch * 0.65 : d.cy + d.ch * 0.25;
+    }
+
+    pushHistory();
+    state.players.push({
+        id:    'p' + (nextId++),
+        team:  team,
+        role:  role,
+        label: role,
+        x: cx, y: cy
+    });
+    render(); save();
+}
+
+var btnR1 = document.getElementById('cv-add-r1');
+var btnR2 = document.getElementById('cv-add-r2');
+if (btnR1) btnR1.addEventListener('click', function() { addRoleToken('R1'); });
+if (btnR2) btnR2.addEventListener('click', function() { addRoleToken('R2'); });
 
 // ── Layout / Tool toggle ──────────────────────────────────────────────────
 document.querySelectorAll('.cv-layout').forEach(function(btn) {
