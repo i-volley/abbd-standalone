@@ -87,9 +87,15 @@ class EsercizioController extends Controller
             'ruoli'                  => 'nullable|array',
             'ruoli.*'                => 'in:' . implode(',', Esercizio::ruoliDisponibili()),
             'prevenzione_distretto'  => 'nullable|in:' . implode(',', Esercizio::distretti()),
+            'campo_visivo'           => 'nullable|string',
             // fase, metodologia + assi FIPAV: valori dinamici da parametri_esercizio
             ...$this->regoleParametri(),
         ]);
+
+        // campo_visivo arriva come stringa JSON dal form — decodifico per il cast array del model
+        if (isset($data['campo_visivo']) && is_string($data['campo_visivo'])) {
+            $data['campo_visivo'] = $data['campo_visivo'] ? json_decode($data['campo_visivo'], true) : null;
+        }
 
         $esercizio = Esercizio::create([
             ...$data,
@@ -144,9 +150,15 @@ class EsercizioController extends Controller
             'ruoli'             => 'nullable|array',
             'ruoli.*'           => 'in:' . implode(',', Esercizio::ruoliDisponibili()),
             'prevenzione_distretto'  => 'nullable|in:' . implode(',', Esercizio::distretti()),
+            'campo_visivo'           => 'nullable|string',
             // fase, metodologia + assi FIPAV: valori dinamici da parametri_esercizio
             ...$this->regoleParametri(),
         ]);
+
+        // campo_visivo arriva come stringa JSON dal form — decodifico per il cast array del model
+        if (isset($data['campo_visivo']) && is_string($data['campo_visivo'])) {
+            $data['campo_visivo'] = $data['campo_visivo'] ? json_decode($data['campo_visivo'], true) : null;
+        }
 
         $esercizio->update([
             ...$data,

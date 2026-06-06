@@ -19,6 +19,8 @@ class Esercizio extends Model
         // Paradigm tags
         'exercise_category', 'paradigm_primary', 'constraint_type',
         'representativeness', 'feedback_suggestion', 'affordance_targets',
+        // Campo visivo
+        'campo_visivo',
     ];
 
     protected function casts(): array
@@ -29,6 +31,7 @@ class Esercizio extends Model
             'durata_min'         => 'integer',
             'is_pubblico'        => 'boolean',
             'affordance_targets' => 'array',
+            'campo_visivo'       => 'array',
         ];
     }
 
