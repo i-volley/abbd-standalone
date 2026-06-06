@@ -39,6 +39,7 @@
                     style="color:#2563eb;border-color:#2563eb">➔ Giocatore</button>
         </div>
 
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="cv-undo" title="Annulla ultima azione (Ctrl+Z)">↩ Annulla</button>
         <button type="button" class="btn btn-sm btn-outline-danger" id="cv-clear">✕ Pulisci tutto</button>
     </div>
 
@@ -125,6 +126,46 @@ var tool   = 'move';
 var dragging    = null;
 var arrowStart  = null;
 var previewLine = null;
+var history     = [];   // stack per undo (max 30 passi)
+
+function pushHistory() {
+    history.push(JSON.stringify(state));
+    if (history.length > 30) history.shift();
+    updateUndoBtn();
+}
+
+function undo() {
+    if (!history.length) return;
+    var prev = JSON.parse(history.pop());
+    // Ripristina nextId dal contenuto (prendo il max esistente)
+    state = prev;
+    state.players = state.players || [];
+    state.arrows  = state.arrows  || [];
+    nextId = 1;
+    state.players.forEach(function(p) {
+        var n = parseInt(p.id.replace(/\D/g,''), 10);
+        if (n >= nextId) nextId = n + 1;
+    });
+    state.arrows.forEach(function(a) {
+        var n = parseInt(a.id.replace(/\D/g,''), 10);
+        if (n >= nextId) nextId = n + 1;
+    });
+    if (previewLine) { previewLine.remove(); previewLine = null; }
+    arrowStart = null;
+    // Sincronizza pulsante layout
+    document.querySelectorAll('.cv-layout').forEach(function(btn) {
+        var active = btn.dataset.layout === state.layout;
+        btn.classList.toggle('btn-primary',         active);
+        btn.classList.toggle('btn-outline-primary', !active);
+        btn.classList.toggle('active', active);
+    });
+    render(); save(); updateUndoBtn();
+}
+
+function updateUndoBtn() {
+    var btn = document.getElementById('cv-undo');
+    if (btn) btn.disabled = history.length === 0;
+}
 
 // Carica stato salvato
 (function load() {
@@ -367,6 +408,7 @@ function startDrag(e) {
     var id  = gEl.getAttribute('data-id');
     var p   = state.players.find(function(x){ return x.id === id; });
     if (!p) return;
+    pushHistory(); // salva posizione pre-drag
     var pt  = svgPt(e);
     dragging = { gEl:gEl, player:p, ox:pt.x-p.x, oy:pt.y-p.y };
     gEl.setAttribute('cursor','grabbing');
@@ -435,6 +477,7 @@ svg.addEventListener('click', function(e) {
         if (previewLine) { previewLine.remove(); previewLine=null; }
         var dx = pt.x - arrowStart.x, dy = pt.y - arrowStart.y;
         if (Math.sqrt(dx*dx + dy*dy) > 8) {
+            pushHistory();
             state.arrows.push({ id:'a'+(nextId++), color:color,
                 x1:arrowStart.x, y1:arrowStart.y, x2:pt.x, y2:pt.y });
             save();
@@ -449,14 +492,20 @@ document.addEventListener('keydown', function(e) {
         if (previewLine) { previewLine.remove(); previewLine=null; }
         arrowStart = null;
     }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && svg) {
+        e.preventDefault();
+        undo();
+    }
 });
 
 // ── Aggiungi / Rimuovi ────────────────────────────────────────────────────
 function removePlayer(id) {
+    pushHistory();
     state.players = state.players.filter(function(p){ return p.id!==id; });
     render(); save();
 }
 function removeArrow(id) {
+    pushHistory();
     state.arrows = state.arrows.filter(function(a){ return a.id!==id; });
     render(); save();
 }
@@ -466,6 +515,7 @@ document.querySelectorAll('.cv-add').forEach(function(btn) {
         var team = btn.dataset.team;
         var d    = dims();
         var cx, cy;
+        pushHistory();
 
         if (team === 'B') {
             // Pallone: centro campo
@@ -545,11 +595,14 @@ document.querySelectorAll('.cv-tool').forEach(function(btn) {
 });
 
 document.getElementById('cv-clear').addEventListener('click', function() {
+    pushHistory();
     state.players=[]; state.arrows=[];
     if (previewLine) { previewLine.remove(); previewLine=null; }
     arrowStart=null;
     render(); save();
 });
+
+document.getElementById('cv-undo').addEventListener('click', undo);
 
 // ── Serializza ────────────────────────────────────────────────────────────
 function save() { input.value = JSON.stringify(state); }
@@ -564,6 +617,7 @@ document.querySelectorAll('.cv-layout').forEach(function(btn) {
 
 render();
 if (!input.value && (state.players.length || state.arrows.length)) save();
+updateUndoBtn();
 
 })();
 </script>
