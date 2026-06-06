@@ -1,12 +1,13 @@
 {{--
     Partial: _campo-editor.blade.php
     Editor interattivo campo di pallavolo (SVG + JS puro, no dipendenze).
-    Usato sia in create.blade.php che in edit.blade.php.
-    Variabile opzionale: $esercizio (solo in edit, per caricare stato salvato).
+    Layout: campo a sinistra, textarea descrizione a destra.
+    Variabile opzionale: $esercizio (solo in edit).
 --}}
 
 @php
-    $campoVisivo = '';
+    $campoVisivo    = '';
+    $descrizioneVal = old('descrizione', isset($esercizio) ? ($esercizio->descrizione ?? '') : '');
     if (isset($esercizio) && $esercizio->campo_visivo) {
         $campoVisivo = json_encode($esercizio->campo_visivo);
     } elseif (old('campo_visivo')) {
@@ -48,22 +49,39 @@
         <small class="text-muted ms-1" style="font-size:.75rem">· tasto dx su elemento = elimina · Esc = annulla freccia</small>
     </div>
 
-    {{-- SVG court --}}
-    <div id="cv-wrap" style="max-width:640px;border-radius:.4rem;overflow:hidden;background:#2e6b2e;touch-action:none">
-        <svg id="cv-svg" width="100%" xmlns="http://www.w3.org/2000/svg"
-             style="display:block;user-select:none;-webkit-user-select:none">
-            <defs>
-                <marker id="cv-arrowhead" markerWidth="9" markerHeight="7"
-                        refX="8" refY="3.5" orient="auto">
-                    <polygon points="0 0, 9 3.5, 0 7" fill="#facc15"/>
-                </marker>
-                <marker id="cv-arrowhead-preview" markerWidth="9" markerHeight="7"
-                        refX="8" refY="3.5" orient="auto">
-                    <polygon points="0 0, 9 3.5, 0 7" fill="#facc1599"/>
-                </marker>
-            </defs>
-        </svg>
-    </div>
+    {{-- Riga: campo SVG + descrizione --}}
+    <div class="d-flex gap-3 align-items-stretch flex-wrap flex-md-nowrap">
+
+        {{-- SVG court --}}
+        <div style="flex:0 0 auto;width:100%;max-width:500px">
+            <div id="cv-wrap" style="border-radius:.4rem;overflow:hidden;background:#f1f5f9;
+                                      border:1px solid #cbd5e1;touch-action:none">
+                <svg id="cv-svg" width="100%" xmlns="http://www.w3.org/2000/svg"
+                     style="display:block;user-select:none;-webkit-user-select:none">
+                    <defs>
+                        <marker id="cv-arrowhead" markerWidth="9" markerHeight="7"
+                                refX="8" refY="3.5" orient="auto">
+                            <polygon points="0 0, 9 3.5, 0 7" fill="#dc2626"/>
+                        </marker>
+                        <marker id="cv-arrowhead-preview" markerWidth="9" markerHeight="7"
+                                refX="8" refY="3.5" orient="auto">
+                            <polygon points="0 0, 9 3.5, 0 7" fill="#dc262666"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+
+        {{-- Descrizione esercizio --}}
+        <div style="flex:1 1 200px;min-width:180px;display:flex;flex-direction:column">
+            <label class="form-label fw-semibold mb-1">Descrizione / Note metodologiche</label>
+            <textarea name="descrizione" class="form-control flex-grow-1"
+                      style="min-height:180px;resize:vertical;font-size:.9rem"
+                      placeholder="Descrivi l'esercizio: posizioni iniziali, compiti, varianti, punti chiave...">{{ $descrizioneVal }}</textarea>
+            <small class="text-muted mt-1" style="font-size:.75rem">Varianti, progressioni, errori frequenti...</small>
+        </div>
+
+    </div>{{-- /riga --}}
 
     <input type="hidden" name="campo_visivo" id="cv-input" value="{{ $campoVisivo }}">
 </div>
@@ -79,11 +97,11 @@ var input = document.getElementById('cv-input');
 if (!svg || !input) return;
 
 // ── Stato ─────────────────────────────────────────────────────────────────
-var state   = { layout: 'full', players: [], arrows: [] };
-var nextId  = 1;
-var tool    = 'move';
-var dragging    = null;   // { gEl, player, ox, oy }
-var arrowStart  = null;   // { x, y }  primo click freccia
+var state  = { layout: 'full', players: [], arrows: [] };
+var nextId = 1;
+var tool   = 'move';
+var dragging    = null;
+var arrowStart  = null;
 var previewLine = null;
 
 // Carica stato salvato
@@ -96,7 +114,6 @@ var previewLine = null;
             state = s;
             state.players = state.players || [];
             state.arrows  = state.arrows  || [];
-            // Ri-calcola nextId
             state.players.forEach(function(p) {
                 var n = parseInt(p.id.replace(/\D/g,''), 10);
                 if (n >= nextId) nextId = n + 1;
@@ -127,7 +144,6 @@ function txt(tag, attrs, text) {
     return e;
 }
 
-// Mouse/touch → coordinate SVG
 function svgPt(evt) {
     var pt  = svg.createSVGPoint();
     var src = (evt.touches && evt.touches.length) ? evt.touches[0] : evt;
@@ -141,15 +157,14 @@ function render() {
     var d = dims();
     svg.setAttribute('viewBox', '0 0 ' + d.w + ' ' + d.h);
 
-    // Rimuovi tutto tranne <defs>
     var toRemove = [];
     for (var i = 0; i < svg.children.length; i++) {
         if (svg.children[i].tagName !== 'defs') toRemove.push(svg.children[i]);
     }
     toRemove.forEach(function(c){ c.remove(); });
 
-    // Sfondo
-    svg.appendChild(el('rect', { x:0, y:0, width:d.w, height:d.h, fill:'#3a7a3a' }));
+    // Sfondo bianco/chiaro
+    svg.appendChild(el('rect', { x:0, y:0, width:d.w, height:d.h, fill:'#f1f5f9' }));
 
     if (state.layout === 'full') drawFullCourt(d);
     else drawHalfCourt(d);
@@ -157,13 +172,11 @@ function render() {
     // Frecce (sotto i giocatori)
     state.arrows.forEach(function(a) {
         var g = el('g', { 'data-id': a.id, class: 'cv-arrow-grp' });
-        // Linea visibile
         g.appendChild(el('line', {
             x1: a.x1, y1: a.y1, x2: a.x2, y2: a.y2,
-            stroke: '#facc15', 'stroke-width': 2.5,
+            stroke: '#dc2626', 'stroke-width': 2.5,
             'marker-end': 'url(#cv-arrowhead)', 'pointer-events': 'none'
         }));
-        // Hit area invisibile più larga
         var hit = el('line', {
             x1: a.x1, y1: a.y1, x2: a.x2, y2: a.y2,
             stroke: 'transparent', 'stroke-width': 14, cursor: 'pointer'
@@ -176,55 +189,49 @@ function render() {
     });
 
     // Giocatori (in cima)
-    state.players.forEach(function(p) {
-        renderPlayer(p);
-    });
+    state.players.forEach(renderPlayer);
 }
 
 function drawFullCourt(d) {
-    // Bordo campo
+    // Superficie campo (leggermente più scura del bg)
     svg.appendChild(el('rect', { x:3, y:3, width:d.w-6, height:d.h-6,
-        fill:'none', stroke:'#fff', 'stroke-width':2.5 }));
-    // Rete (centrale)
-    svg.appendChild(el('rect', { x:267, y:0, width:6, height:d.h,
-        fill:'#bbb' }));
-    // Boccole rete
-    svg.appendChild(el('circle', { cx:270, cy:4, r:5, fill:'#888' }));
-    svg.appendChild(el('circle', { cx:270, cy:d.h-4, r:5, fill:'#888' }));
-    // Linee d'attacco (3m da rete = 90px)
+        fill:'#e2e8f0', stroke:'#1e293b', 'stroke-width':2.5 }));
+    // Rete
+    svg.appendChild(el('rect', { x:267, y:0, width:6, height:d.h, fill:'#475569' }));
+    svg.appendChild(el('circle', { cx:270, cy:3, r:5, fill:'#334155' }));
+    svg.appendChild(el('circle', { cx:270, cy:d.h-3, r:5, fill:'#334155' }));
+    // Linee d'attacco
     svg.appendChild(el('line', {
         x1:180, y1:3, x2:180, y2:d.h-3,
-        stroke:'#fff', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
+        stroke:'#64748b', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
     }));
     svg.appendChild(el('line', {
         x1:360, y1:3, x2:360, y2:d.h-3,
-        stroke:'#fff', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
+        stroke:'#64748b', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
     }));
-    // Labels
+    // Label zone
     svg.appendChild(txt('text', { x:135, y:16, 'text-anchor':'middle',
-        fill:'rgba(255,255,255,.45)', 'font-size':11, 'pointer-events':'none' }, 'SQUADRA A'));
+        fill:'rgba(0,0,0,.25)', 'font-size':11, 'pointer-events':'none' }, 'SQUADRA A'));
     svg.appendChild(txt('text', { x:405, y:16, 'text-anchor':'middle',
-        fill:'rgba(255,255,255,.45)', 'font-size':11, 'pointer-events':'none' }, 'SQUADRA B'));
+        fill:'rgba(0,0,0,.25)', 'font-size':11, 'pointer-events':'none' }, 'SQUADRA B'));
 }
 
 function drawHalfCourt(d) {
-    // Bordo
     svg.appendChild(el('rect', { x:3, y:3, width:d.w-6, height:d.h-6,
-        fill:'none', stroke:'#fff', 'stroke-width':2.5 }));
-    // Rete (in alto)
-    svg.appendChild(el('rect', { x:0, y:0, width:d.w, height:5, fill:'#bbb' }));
-    svg.appendChild(el('circle', { cx:4, cy:2, r:4, fill:'#888' }));
-    svg.appendChild(el('circle', { cx:d.w-4, cy:2, r:4, fill:'#888' }));
+        fill:'#e2e8f0', stroke:'#1e293b', 'stroke-width':2.5 }));
+    // Rete in alto
+    svg.appendChild(el('rect', { x:0, y:0, width:d.w, height:5, fill:'#475569' }));
+    svg.appendChild(el('circle', { cx:4, cy:2, r:4, fill:'#334155' }));
+    svg.appendChild(el('circle', { cx:d.w-4, cy:2, r:4, fill:'#334155' }));
     // Linea d'attacco 3m = 90px
     svg.appendChild(el('line', {
         x1:3, y1:90, x2:d.w-3, y2:90,
-        stroke:'#fff', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
+        stroke:'#64748b', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
     }));
-    // Labels
     svg.appendChild(txt('text', { x:d.w/2, y:20, 'text-anchor':'middle',
-        fill:'rgba(255,255,255,.45)', 'font-size':11, 'pointer-events':'none' }, 'RETE'));
+        fill:'rgba(0,0,0,.25)', 'font-size':11, 'pointer-events':'none' }, 'RETE'));
     svg.appendChild(txt('text', { x:d.w/2, y:84, 'text-anchor':'middle',
-        fill:'rgba(255,255,255,.35)', 'font-size':10, 'pointer-events':'none' }, '— 3 m —'));
+        fill:'rgba(0,0,0,.2)', 'font-size':10, 'pointer-events':'none' }, '— 3 m —'));
 }
 
 function renderPlayer(p) {
@@ -270,7 +277,6 @@ function startDrag(e) {
 
 svg.addEventListener('mousemove', function(e) {
     if (!dragging) {
-        // Preview freccia
         if (arrowStart && previewLine) {
             var pt = svgPt(e);
             previewLine.setAttribute('x2', pt.x);
@@ -280,10 +286,9 @@ svg.addEventListener('mousemove', function(e) {
     }
     var d  = dims();
     var pt = svgPt(e);
-    dragging.player.x = Math.max(14, Math.min(d.w - 14, pt.x - dragging.ox));
-    dragging.player.y = Math.max(14, Math.min(d.h - 14, pt.y - dragging.oy));
+    dragging.player.x = Math.max(14, Math.min(d.w-14, pt.x - dragging.ox));
+    dragging.player.y = Math.max(14, Math.min(d.h-14, pt.y - dragging.oy));
 
-    // Aggiorna posizione senza full re-render
     var circles = dragging.gEl.querySelectorAll('circle');
     var texts   = dragging.gEl.querySelectorAll('text');
     circles.forEach(function(c){
@@ -297,49 +302,32 @@ svg.addEventListener('mousemove', function(e) {
 });
 
 svg.addEventListener('mouseup', function() {
-    if (dragging) {
-        dragging.gEl.setAttribute('cursor', 'grab');
-        dragging = null;
-        save();
-    }
+    if (dragging) { dragging.gEl.setAttribute('cursor','grab'); dragging=null; save(); }
 });
 svg.addEventListener('mouseleave', function() {
-    if (dragging) {
-        dragging.gEl.setAttribute('cursor', 'grab');
-        dragging = null;
-        save();
-    }
+    if (dragging) { dragging.gEl.setAttribute('cursor','grab'); dragging=null; save(); }
 });
 
-// ── Arrow tool — click per start, click per end ──────────────────────────
+// ── Arrow tool ────────────────────────────────────────────────────────────
 svg.addEventListener('click', function(e) {
     if (tool !== 'arrow') return;
-    // Ignora click su giocatori (gestiti da drag)
     if (e.target.closest && e.target.closest('.cv-player')) return;
 
     var pt = svgPt(e);
-
     if (!arrowStart) {
-        // Primo click: imposta punto di partenza + preview
         arrowStart = { x: pt.x, y: pt.y };
         previewLine = el('line', {
-            x1: pt.x, y1: pt.y, x2: pt.x, y2: pt.y,
-            stroke: '#facc1588', 'stroke-width': 2,
-            'stroke-dasharray': '8 4', 'pointer-events': 'none',
-            'marker-end': 'url(#cv-arrowhead-preview)'
+            x1:pt.x, y1:pt.y, x2:pt.x, y2:pt.y,
+            stroke:'#dc262666', 'stroke-width':2, 'stroke-dasharray':'8 4',
+            'pointer-events':'none', 'marker-end':'url(#cv-arrowhead-preview)'
         });
         svg.appendChild(previewLine);
     } else {
-        // Secondo click: finalizza freccia
         if (previewLine) { previewLine.remove(); previewLine = null; }
-        // Evita frecce troppo corte
         var dx = pt.x - arrowStart.x, dy = pt.y - arrowStart.y;
         if (Math.sqrt(dx*dx + dy*dy) > 8) {
-            state.arrows.push({
-                id: 'a' + (nextId++),
-                x1: arrowStart.x, y1: arrowStart.y,
-                x2: pt.x, y2: pt.y
-            });
+            state.arrows.push({ id:'a'+(nextId++),
+                x1:arrowStart.x, y1:arrowStart.y, x2:pt.x, y2:pt.y });
             save();
         }
         arrowStart = null;
@@ -347,7 +335,6 @@ svg.addEventListener('click', function(e) {
     }
 });
 
-// Escape annulla freccia in corso
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && arrowStart) {
         if (previewLine) { previewLine.remove(); previewLine = null; }
@@ -356,38 +343,27 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ── Aggiungi / Rimuovi ────────────────────────────────────────────────────
-function removePlayer(id) {
-    state.players = state.players.filter(function(p){ return p.id !== id; });
-    render(); save();
-}
-function removeArrow(id) {
-    state.arrows = state.arrows.filter(function(a){ return a.id !== id; });
-    render(); save();
-}
+function removePlayer(id) { state.players=state.players.filter(function(p){return p.id!==id;}); render();save(); }
+function removeArrow(id)  { state.arrows=state.arrows.filter(function(a){return a.id!==id;});   render();save(); }
 
 document.querySelectorAll('.cv-add').forEach(function(btn) {
     btn.addEventListener('click', function() {
         var team = btn.dataset.team;
         var d    = dims();
-        var cx, cy, label;
-
+        var cx, cy;
         if (team === 'B') {
-            cx = d.w / 2 + (Math.random() * 30 - 15);
-            cy = d.h / 2 + (Math.random() * 30 - 15);
-            state.players.push({ id: 'p' + (nextId++), label: '●', team: 'B', x: cx, y: cy });
+            cx = d.w/2 + (Math.random()*30-15);
+            cy = d.h/2 + (Math.random()*30-15);
+            state.players.push({ id:'p'+(nextId++), label:'●', team:'B', x:cx, y:cy });
         } else {
-            var count = state.players.filter(function(p){ return p.team === team; }).length;
-            if (count >= 6) return; // max 6 per squadra
+            var count = state.players.filter(function(p){return p.team===team;}).length;
+            if (count >= 6) return;
             var num = count + 1;
-            // A: lato sinistro campo intero (o centro alto metà campo)
-            // D: lato destro
-            if (state.layout === 'full') {
-                cx = (team === 'A') ? d.w * 0.25 : d.w * 0.75;
-            } else {
-                cx = d.w * 0.25 + (team === 'D' ? d.w * 0.5 : 0);
-            }
-            cy = d.h * 0.5 + (Math.random() * 60 - 30);
-            state.players.push({ id: 'p' + (nextId++), label: team + num, team: team, x: cx, y: cy });
+            cx = (state.layout==='full')
+                ? ((team==='A') ? d.w*0.25 : d.w*0.75)
+                : (d.w*0.25 + (team==='D' ? d.w*0.5 : 0));
+            cy = d.h*0.5 + (Math.random()*60-30);
+            state.players.push({ id:'p'+(nextId++), label:team+num, team:team, x:cx, y:cy });
         }
         render(); save();
     });
@@ -397,13 +373,12 @@ document.querySelectorAll('.cv-add').forEach(function(btn) {
 document.querySelectorAll('.cv-layout').forEach(function(btn) {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.cv-layout').forEach(function(b) {
-            b.classList.toggle('btn-primary', b === btn);
-            b.classList.toggle('btn-outline-primary', b !== btn);
-            b.classList.toggle('active', b === btn);
+            b.classList.toggle('btn-primary', b===btn);
+            b.classList.toggle('btn-outline-primary', b!==btn);
+            b.classList.toggle('active', b===btn);
         });
         state.layout = btn.dataset.layout;
-        // Cancella preview freccia pendente
-        if (previewLine) { previewLine.remove(); previewLine = null; }
+        if (previewLine) { previewLine.remove(); previewLine=null; }
         arrowStart = null;
         render(); save();
     });
@@ -412,37 +387,32 @@ document.querySelectorAll('.cv-layout').forEach(function(btn) {
 document.querySelectorAll('.cv-tool').forEach(function(btn) {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.cv-tool').forEach(function(b) {
-            b.classList.toggle('btn-secondary', b === btn);
-            b.classList.toggle('btn-outline-secondary', b !== btn);
-            b.classList.toggle('active', b === btn);
+            b.classList.toggle('btn-secondary', b===btn);
+            b.classList.toggle('btn-outline-secondary', b!==btn);
+            b.classList.toggle('active', b===btn);
         });
         tool = btn.dataset.tool;
-        // Cancella freccia in corso se cambio strumento
-        if (tool !== 'arrow' && arrowStart) {
-            if (previewLine) { previewLine.remove(); previewLine = null; }
+        if (tool!=='arrow' && arrowStart) {
+            if (previewLine) { previewLine.remove(); previewLine=null; }
             arrowStart = null;
         }
-        // Aggiorna cursor giocatori
         document.querySelectorAll('.cv-player').forEach(function(g) {
-            g.setAttribute('cursor', tool === 'move' ? 'grab' : 'default');
+            g.setAttribute('cursor', tool==='move' ? 'grab' : 'default');
         });
     });
 });
 
 document.getElementById('cv-clear').addEventListener('click', function() {
-    state.players = []; state.arrows = [];
-    if (previewLine) { previewLine.remove(); previewLine = null; }
-    arrowStart = null;
+    state.players=[]; state.arrows=[];
+    if (previewLine) { previewLine.remove(); previewLine=null; }
+    arrowStart=null;
     render(); save();
 });
 
 // ── Serializza ────────────────────────────────────────────────────────────
-function save() {
-    input.value = JSON.stringify(state);
-}
+function save() { input.value = JSON.stringify(state); }
 
 // ── Init ──────────────────────────────────────────────────────────────────
-// Sincronizza pulsanti layout con stato caricato
 document.querySelectorAll('.cv-layout').forEach(function(btn) {
     var active = btn.dataset.layout === state.layout;
     btn.classList.toggle('btn-primary', active);
@@ -451,7 +421,6 @@ document.querySelectorAll('.cv-layout').forEach(function(btn) {
 });
 
 render();
-// Assicura che l'input sia valorizzato anche al primo render
 if (!input.value && (state.players.length || state.arrows.length)) save();
 
 })();

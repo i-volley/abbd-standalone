@@ -75,11 +75,6 @@
             </div>
         </div>
 
-        <div class="col-12">
-            <label class="form-label">Descrizione / Note metodologiche</label>
-            <textarea name="descrizione" class="form-control" rows="3">{{ old('descrizione') }}</textarea>
-        </div>
-
         <div class="col-md-4">
             <label class="form-label">Categoria età</label>
             <select name="categoria_eta" class="form-select">
