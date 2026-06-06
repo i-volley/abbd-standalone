@@ -32,11 +32,14 @@
         <div class="btn-group btn-group-sm" role="group">
             <button type="button" class="cv-tool btn btn-secondary active" data-tool="move" title="Sposta elementi">✋ Sposta</button>
             <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow-red"
-                    title="Freccia rossa: traiettoria palla / attacco"
-                    style="color:#dc2626;border-color:#dc2626">➔ Palla</button>
+                    title="Freccia rossa solida: direzione di attacco"
+                    style="color:#dc2626;border-color:#dc2626">➔ Attacco</button>
             <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow-blue"
-                    title="Freccia blu: spostamento giocatore"
+                    title="Freccia blu tratteggiata: spostamento giocatore"
                     style="color:#2563eb;border-color:#2563eb">➔ Giocatore</button>
+            <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow-ball"
+                    title="Freccia gialla tratteggiata: movimento palla (numerata)"
+                    style="color:#ca8a04;border-color:#ca8a04">➔ Palla</button>
         </div>
 
         <button type="button" class="btn btn-sm btn-outline-secondary" id="cv-undo" title="Annulla ultima azione (Ctrl+Z)">↩ Annulla</button>
@@ -108,6 +111,15 @@
                                 refX="8" refY="3.5" orient="auto">
                             <polygon points="0 0, 9 3.5, 0 7" fill="#2563eb66"/>
                         </marker>
+                        {{-- Freccia gialla: movimento palla (numerata) --}}
+                        <marker id="cv-ah-ball" markerWidth="9" markerHeight="7"
+                                refX="8" refY="3.5" orient="auto">
+                            <polygon points="0 0, 9 3.5, 0 7" fill="#ca8a04"/>
+                        </marker>
+                        <marker id="cv-ah-ball-pre" markerWidth="9" markerHeight="7"
+                                refX="8" refY="3.5" orient="auto">
+                            <polygon points="0 0, 9 3.5, 0 7" fill="#ca8a0466"/>
+                        </marker>
                     </defs>
                 </svg>
             </div>
@@ -152,6 +164,7 @@ var dragging    = null;
 var arrowStart  = null;
 var previewLine = null;
 var history     = [];   // stack per undo (max 30 passi)
+var ballSeq     = 1;    // contatore tocchi palla (frecce gialle)
 
 function pushHistory() {
     history.push(JSON.stringify(state));
@@ -166,7 +179,7 @@ function undo() {
     state = prev;
     state.players = state.players || [];
     state.arrows  = state.arrows  || [];
-    nextId = 1;
+    nextId = 1; ballSeq = 1;
     state.players.forEach(function(p) {
         var n = parseInt(p.id.replace(/\D/g,''), 10);
         if (n >= nextId) nextId = n + 1;
@@ -174,6 +187,7 @@ function undo() {
     state.arrows.forEach(function(a) {
         var n = parseInt(a.id.replace(/\D/g,''), 10);
         if (n >= nextId) nextId = n + 1;
+        if (a.color === 'ball' && a.num >= ballSeq) ballSeq = a.num + 1;
     });
     if (previewLine) { previewLine.remove(); previewLine = null; }
     arrowStart = null;
@@ -209,6 +223,10 @@ function updateUndoBtn() {
             state.arrows.forEach(function(a) {
                 var n = parseInt(a.id.replace(/\D/g,''), 10);
                 if (n >= nextId) nextId = n + 1;
+            });
+            // Ricostruisce ballSeq dal massimo num esistente
+            state.arrows.forEach(function(a) {
+                if (a.color === 'ball' && a.num >= ballSeq) ballSeq = a.num + 1;
             });
         }
     } catch(e) {}
@@ -274,18 +292,49 @@ function render() {
 
     // Frecce (sotto i giocatori)
     state.arrows.forEach(function(a) {
-        var color   = (a.color === 'blue') ? '#2563eb' : '#dc2626';
-        var markerId = (a.color === 'blue') ? 'url(#cv-ah-blue)' : 'url(#cv-ah-red)';
+        var isBall = (a.color === 'ball');
+        var isBlue = (a.color === 'blue');
+        var color, markerId, dashArr;
+        if (isBall) {
+            color    = '#ca8a04'; markerId = 'url(#cv-ah-ball)'; dashArr = '8 4';
+        } else if (isBlue) {
+            color    = '#2563eb'; markerId = 'url(#cv-ah-blue)'; dashArr = '8 4';
+        } else {
+            color    = '#dc2626'; markerId = 'url(#cv-ah-red)';  dashArr = null;
+        }
+
         var g = el('g', { 'data-id': a.id, class: 'cv-arrow-grp' });
-        g.appendChild(el('line', {
+        var line = el('line', {
             x1:a.x1, y1:a.y1, x2:a.x2, y2:a.y2,
             stroke:color, 'stroke-width':2.5,
-            'marker-end': markerId, 'pointer-events':'none'
-        }));
-        // Stile: palla = solida, giocatore = tratteggiata
-        if (a.color === 'blue') {
-            g.children[0].setAttribute('stroke-dasharray', '8 4');
+            'marker-end':markerId, 'pointer-events':'none'
+        });
+        if (dashArr) line.setAttribute('stroke-dasharray', dashArr);
+        g.appendChild(line);
+
+        // Numero sequenza per frecce palla (perpendicolare al punto medio)
+        if (isBall && a.num != null) {
+            var mx  = (a.x1 + a.x2) / 2;
+            var my  = (a.y1 + a.y2) / 2;
+            var dx  = a.x2 - a.x1, dy = a.y2 - a.y1;
+            var len = Math.sqrt(dx*dx + dy*dy) || 1;
+            // Offset perpendicolare 13px (verso "sinistra" della direzione)
+            var ox  = (-dy / len) * 13;
+            var oy  = ( dx / len) * 13;
+            // Cerchietto sfondo
+            g.appendChild(el('circle', {
+                cx: mx+ox, cy: my+oy, r: 9,
+                fill:'#fef08a', stroke:'#ca8a04', 'stroke-width':1.5, 'pointer-events':'none'
+            }));
+            g.appendChild(txt('text', {
+                x: mx+ox, y: my+oy,
+                'text-anchor':'middle', 'dominant-baseline':'central',
+                fill:'#92400e', 'font-size':10, 'font-weight':'bold',
+                'font-family':'sans-serif', 'pointer-events':'none'
+            }, String(a.num)));
         }
+
+        // Hit area invisibile
         var hit = el('line', {
             x1:a.x1, y1:a.y1, x2:a.x2, y2:a.y2,
             stroke:'transparent', 'stroke-width':14, cursor:'pointer'
@@ -515,9 +564,10 @@ svg.addEventListener('click', function(e) {
     if (e.target.closest && e.target.closest('.cv-player')) return;
 
     var isRed  = (tool === 'arrow-red');
-    var color  = isRed ? 'red' : 'blue';
-    var preCol = isRed ? '#dc262666' : '#2563eb66';
-    var marker = isRed ? 'url(#cv-ah-red-pre)' : 'url(#cv-ah-blue-pre)';
+    var isBall = (tool === 'arrow-ball');
+    var color  = isRed ? 'red' : (isBall ? 'ball' : 'blue');
+    var preCol = isRed ? '#dc262666' : (isBall ? '#ca8a0466' : '#2563eb66');
+    var marker = isRed ? 'url(#cv-ah-red-pre)' : (isBall ? 'url(#cv-ah-ball-pre)' : 'url(#cv-ah-blue-pre)');
     var pt = svgPt(e);
 
     if (!arrowStart) {
@@ -533,8 +583,10 @@ svg.addEventListener('click', function(e) {
         var dx = pt.x - arrowStart.x, dy = pt.y - arrowStart.y;
         if (Math.sqrt(dx*dx + dy*dy) > 8) {
             pushHistory();
-            state.arrows.push({ id:'a'+(nextId++), color:color,
-                x1:arrowStart.x, y1:arrowStart.y, x2:pt.x, y2:pt.y });
+            var arrow = { id:'a'+(nextId++), color:color,
+                x1:arrowStart.x, y1:arrowStart.y, x2:pt.x, y2:pt.y };
+            if (color === 'ball') { arrow.num = ballSeq++; }
+            state.arrows.push(arrow);
             save();
         }
         arrowStart = null;
@@ -671,6 +723,11 @@ document.querySelectorAll('.cv-tool').forEach(function(btn) {
                 b.style.borderColor = active ? ''     : '#2563eb';
                 b.style.background  = active ? '#2563eb' : '';
             }
+            if (b.dataset.tool === 'arrow-ball') {
+                b.style.color       = active ? '#fff' : '#ca8a04';
+                b.style.borderColor = active ? ''     : '#ca8a04';
+                b.style.background  = active ? '#ca8a04' : '';
+            }
         });
         tool = btn.dataset.tool;
         if (tool === 'move' && arrowStart) {
@@ -685,7 +742,7 @@ document.querySelectorAll('.cv-tool').forEach(function(btn) {
 
 document.getElementById('cv-clear').addEventListener('click', function() {
     pushHistory();
-    state.players=[]; state.arrows=[];
+    state.players=[]; state.arrows=[]; ballSeq=1;
     if (previewLine) { previewLine.remove(); previewLine=null; }
     arrowStart=null;
     render(); save();
