@@ -31,7 +31,12 @@
         {{-- Strumenti --}}
         <div class="btn-group btn-group-sm" role="group">
             <button type="button" class="cv-tool btn btn-secondary active" data-tool="move" title="Sposta elementi">✋ Sposta</button>
-            <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow" title="Disegna freccia">↗ Freccia</button>
+            <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow-red"
+                    title="Freccia rossa: traiettoria palla / attacco"
+                    style="color:#dc2626;border-color:#dc2626">➔ Palla</button>
+            <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow-blue"
+                    title="Freccia blu: spostamento giocatore"
+                    style="color:#2563eb;border-color:#2563eb">➔ Giocatore</button>
         </div>
 
         <button type="button" class="btn btn-sm btn-outline-danger" id="cv-clear">✕ Pulisci tutto</button>
@@ -41,11 +46,15 @@
     <div class="d-flex align-items-center gap-1 mb-2 flex-wrap">
         <small class="text-muted me-1">Aggiungi:</small>
         <button type="button" class="cv-add btn btn-sm fw-bold" data-team="A"
-                style="background:#f97316;color:#fff;border:none;min-width:2.2rem">A</button>
+                style="background:#f97316;color:#fff;border:none;min-width:2.2rem" title="Attaccante (max 6)">A</button>
         <button type="button" class="cv-add btn btn-sm fw-bold" data-team="D"
-                style="background:#3b82f6;color:#fff;border:none;min-width:2.2rem">D</button>
+                style="background:#3b82f6;color:#fff;border:none;min-width:2.2rem" title="Difensore (max 6)">D</button>
         <button type="button" class="cv-add btn btn-sm fw-bold" data-team="B"
-                style="background:#fbbf24;color:#222;border:none;min-width:2.2rem">🏐</button>
+                style="background:#fbbf24;color:#222;border:none;min-width:2.2rem" title="Pallone">🏐</button>
+        <button type="button" class="cv-add btn btn-sm fw-bold" data-team="C"
+                style="background:#1e293b;color:#fff;border:none;min-width:2.2rem" title="Coach / Allenatore (zona libera)">C</button>
+        <button type="button" class="cv-add btn btn-sm fw-bold" data-team="X"
+                style="background:#6b7280;color:#fff;border:none;min-width:2.2rem" title="Carro palline / ostacolo">🧺</button>
         <small class="text-muted ms-1" style="font-size:.75rem">· tasto dx su elemento = elimina · Esc = annulla freccia</small>
     </div>
 
@@ -53,19 +62,29 @@
     <div class="d-flex gap-3 align-items-stretch flex-wrap flex-md-nowrap">
 
         {{-- SVG court --}}
-        <div style="flex:0 0 auto;width:100%;max-width:500px">
-            <div id="cv-wrap" style="border-radius:.4rem;overflow:hidden;background:#f1f5f9;
+        <div style="flex:0 0 auto;width:100%;max-width:520px">
+            <div id="cv-wrap" style="border-radius:.4rem;overflow:hidden;
                                       border:1px solid #cbd5e1;touch-action:none">
                 <svg id="cv-svg" width="100%" xmlns="http://www.w3.org/2000/svg"
                      style="display:block;user-select:none;-webkit-user-select:none">
                     <defs>
-                        <marker id="cv-arrowhead" markerWidth="9" markerHeight="7"
+                        {{-- Freccia rossa: palla / attacco --}}
+                        <marker id="cv-ah-red" markerWidth="9" markerHeight="7"
                                 refX="8" refY="3.5" orient="auto">
                             <polygon points="0 0, 9 3.5, 0 7" fill="#dc2626"/>
                         </marker>
-                        <marker id="cv-arrowhead-preview" markerWidth="9" markerHeight="7"
+                        <marker id="cv-ah-red-pre" markerWidth="9" markerHeight="7"
                                 refX="8" refY="3.5" orient="auto">
                             <polygon points="0 0, 9 3.5, 0 7" fill="#dc262666"/>
+                        </marker>
+                        {{-- Freccia blu: spostamento giocatore --}}
+                        <marker id="cv-ah-blue" markerWidth="9" markerHeight="7"
+                                refX="8" refY="3.5" orient="auto">
+                            <polygon points="0 0, 9 3.5, 0 7" fill="#2563eb"/>
+                        </marker>
+                        <marker id="cv-ah-blue-pre" markerWidth="9" markerHeight="7"
+                                refX="8" refY="3.5" orient="auto">
+                            <polygon points="0 0, 9 3.5, 0 7" fill="#2563eb66"/>
                         </marker>
                     </defs>
                 </svg>
@@ -95,6 +114,9 @@
 var svg   = document.getElementById('cv-svg');
 var input = document.getElementById('cv-input');
 if (!svg || !input) return;
+
+// ── Costanti ──────────────────────────────────────────────────────────────
+var MARGIN = 48;  // zona libera attorno al campo (px nel viewBox)
 
 // ── Stato ─────────────────────────────────────────────────────────────────
 var state  = { layout: 'full', players: [], arrows: [] };
@@ -126,9 +148,19 @@ var previewLine = null;
     } catch(e) {}
 })();
 
-// ── Dimensioni campo ──────────────────────────────────────────────────────
+// ── Dimensioni ────────────────────────────────────────────────────────────
+// Ritorna dimensioni totali SVG + posizione/dimensioni del campo interno
 function dims() {
-    return state.layout === 'full' ? { w:540, h:270 } : { w:270, h:270 };
+    var cw = (state.layout === 'full') ? 540 : 270;
+    var ch = 270;
+    return {
+        w:  cw + MARGIN * 2,   // larghezza totale SVG
+        h:  ch + MARGIN * 2,   // altezza totale SVG
+        cx: MARGIN,            // campo: angolo top-left x
+        cy: MARGIN,            // campo: angolo top-left y
+        cw: cw,                // campo: larghezza
+        ch: ch                 // campo: altezza
+    };
 }
 
 // ── Helpers SVG ───────────────────────────────────────────────────────────
@@ -143,7 +175,6 @@ function txt(tag, attrs, text) {
     e.textContent = text;
     return e;
 }
-
 function svgPt(evt) {
     var pt  = svg.createSVGPoint();
     var src = (evt.touches && evt.touches.length) ? evt.touches[0] : evt;
@@ -163,23 +194,35 @@ function render() {
     }
     toRemove.forEach(function(c){ c.remove(); });
 
-    // Sfondo bianco/chiaro
-    svg.appendChild(el('rect', { x:0, y:0, width:d.w, height:d.h, fill:'#f1f5f9' }));
+    // Zona libera: sfondo più scuro/esterno
+    svg.appendChild(el('rect', { x:0, y:0, width:d.w, height:d.h, fill:'#cbd5e1' }));
+
+    // Tratteggio leggero nella zona libera (griglia coach)
+    drawFreeZoneGrid(d);
+
+    // Superficie campo (dentro le linee)
+    svg.appendChild(el('rect', { x:d.cx, y:d.cy, width:d.cw, height:d.ch, fill:'#e8ecf0' }));
 
     if (state.layout === 'full') drawFullCourt(d);
     else drawHalfCourt(d);
 
     // Frecce (sotto i giocatori)
     state.arrows.forEach(function(a) {
+        var color   = (a.color === 'blue') ? '#2563eb' : '#dc2626';
+        var markerId = (a.color === 'blue') ? 'url(#cv-ah-blue)' : 'url(#cv-ah-red)';
         var g = el('g', { 'data-id': a.id, class: 'cv-arrow-grp' });
         g.appendChild(el('line', {
-            x1: a.x1, y1: a.y1, x2: a.x2, y2: a.y2,
-            stroke: '#dc2626', 'stroke-width': 2.5,
-            'marker-end': 'url(#cv-arrowhead)', 'pointer-events': 'none'
+            x1:a.x1, y1:a.y1, x2:a.x2, y2:a.y2,
+            stroke:color, 'stroke-width':2.5,
+            'marker-end': markerId, 'pointer-events':'none'
         }));
+        // Stile: palla = solida, giocatore = tratteggiata
+        if (a.color === 'blue') {
+            g.children[0].setAttribute('stroke-dasharray', '8 4');
+        }
         var hit = el('line', {
-            x1: a.x1, y1: a.y1, x2: a.x2, y2: a.y2,
-            stroke: 'transparent', 'stroke-width': 14, cursor: 'pointer'
+            x1:a.x1, y1:a.y1, x2:a.x2, y2:a.y2,
+            stroke:'transparent', 'stroke-width':14, cursor:'pointer'
         });
         hit.addEventListener('contextmenu', function(e) {
             e.preventDefault(); removeArrow(a.id);
@@ -192,61 +235,115 @@ function render() {
     state.players.forEach(renderPlayer);
 }
 
+function drawFreeZoneGrid(d) {
+    // Linee punteggiate leggere nella zona libera — guida visiva per coach/file
+    var step = 24;
+    for (var x = 0; x <= d.w; x += step) {
+        svg.appendChild(el('line', {
+            x1:x, y1:0, x2:x, y2:d.h,
+            stroke:'rgba(0,0,0,.07)', 'stroke-width':0.8
+        }));
+    }
+    for (var y = 0; y <= d.h; y += step) {
+        svg.appendChild(el('line', {
+            x1:0, y1:y, x2:d.w, y2:y,
+            stroke:'rgba(0,0,0,.07)', 'stroke-width':0.8
+        }));
+    }
+    // Label zona libera agli angoli
+    svg.appendChild(txt('text', {
+        x: d.cx/2, y: d.cy + d.ch/2,
+        'text-anchor':'middle', 'dominant-baseline':'central',
+        fill:'rgba(0,0,0,.2)', 'font-size':9, 'font-weight':'bold',
+        'writing-mode':'tb', 'pointer-events':'none'
+    }, 'ZONA LIBERA'));
+    svg.appendChild(txt('text', {
+        x: d.cx + d.cw + d.cx/2, y: d.cy + d.ch/2,
+        'text-anchor':'middle', 'dominant-baseline':'central',
+        fill:'rgba(0,0,0,.2)', 'font-size':9, 'font-weight':'bold',
+        'writing-mode':'tb', 'pointer-events':'none'
+    }, 'ZONA LIBERA'));
+}
+
 function drawFullCourt(d) {
-    // Superficie campo (leggermente più scura del bg)
-    svg.appendChild(el('rect', { x:3, y:3, width:d.w-6, height:d.h-6,
-        fill:'#e2e8f0', stroke:'#1e293b', 'stroke-width':2.5 }));
-    // Rete
-    svg.appendChild(el('rect', { x:267, y:0, width:6, height:d.h, fill:'#475569' }));
-    svg.appendChild(el('circle', { cx:270, cy:3, r:5, fill:'#334155' }));
-    svg.appendChild(el('circle', { cx:270, cy:d.h-3, r:5, fill:'#334155' }));
-    // Linee d'attacco
+    var x = d.cx, y = d.cy, w = d.cw, h = d.ch;
+    // Bordo campo
+    svg.appendChild(el('rect', { x:x, y:y, width:w, height:h,
+        fill:'none', stroke:'#1e293b', 'stroke-width':2.5 }));
+    // Rete centrale
+    svg.appendChild(el('rect', { x: x+w/2-3, y:y, width:6, height:h, fill:'#475569' }));
+    svg.appendChild(el('circle', { cx:x+w/2, cy:y-2, r:5, fill:'#334155' }));
+    svg.appendChild(el('circle', { cx:x+w/2, cy:y+h+2, r:5, fill:'#334155' }));
+    // Linee d'attacco (3m = 90px da rete)
     svg.appendChild(el('line', {
-        x1:180, y1:3, x2:180, y2:d.h-3,
+        x1:x+180, y1:y, x2:x+180, y2:y+h,
         stroke:'#64748b', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
     }));
     svg.appendChild(el('line', {
-        x1:360, y1:3, x2:360, y2:d.h-3,
+        x1:x+360, y1:y, x2:x+360, y2:y+h,
         stroke:'#64748b', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
     }));
-    // Label zone
-    svg.appendChild(txt('text', { x:135, y:16, 'text-anchor':'middle',
-        fill:'rgba(0,0,0,.25)', 'font-size':11, 'pointer-events':'none' }, 'SQUADRA A'));
-    svg.appendChild(txt('text', { x:405, y:16, 'text-anchor':'middle',
-        fill:'rgba(0,0,0,.25)', 'font-size':11, 'pointer-events':'none' }, 'SQUADRA B'));
+    // Zone label
+    svg.appendChild(txt('text', { x:x+135, y:y+14, 'text-anchor':'middle',
+        fill:'rgba(0,0,0,.22)', 'font-size':10, 'pointer-events':'none' }, 'SQUADRA A'));
+    svg.appendChild(txt('text', { x:x+405, y:y+14, 'text-anchor':'middle',
+        fill:'rgba(0,0,0,.22)', 'font-size':10, 'pointer-events':'none' }, 'SQUADRA B'));
+    // Label free zone top/bottom
+    svg.appendChild(txt('text', { x:x+w/2, y:y-14, 'text-anchor':'middle',
+        fill:'rgba(0,0,0,.3)', 'font-size':9, 'pointer-events':'none' }, '← zona libera →'));
+    svg.appendChild(txt('text', { x:x+w/2, y:y+h+24, 'text-anchor':'middle',
+        fill:'rgba(0,0,0,.3)', 'font-size':9, 'pointer-events':'none' }, '← zona libera →'));
 }
 
 function drawHalfCourt(d) {
-    svg.appendChild(el('rect', { x:3, y:3, width:d.w-6, height:d.h-6,
-        fill:'#e2e8f0', stroke:'#1e293b', 'stroke-width':2.5 }));
-    // Rete in alto
-    svg.appendChild(el('rect', { x:0, y:0, width:d.w, height:5, fill:'#475569' }));
-    svg.appendChild(el('circle', { cx:4, cy:2, r:4, fill:'#334155' }));
-    svg.appendChild(el('circle', { cx:d.w-4, cy:2, r:4, fill:'#334155' }));
-    // Linea d'attacco 3m = 90px
+    var x = d.cx, y = d.cy, w = d.cw, h = d.ch;
+    // Superficie campo
+    svg.appendChild(el('rect', { x:x, y:y, width:w, height:h,
+        fill:'none', stroke:'#1e293b', 'stroke-width':2.5 }));
+    // Rete in alto (bordo superiore campo)
+    svg.appendChild(el('rect', { x:x, y:y, width:w, height:5, fill:'#475569' }));
+    svg.appendChild(el('circle', { cx:x, cy:y+2, r:5, fill:'#334155' }));
+    svg.appendChild(el('circle', { cx:x+w, cy:y+2, r:5, fill:'#334155' }));
+    // Linea d'attacco 3m = 90px dal bordo superiore
     svg.appendChild(el('line', {
-        x1:3, y1:90, x2:d.w-3, y2:90,
+        x1:x, y1:y+90, x2:x+w, y2:y+90,
         stroke:'#64748b', 'stroke-width':1.5, 'stroke-dasharray':'10 5'
     }));
-    svg.appendChild(txt('text', { x:d.w/2, y:20, 'text-anchor':'middle',
-        fill:'rgba(0,0,0,.25)', 'font-size':11, 'pointer-events':'none' }, 'RETE'));
-    svg.appendChild(txt('text', { x:d.w/2, y:84, 'text-anchor':'middle',
-        fill:'rgba(0,0,0,.2)', 'font-size':10, 'pointer-events':'none' }, '— 3 m —'));
+    svg.appendChild(txt('text', { x:x+w/2, y:y+18, 'text-anchor':'middle',
+        fill:'rgba(0,0,0,.25)', 'font-size':10, 'pointer-events':'none' }, 'RETE'));
+    svg.appendChild(txt('text', { x:x+w/2, y:y+84, 'text-anchor':'middle',
+        fill:'rgba(0,0,0,.2)', 'font-size':9, 'pointer-events':'none' }, '— 3 m —'));
+    // Label zona libera
+    svg.appendChild(txt('text', { x:x+w/2, y:y-14, 'text-anchor':'middle',
+        fill:'rgba(0,0,0,.3)', 'font-size':9, 'pointer-events':'none' }, '← zona libera (rete) →'));
+    svg.appendChild(txt('text', { x:x+w/2, y:y+h+24, 'text-anchor':'middle',
+        fill:'rgba(0,0,0,.3)', 'font-size':9, 'pointer-events':'none' }, '← zona libera (fondo) →'));
 }
 
+// ── Player render ─────────────────────────────────────────────────────────
 function renderPlayer(p) {
-    var colorMap = { A:'#f97316', D:'#3b82f6', B:'#fbbf24' };
+    var colorMap = { A:'#f97316', D:'#3b82f6', B:'#fbbf24', C:'#1e293b', X:'#6b7280' };
     var color    = colorMap[p.team] || '#aaa';
-    var r        = p.team === 'B' ? 10 : 13;
-    var fontSize = p.team === 'B' ? 10 : 11;
-    var txtColor = p.team === 'B' ? '#222' : '#fff';
+    var r        = (p.team === 'B' || p.team === 'X') ? 10 : 13;
+    var fontSize = (p.team === 'B' || p.team === 'X') ? 10 : 11;
+    var txtColor = (p.team === 'B') ? '#222' : '#fff';
+    var shape    = p.team === 'X' ? 'square' : 'circle';
 
     var g = el('g', { 'data-id': p.id, class: 'cv-player',
         cursor: tool === 'move' ? 'grab' : 'default' });
-    g.appendChild(el('circle', {
-        cx:p.x, cy:p.y, r:r,
-        fill:color, stroke:'#fff', 'stroke-width':1.5
-    }));
+
+    if (shape === 'square') {
+        g.appendChild(el('rect', {
+            x:p.x-r, y:p.y-r, width:r*2, height:r*2,
+            fill:color, stroke:'#fff', 'stroke-width':1.5, rx:3
+        }));
+    } else {
+        g.appendChild(el('circle', {
+            cx:p.x, cy:p.y, r:r,
+            fill:color, stroke:'#fff', 'stroke-width':1.5
+        }));
+    }
+
     g.appendChild(txt('text', {
         x:p.x, y:p.y,
         'text-anchor':'middle', 'dominant-baseline':'central',
@@ -271,8 +368,8 @@ function startDrag(e) {
     var p   = state.players.find(function(x){ return x.id === id; });
     if (!p) return;
     var pt  = svgPt(e);
-    dragging = { gEl: gEl, player: p, ox: pt.x - p.x, oy: pt.y - p.y };
-    gEl.setAttribute('cursor', 'grabbing');
+    dragging = { gEl:gEl, player:p, ox:pt.x-p.x, oy:pt.y-p.y };
+    gEl.setAttribute('cursor','grabbing');
 }
 
 svg.addEventListener('mousemove', function(e) {
@@ -286,14 +383,21 @@ svg.addEventListener('mousemove', function(e) {
     }
     var d  = dims();
     var pt = svgPt(e);
-    dragging.player.x = Math.max(14, Math.min(d.w-14, pt.x - dragging.ox));
-    dragging.player.y = Math.max(14, Math.min(d.h-14, pt.y - dragging.oy));
+    // Permetti drag ovunque nel SVG (anche zona libera), escludi solo oltre bordo
+    dragging.player.x = Math.max(10, Math.min(d.w-10, pt.x - dragging.ox));
+    dragging.player.y = Math.max(10, Math.min(d.h-10, pt.y - dragging.oy));
 
     var circles = dragging.gEl.querySelectorAll('circle');
+    var rects   = dragging.gEl.querySelectorAll('rect');
     var texts   = dragging.gEl.querySelectorAll('text');
     circles.forEach(function(c){
         c.setAttribute('cx', dragging.player.x);
         c.setAttribute('cy', dragging.player.y);
+    });
+    rects.forEach(function(r){
+        var sz = parseInt(r.getAttribute('width'))/2;
+        r.setAttribute('x', dragging.player.x - sz);
+        r.setAttribute('y', dragging.player.y - sz);
     });
     texts.forEach(function(t){
         t.setAttribute('x', dragging.player.x);
@@ -310,23 +414,28 @@ svg.addEventListener('mouseleave', function() {
 
 // ── Arrow tool ────────────────────────────────────────────────────────────
 svg.addEventListener('click', function(e) {
-    if (tool !== 'arrow') return;
+    if (tool === 'move') return;
     if (e.target.closest && e.target.closest('.cv-player')) return;
 
+    var isRed  = (tool === 'arrow-red');
+    var color  = isRed ? 'red' : 'blue';
+    var preCol = isRed ? '#dc262666' : '#2563eb66';
+    var marker = isRed ? 'url(#cv-ah-red-pre)' : 'url(#cv-ah-blue-pre)';
     var pt = svgPt(e);
+
     if (!arrowStart) {
-        arrowStart = { x: pt.x, y: pt.y };
+        arrowStart = { x:pt.x, y:pt.y };
         previewLine = el('line', {
             x1:pt.x, y1:pt.y, x2:pt.x, y2:pt.y,
-            stroke:'#dc262666', 'stroke-width':2, 'stroke-dasharray':'8 4',
-            'pointer-events':'none', 'marker-end':'url(#cv-arrowhead-preview)'
+            stroke:preCol, 'stroke-width':2, 'stroke-dasharray':'8 4',
+            'pointer-events':'none', 'marker-end':marker
         });
         svg.appendChild(previewLine);
     } else {
-        if (previewLine) { previewLine.remove(); previewLine = null; }
+        if (previewLine) { previewLine.remove(); previewLine=null; }
         var dx = pt.x - arrowStart.x, dy = pt.y - arrowStart.y;
         if (Math.sqrt(dx*dx + dy*dy) > 8) {
-            state.arrows.push({ id:'a'+(nextId++),
+            state.arrows.push({ id:'a'+(nextId++), color:color,
                 x1:arrowStart.x, y1:arrowStart.y, x2:pt.x, y2:pt.y });
             save();
         }
@@ -337,32 +446,53 @@ svg.addEventListener('click', function(e) {
 
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && arrowStart) {
-        if (previewLine) { previewLine.remove(); previewLine = null; }
+        if (previewLine) { previewLine.remove(); previewLine=null; }
         arrowStart = null;
     }
 });
 
 // ── Aggiungi / Rimuovi ────────────────────────────────────────────────────
-function removePlayer(id) { state.players=state.players.filter(function(p){return p.id!==id;}); render();save(); }
-function removeArrow(id)  { state.arrows=state.arrows.filter(function(a){return a.id!==id;});   render();save(); }
+function removePlayer(id) {
+    state.players = state.players.filter(function(p){ return p.id!==id; });
+    render(); save();
+}
+function removeArrow(id) {
+    state.arrows = state.arrows.filter(function(a){ return a.id!==id; });
+    render(); save();
+}
 
 document.querySelectorAll('.cv-add').forEach(function(btn) {
     btn.addEventListener('click', function() {
         var team = btn.dataset.team;
         var d    = dims();
         var cx, cy;
+
         if (team === 'B') {
-            cx = d.w/2 + (Math.random()*30-15);
-            cy = d.h/2 + (Math.random()*30-15);
+            // Pallone: centro campo
+            cx = d.cx + d.cw/2 + (Math.random()*30-15);
+            cy = d.cy + d.ch/2 + (Math.random()*30-15);
             state.players.push({ id:'p'+(nextId++), label:'●', team:'B', x:cx, y:cy });
+        } else if (team === 'C') {
+            // Coach: zona libera fondo campo (al centro, fuori dal campo)
+            cx = d.cx + d.cw/2;
+            cy = d.cy + d.ch + MARGIN*0.65;
+            state.players.push({ id:'p'+(nextId++), label:'C', team:'C', x:cx, y:cy });
+        } else if (team === 'X') {
+            // Carro palline: zona libera laterale
+            cx = d.cx - MARGIN*0.5;
+            cy = d.cy + d.ch*0.3 + (Math.random()*d.ch*0.4);
+            state.players.push({ id:'p'+(nextId++), label:'🧺', team:'X', x:cx, y:cy });
         } else {
-            var count = state.players.filter(function(p){return p.team===team;}).length;
+            // Giocatori A/D: max 6
+            var count = state.players.filter(function(p){ return p.team===team; }).length;
             if (count >= 6) return;
             var num = count + 1;
-            cx = (state.layout==='full')
-                ? ((team==='A') ? d.w*0.25 : d.w*0.75)
-                : (d.w*0.25 + (team==='D' ? d.w*0.5 : 0));
-            cy = d.h*0.5 + (Math.random()*60-30);
+            if (state.layout === 'full') {
+                cx = (team==='A') ? d.cx + d.cw*0.25 : d.cx + d.cw*0.75;
+            } else {
+                cx = (team==='A') ? d.cx + d.cw*0.3 : d.cx + d.cw*0.7;
+            }
+            cy = d.cy + d.ch*0.5 + (Math.random()*80-40);
             state.players.push({ id:'p'+(nextId++), label:team+num, team:team, x:cx, y:cy });
         }
         render(); save();
@@ -373,7 +503,7 @@ document.querySelectorAll('.cv-add').forEach(function(btn) {
 document.querySelectorAll('.cv-layout').forEach(function(btn) {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.cv-layout').forEach(function(b) {
-            b.classList.toggle('btn-primary', b===btn);
+            b.classList.toggle('btn-primary',         b===btn);
             b.classList.toggle('btn-outline-primary', b!==btn);
             b.classList.toggle('active', b===btn);
         });
@@ -387,12 +517,24 @@ document.querySelectorAll('.cv-layout').forEach(function(btn) {
 document.querySelectorAll('.cv-tool').forEach(function(btn) {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.cv-tool').forEach(function(b) {
-            b.classList.toggle('btn-secondary', b===btn);
-            b.classList.toggle('btn-outline-secondary', b!==btn);
-            b.classList.toggle('active', b===btn);
+            var active = b === btn;
+            b.classList.toggle('btn-secondary', active);
+            b.classList.toggle('btn-outline-secondary', !active);
+            b.classList.toggle('active', active);
+            // Ripristina colore testo custom per frecce
+            if (b.dataset.tool === 'arrow-red') {
+                b.style.color       = active ? '#fff' : '#dc2626';
+                b.style.borderColor = active ? ''     : '#dc2626';
+                b.style.background  = active ? '#dc2626' : '';
+            }
+            if (b.dataset.tool === 'arrow-blue') {
+                b.style.color       = active ? '#fff' : '#2563eb';
+                b.style.borderColor = active ? ''     : '#2563eb';
+                b.style.background  = active ? '#2563eb' : '';
+            }
         });
         tool = btn.dataset.tool;
-        if (tool!=='arrow' && arrowStart) {
+        if (tool === 'move' && arrowStart) {
             if (previewLine) { previewLine.remove(); previewLine=null; }
             arrowStart = null;
         }
@@ -415,7 +557,7 @@ function save() { input.value = JSON.stringify(state); }
 // ── Init ──────────────────────────────────────────────────────────────────
 document.querySelectorAll('.cv-layout').forEach(function(btn) {
     var active = btn.dataset.layout === state.layout;
-    btn.classList.toggle('btn-primary', active);
+    btn.classList.toggle('btn-primary',         active);
     btn.classList.toggle('btn-outline-primary', !active);
     btn.classList.toggle('active', active);
 });
