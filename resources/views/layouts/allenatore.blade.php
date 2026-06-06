@@ -129,6 +129,13 @@
                 ↳ Tipi allenamento
             </a>
         </li>
+        <li class="nav-item mt-2">
+            <a class="nav-link {{ request()->routeIs('allenatore.paradigma*') ? 'active' : '' }}"
+               href="{{ route('allenatore.paradigma.settings') }}"
+               style="{{ request()->routeIs('allenatore.paradigma*') ? '' : 'color:#a78bfa;font-weight:600' }}">
+                🧠 Paradigma
+            </a>
+        </li>
 
     </ul>
 

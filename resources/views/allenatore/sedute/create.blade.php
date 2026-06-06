@@ -59,6 +59,17 @@
     </div>
 </div>
 
+{{-- Template suggerito dal paradigma --}}
+@php $suggestedTemplate = auth()->user()->getPreferredSessionTemplate(); @endphp
+@if($suggestedTemplate)
+<div class="alert alert-secondary d-flex align-items-center gap-3 mb-3" style="font-size:.9rem">
+    <span>🧠 Template suggerito per il tuo paradigma:
+        <strong>{{ $suggestedTemplate->name }}</strong></span>
+    <a href="{{ route('allenatore.paradigma.preview', $suggestedTemplate) }}"
+       class="btn btn-sm btn-outline-secondary ms-auto" target="_blank">Anteprima</a>
+</div>
+@endif
+
 {{-- Collegamento unità didattica (opzionale) --}}
 @if($unitaDidattiche->isNotEmpty())
 <div class="row g-3 mb-3">

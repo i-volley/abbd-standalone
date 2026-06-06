@@ -47,5 +47,6 @@ php artisan db:seed --class=ParametroEsercizioSeeder --force
 php artisan db:seed --class=CategoriaGestoSeeder --force
 php artisan db:seed --class=GestoTecnicoSeeder --force
 php artisan db:seed --class=EsercizioFipavSeeder --force
+php artisan db:seed --class=ParadigmSeeder --force
 
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8080}

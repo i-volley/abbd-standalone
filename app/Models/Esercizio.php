@@ -16,16 +16,46 @@ class Esercizio extends Model
         'obiettivo', 'fase_seduta', 'fase_gioco', 'componente',
         'rendimento', 'livello', 'n_giocatori',
         'prevenzione_distretto',
+        // Paradigm tags
+        'exercise_category', 'paradigm_primary', 'constraint_type',
+        'representativeness', 'feedback_suggestion', 'affordance_targets',
     ];
 
     protected function casts(): array
     {
         return [
-            'n_salti'     => 'integer',
-            'n_gesti'     => 'integer',
-            'durata_min'  => 'integer',
-            'is_pubblico' => 'boolean',
+            'n_salti'            => 'integer',
+            'n_gesti'            => 'integer',
+            'durata_min'         => 'integer',
+            'is_pubblico'        => 'boolean',
+            'affordance_targets' => 'array',
         ];
+    }
+
+    // ── Scopes paradigma ─────────────────────────────────────────────────────
+
+    public function scopeForParadigm($query, string $paradigm)
+    {
+        // Non esclude, ordina per rilevanza: esercizi del paradigma in testa
+        return $query->orderByRaw(
+            "CASE WHEN paradigm_primary = ? THEN 0 WHEN paradigm_primary = 'neutral' THEN 1 ELSE 2 END",
+            [$paradigm]
+        );
+    }
+
+    public function scopeByCategory($query, string $category)
+    {
+        return $query->where('exercise_category', $category);
+    }
+
+    public function scopeByConstraint($query, string $type)
+    {
+        return $query->where('constraint_type', $type);
+    }
+
+    public function scopeHighRepresentativeness($query)
+    {
+        return $query->where('representativeness', 'high');
     }
 
     /** Categorie età disponibili */

@@ -14,6 +14,7 @@ use App\Http\Controllers\Allenatore\SportController;
 use App\Http\Controllers\Allenatore\StagioneController;
 use App\Http\Controllers\Allenatore\TeamController;
 use App\Http\Controllers\Allenatore\UnitaDidatticaController;
+use App\Http\Controllers\Allenatore\ParadigmaController;
 use App\Http\Controllers\Allenatore\WizardController;
 use App\Http\Controllers\Atleta\AtletaSeduteController;
 use App\Http\Controllers\FeedbackController;
@@ -75,6 +76,12 @@ Route::prefix('allenatore')->name('allenatore.')
     Route::delete('sedute/{seduta}/campi/{campo}', [SeduteController::class, 'rimuoviCampo'])->name('sedute.campi.destroy');
     Route::resource('sedute', SeduteController::class)
         ->parameters(['sedute' => 'seduta']);
+
+    // Paradigma pedagogico
+    Route::get('paradigma',              [ParadigmaController::class, 'settings'])->name('paradigma.settings');
+    Route::post('paradigma',             [ParadigmaController::class, 'updateSettings'])->name('paradigma.update');
+    Route::get('paradigma/templates',    [ParadigmaController::class, 'listTemplates'])->name('paradigma.templates');
+    Route::get('paradigma/preview/{template}', [ParadigmaController::class, 'previewTemplate'])->name('paradigma.preview');
 
     // Impostazioni
     Route::resource('sports', SportController::class)->only(['index', 'store', 'update', 'destroy']);

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
                 GestoTecnicoSeeder::class,  // firstOrCreate → sicuro
                 CategoriaGestoSeeder::class,// firstOrCreate → sicuro
                 ParametroEsercizioSeeder::class, // firstOrCreate → sicuro
+                ParadigmSeeder::class,      // firstOrCreate → sicuro
             ]);
             $this->command->info('Seed parziale: DB già popolato, dati utente preservati.');
             return;
