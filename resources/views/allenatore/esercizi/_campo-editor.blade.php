@@ -140,16 +140,9 @@ if (!svg || !input) return;
 // ── Costanti ──────────────────────────────────────────────────────────────
 var MARGIN = 48;  // zona libera attorno al campo (px nel viewBox)
 
-// Colori per ogni ruolo
-var ROLE_COLORS = {
-    P:  '#7c3aed',   // Palleggiatore — viola
-    O:  '#f43f5e',   // Opposto       — rosa/rosso
-    S1: '#ea580c',   // Schiacciatore 1 — arancio scuro
-    S2: '#d97706',   // Schiacciatore 2 — ambra
-    C1: '#0284c7',   // Centrale 1    — azzurro
-    C2: '#0891b2',   // Centrale 2    — cyan
-    L:  '#16a34a'    // Libero        — verde
-};
+// Colori squadre ruolo
+// Sq.1: viola per tutti, rosso per libero (token pieni)
+// Sq.2: outline nero per tutti, outline rosso per libero
 
 // ── Stato ─────────────────────────────────────────────────────────────────
 var state  = { layout: 'full', players: [], arrows: [] };
@@ -402,22 +395,22 @@ function renderPlayer(p) {
     var color, strokeColor, strokeW, txtColor, r, fontSize, shape;
 
     if (isRole) {
-        var roleColor = ROLE_COLORS[p.role] || '#64748b';
+        var isLibero = (p.role === 'L');
         r        = 14;
         fontSize = 10;
         shape    = 'circle';
         if (isRole1) {
-            // Pieno: sfondo con colore ruolo, testo bianco
-            color       = roleColor;
+            // Sq.1 — token pieni: viola per tutti, rosso per libero
+            color       = isLibero ? '#dc2626' : '#7c3aed';
             strokeColor = '#fff';
             strokeW     = 1.5;
             txtColor    = '#fff';
         } else {
-            // Outline: sfondo bianco, bordo e testo con colore ruolo
+            // Sq.2 — token outline: bordo nero per tutti, bordo rosso per libero
             color       = '#fff';
-            strokeColor = roleColor;
+            strokeColor = isLibero ? '#dc2626' : '#1e293b';
             strokeW     = 2.5;
-            txtColor    = roleColor;
+            txtColor    = isLibero ? '#dc2626' : '#1e293b';
         }
     } else {
         var colorMap = { A:'#f97316', D:'#3b82f6', B:'#fbbf24', C:'#1e293b', X:'#6b7280' };
