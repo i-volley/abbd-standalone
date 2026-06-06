@@ -92,7 +92,9 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'R-A', 'centr
                     @endforeach
                 </div>
             </div>
-            {{-- Catalogo pubblico: nessun pulsante modifica/elimina --}}
+            <div class="d-flex gap-1 flex-shrink-0">
+                <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+            </div>
         </div>
     </div>
 </div>
