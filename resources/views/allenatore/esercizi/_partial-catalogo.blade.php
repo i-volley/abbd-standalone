@@ -37,6 +37,7 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                     @if($e->n_salti > 0)<span>{{ $e->n_salti }} salti</span>@endif
                     @if($e->n_gesti > 0)<span>{{ $e->n_gesti }} gesti</span>@endif
                     @if($e->n_giocatori)<span>{{ $e->n_giocatori }}</span>@endif
+                    @if($e->campo_visivo)<span title="Campo di gioco disponibile">🏐</span>@endif
                 </div>
                 <div class="d-flex flex-wrap gap-1">
                     @foreach($e->capacita as $c)
@@ -44,7 +45,8 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                     @endforeach
                 </div>
             </div>
-            <div class="d-flex gap-1 flex-shrink-0">
+            <div class="d-flex flex-wrap gap-1 flex-shrink-0 align-items-start">
+                <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-dark">Scheda</a>
                 <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
                 <form action="{{ route('allenatore.esercizi.destroy', $e) }}" method="POST" class="d-inline"
                       data-confirm="Eliminare {{ addslashes($e->nome) }}?">
@@ -79,12 +81,14 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                     @if($e->categoria_eta)
                         <x-badge-categoria-eta :categoria="$e->categoria_eta" />
                     @endif
+                    @if($e->campo_visivo)<span title="Campo di gioco disponibile">🏐</span>@endif
                 </div>
                 <div class="small text-muted d-flex gap-2 flex-wrap mb-1">
                     @if($e->gestoTecnico)<span>{{ $e->gestoTecnico->nome }}</span>@endif
                     <span>{{ $e->durata_min }} min</span>
                     @if($e->n_salti > 0)<span>{{ $e->n_salti }} salti</span>@endif
                     @if($e->n_gesti > 0)<span>{{ $e->n_gesti }} gesti</span>@endif
+                    @if($e->n_giocatori)<span>{{ $e->n_giocatori }}</span>@endif
                 </div>
                 <div class="d-flex flex-wrap gap-1">
                     @foreach($e->capacita as $c)
@@ -92,7 +96,8 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                     @endforeach
                 </div>
             </div>
-            <div class="d-flex gap-1 flex-shrink-0">
+            <div class="d-flex flex-wrap gap-1 flex-shrink-0 align-items-start">
+                <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-dark">Scheda</a>
                 <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
             </div>
         </div>

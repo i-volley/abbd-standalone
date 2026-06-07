@@ -160,14 +160,33 @@ $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-d
         @endif
     </div>
 
-    {{-- ── NOTE METODOLOGICHE ─────────────────────────────────────────────── --}}
-    @if($esercizio->descrizione)
+    {{-- ── CAMPO DI GIOCO + NOTE ─────────────────────────────────────────── --}}
+    @if($esercizio->campo_visivo || $esercizio->descrizione)
     <div class="col-12">
         <div class="card shadow-sm">
             <div class="card-header py-2 bg-transparent">
-                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">Note metodologiche</small>
+                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">
+                    🏐 Campo di gioco
+                    @if($esercizio->descrizione) · Note metodologiche @endif
+                </small>
             </div>
-            <div class="card-body">{{ $esercizio->descrizione }}</div>
+            <div class="card-body p-0">
+                <div class="d-flex flex-column flex-md-row gap-0">
+                    {{-- Preview campo --}}
+                    @if($esercizio->campo_visivo)
+                    <div style="flex:0 0 auto;width:100%;max-width:480px;min-width:200px">
+                        @include('allenatore.esercizi._campo-preview', [
+                            'campoPreview' => $esercizio->campo_visivo,
+                            'previewKey'   => 'show-' . $esercizio->id,
+                        ])
+                    </div>
+                    @endif
+                    {{-- Note --}}
+                    @if($esercizio->descrizione)
+                    <div class="p-3 flex-grow-1" style="white-space:pre-wrap;font-size:.92rem;min-width:0">{{ $esercizio->descrizione }}</div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
     @endif
