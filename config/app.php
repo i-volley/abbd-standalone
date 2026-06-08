@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => true, // TEMP DEBUG — rimuovere dopo diagnosi
+    'debug' => (bool) env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------

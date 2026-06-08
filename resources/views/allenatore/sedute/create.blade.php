@@ -143,14 +143,17 @@
 (function() {
     const sel = document.getElementById('tpl-select');
     if (!sel) return;
-    const TEMPLATES = @json($templates->keyBy('id')->map(fn($t) => [
-        'name'   => $t->name,
-        'blocks' => $t->blocks->map(fn($b) => [
-            'block_name'                 => $b->block_name,
-            'block_type'                 => $b->block_type,
-            'suggested_duration_minutes' => $b->suggested_duration_minutes,
-        ])->values(),
-    ]));
+    @php
+        $tplData = $templates->keyBy('id')->map(fn($t) => [
+            'name'   => $t->name,
+            'blocks' => $t->blocks->map(fn($b) => [
+                'block_name'                 => $b->block_name,
+                'block_type'                 => $b->block_type,
+                'suggested_duration_minutes' => $b->suggested_duration_minutes,
+            ])->values(),
+        ]);
+    @endphp
+    const TEMPLATES = @json($tplData);
 
     const TYPE_COLORS = {
         warmup:'#f59e0b', technical:'#3b82f6', tactical:'#06b6d4',

@@ -27,63 +27,6 @@ require __DIR__.'/auth.php';
 
 Route::get('/', [HomeController::class, 'index']);
 
-// TEMP DEBUG — rimuovere dopo diagnosi
-Route::get('/_debug_templates', function () {
-    try {
-        $templates = \App\Models\SessionTemplate::with('blocks')
-            ->where(fn($q) => $q->where('is_system', true))
-            ->get();
-        $json = json_encode($templates->keyBy('id')->map(fn($t) => [
-            'name'   => $t->name,
-            'blocks' => $t->blocks->map(fn($b) => [
-                'block_name'  => $b->block_name,
-                'block_type'  => $b->block_type,
-                'duration'    => $b->suggested_duration_minutes,
-            ])->values(),
-        ]), JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
-        return response($json)->header('Content-Type', 'application/json');
-    } catch (\Throwable $e) {
-        return response('ERROR: ' . get_class($e) . ': ' . $e->getMessage() . "\n\nTrace:\n" . $e->getTraceAsString(), 500)
-            ->header('Content-Type', 'text/plain');
-    }
-});
-
-Route::get('/_debug_render', function () {
-    try {
-        $templates = \App\Models\SessionTemplate::with('blocks')
-            ->where('is_system', true)->get();
-        $teams = collect([]);
-        $unitaDidattiche = collect([]);
-        $defaultTeamId = null;
-        $rendered = view('allenatore.sedute.create', compact('templates', 'teams', 'unitaDidattiche', 'defaultTeamId'))->render();
-        return response('VIEW RENDER OK. Length: ' . strlen($rendered))->header('Content-Type', 'text/plain');
-    } catch (\Throwable $e) {
-        return response('ERROR rendering create view: ' . get_class($e) . ': ' . $e->getMessage() . "\n\nFile: " . $e->getFile() . ':' . $e->getLine() . "\n\nTrace:\n" . $e->getTraceAsString(), 500)
-            ->header('Content-Type', 'text/plain');
-    }
-});
-
-Route::get('/_debug_view', function () {
-    try {
-        $templates = \App\Models\SessionTemplate::with('blocks')
-            ->where(fn($q) => $q->where('is_system', true))
-            ->get();
-        $js = \Illuminate\Support\Js::from($templates->keyBy('id')->map(fn($t) => [
-            'name'   => $t->name,
-            'blocks' => $t->blocks->map(fn($b) => [
-                'block_name'  => $b->block_name,
-                'block_type'  => $b->block_type,
-                'duration'    => $b->suggested_duration_minutes,
-            ])->values(),
-        ]))->toHtml();
-        return response('Js::from OK. Output length: ' . strlen($js), 200)
-            ->header('Content-Type', 'text/plain');
-    } catch (\Throwable $e) {
-        return response('ERROR in Js::from: ' . get_class($e) . ': ' . $e->getMessage() . "\n\n" . $e->getTraceAsString(), 500)
-            ->header('Content-Type', 'text/plain');
-    }
-});
-
 // ── LANGUAGE SWITCHER ────────────────────────────────────────────────────────
 Route::get('/lang/{locale}', function (string $locale) {
     if (in_array($locale, ['it', 'en'])) {
