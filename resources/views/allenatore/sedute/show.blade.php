@@ -99,6 +99,31 @@
 </div>
 @endif
 
+{{-- ── Guida template (se associato) ───────────────────────────────────────── --}}
+@if($seduta->sessionTemplate)
+@php $tpl = $seduta->sessionTemplate; @endphp
+<div class="card border-0 shadow-sm mb-3" style="background:#f8f9fa">
+    <div class="card-body py-2 px-3 d-flex align-items-center gap-2 flex-wrap">
+        <span class="fw-semibold small" style="white-space:nowrap">📋 {{ $tpl->name }}</span>
+        <div class="d-flex flex-wrap gap-1 align-items-center">
+            @php
+                $typeColors = ['warmup'=>'#f59e0b','technical'=>'#3b82f6','tactical'=>'#06b6d4','ecological_constraint'=>'#10b981','game_form'=>'#ef4444','cooldown'=>'#6b7280','free'=>'#1e293b'];
+            @endphp
+            @foreach($tpl->blocks as $i => $b)
+                @if($i > 0)<span style="color:#adb5bd;font-size:.7rem">→</span>@endif
+                @php $col = $typeColors[$b->block_type] ?? '#64748b'; @endphp
+                <span style="display:inline-flex;align-items:center;gap:.25rem;background:{{ $col }}18;border:1px solid {{ $col }}55;border-radius:.3rem;padding:.15rem .45rem;font-size:.7rem">
+                    <span style="width:.5rem;height:.5rem;border-radius:50%;background:{{ $col }};flex-shrink:0"></span>
+                    {{ $b->block_name }}
+                    @if($b->suggested_duration_minutes)<span style="color:#6b7280">{{ $b->suggested_duration_minutes }}'</span>@endif
+                </span>
+            @endforeach
+        </div>
+        <span class="ms-auto text-muted small" style="font-size:.7rem;white-space:nowrap">{{ __('guida non vincolante') }}</span>
+    </div>
+</div>
+@endif
+
 {{-- ── Campi toolbar ────────────────────────────────────────────────────────── --}}
 <div class="d-flex align-items-center gap-2 mb-3 flex-wrap" id="campi-toolbar">
     <small class="text-muted fw-semibold">{{ __('Campi:') }}</small>

@@ -59,14 +59,38 @@
     </div>
 </div>
 
-{{-- Template suggerito dal paradigma --}}
-@php $suggestedTemplate = auth()->user()->getPreferredSessionTemplate(); @endphp
-@if($suggestedTemplate)
-<div class="alert alert-secondary d-flex align-items-center gap-3 mb-3" style="font-size:.9rem">
-    <span>🧠 {{ __('Template suggerito per la tua tipologia:') }}
-        <strong>{{ $suggestedTemplate->name }}</strong></span>
-    <a href="{{ route('allenatore.paradigma.preview', $suggestedTemplate) }}"
-       class="btn btn-sm btn-outline-secondary ms-auto" target="_blank">{{ __('Anteprima') }}</a>
+{{-- Selettore template (opzionale) --}}
+@if($templates->isNotEmpty())
+<div class="mb-3">
+    <label class="form-label fw-semibold">📋 {{ __('Template di seduta') }} <small class="text-muted fw-normal">({{ __('opzionale — usato come guida nel costruttore') }})</small></label>
+    <div class="d-flex gap-2 align-items-start flex-wrap">
+        <select name="session_template_id" id="tpl-select" class="form-select" style="max-width:380px">
+            <option value="">– {{ __('nessun template') }} –</option>
+            @php
+                $myTpls  = $templates->where('is_system', false);
+                $sysTpls = $templates->where('is_system', true);
+            @endphp
+            @if($myTpls->isNotEmpty())
+            <optgroup label="{{ __('I miei template') }}">
+                @foreach($myTpls as $tpl)
+                <option value="{{ $tpl->id }}" {{ old('session_template_id') == $tpl->id ? 'selected' : '' }}>
+                    {{ $tpl->name }} ({{ $tpl->blocks->sum('suggested_duration_minutes') ?: '?' }}')
+                </option>
+                @endforeach
+            </optgroup>
+            @endif
+            @if($sysTpls->isNotEmpty())
+            <optgroup label="{{ __('Template di sistema') }}">
+                @foreach($sysTpls as $tpl)
+                <option value="{{ $tpl->id }}" {{ old('session_template_id') == $tpl->id ? 'selected' : '' }}>
+                    {{ $tpl->name }}
+                </option>
+                @endforeach
+            </optgroup>
+            @endif
+        </select>
+        <div id="tpl-preview" class="flex-grow-1" style="display:none;min-width:220px"></div>
+    </div>
 </div>
 @endif
 
@@ -99,3 +123,50 @@
 
 <p class="text-muted">{{ __('Dopo aver creato la bozza potrai aggiungere gli esercizi.') }}</p>
 @endsection
+
+@push('scripts')
+@if($templates->isNotEmpty())
+<script>
+(function() {
+    const TEMPLATES = @json($templates->keyBy('id')->map(fn($t) => [
+        'name'   => $t->name,
+        'blocks' => $t->blocks->map(fn($b) => [
+            'block_name'                 => $b->block_name,
+            'block_type'                 => $b->block_type,
+            'suggested_duration_minutes' => $b->suggested_duration_minutes,
+        ])->values(),
+    ]));
+
+    const TYPE_COLORS = {
+        warmup:'#f59e0b', technical:'#3b82f6', tactical:'#06b6d4',
+        ecological_constraint:'#10b981', game_form:'#ef4444',
+        cooldown:'#6b7280', free:'#1e293b'
+    };
+
+    const sel     = document.getElementById('tpl-select');
+    const preview = document.getElementById('tpl-preview');
+
+    function renderPreview(id) {
+        if (!id || !TEMPLATES[id]) { preview.style.display = 'none'; preview.innerHTML = ''; return; }
+        const tpl = TEMPLATES[id];
+        let html = '<div class="d-flex flex-wrap gap-1 align-items-center">';
+        tpl.blocks.forEach(function(b, i) {
+            const col = TYPE_COLORS[b.block_type] || '#64748b';
+            if (i > 0) html += '<span style="color:#adb5bd;font-size:.7rem">→</span>';
+            html += `<span style="display:inline-flex;align-items:center;gap:.25rem;background:${col}18;border:1px solid ${col}55;border-radius:.3rem;padding:.15rem .4rem;font-size:.7rem">
+                <span style="width:.55rem;height:.55rem;border-radius:50%;background:${col};flex-shrink:0"></span>
+                <span>${b.block_name}</span>
+                ${b.suggested_duration_minutes ? `<span style="color:#6b7280">${b.suggested_duration_minutes}'</span>` : ''}
+            </span>`;
+        });
+        html += '</div>';
+        preview.innerHTML = html;
+        preview.style.display = '';
+    }
+
+    sel.addEventListener('change', function() { renderPreview(this.value); });
+    renderPreview(sel.value);
+})();
+</script>
+@endif
+@endpush

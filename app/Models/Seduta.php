@@ -9,7 +9,7 @@ class Seduta extends Model
     protected $table = 'sedute';
 
     protected $fillable = [
-        'microciclo_id', 'unita_didattica_id', 'team_id', 'allenatore_id',
+        'microciclo_id', 'session_template_id', 'unita_didattica_id', 'team_id', 'allenatore_id',
         'titolo', 'obiettivo_seduta', 'data', 'luogo',
         'durata_tot_min', 'stato', 'visibile_atleti', 'scadenza_feedback',
         'reminder_inviato', 'note_allenatore',
@@ -39,6 +39,11 @@ class Seduta extends Model
     public function microciclo()
     {
         return $this->belongsTo(Microciclo::class);
+    }
+
+    public function sessionTemplate()
+    {
+        return $this->belongsTo(SessionTemplate::class, 'session_template_id');
     }
 
     public function unitaDidattica()

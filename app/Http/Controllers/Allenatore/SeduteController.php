@@ -46,7 +46,17 @@ class SeduteController extends Controller
 
         $defaultTeamId = session('current_team_id');
 
-        return view('allenatore.sedute.create', compact('teams', 'unitaDidattiche', 'defaultTeamId'));
+        // Template: prima i propri, poi quelli di sistema
+        $templates = \App\Models\SessionTemplate::with('blocks')
+            ->where(fn($q) => $q
+                ->where('created_by', auth()->id())
+                ->orWhere('is_system', true)
+            )
+            ->orderByRaw('CASE WHEN is_system = 0 THEN 0 ELSE 1 END')
+            ->orderBy('name')
+            ->get();
+
+        return view('allenatore.sedute.create', compact('teams', 'unitaDidattiche', 'defaultTeamId', 'templates'));
     }
 
     public function store(Request $request)
@@ -57,6 +67,7 @@ class SeduteController extends Controller
             'data'                 => 'required|date',
             'luogo'                => 'nullable|string|max:255',
             'microciclo_id'        => 'nullable|exists:microcicli,id',
+            'session_template_id'  => 'nullable|exists:session_templates,id',
             'unita_didattica_id'   => 'nullable|exists:unita_didattiche,id',
             'obiettivo_seduta'     => 'nullable|string|max:500',
             'n_atlete'             => 'nullable|integer|min:1|max:100',
@@ -99,6 +110,7 @@ class SeduteController extends Controller
             'campi',
             'team',
             'feedback.atleta',
+            'sessionTemplate.blocks',
         ]);
 
         $gestiFondamentali = GestoTecnico::orderBy('nome')->get();
