@@ -509,6 +509,38 @@
         return null;
     }
 
+    // Cerchio colorato sul numero del giorno per le sedute
+    // compact=true → cerchio più piccolo (viste anno/stagione/mobile)
+    function dayCircle(dayNum, evts, tod, compact) {
+        const sz   = compact ? '1.2rem' : '1.55rem';
+        const fs   = compact ? '.6rem'  : '.75rem';
+        const bdgSz = compact ? '.72rem' : '.8rem';
+        const bdgFs = compact ? '.42rem' : '.46rem';
+
+        // Cerchio "oggi" (blu) — con o senza seduta
+        if (tod) {
+            const bg = evts.length ? STATO_COLORE[evts[0].stato] || '#3b82f6' : '#3b82f6';
+            const badge = evts.length > 1
+                ? `<span style="position:absolute;top:-2px;right:-3px;width:${bdgSz};height:${bdgSz};border-radius:50%;background:#1e293b;color:#fff;font-size:${bdgFs};font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1">${evts.length}</span>`
+                : '';
+            const tip = evts.map(s => s.titolo).join(', ');
+            return `<span style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:${sz};height:${sz};border-radius:50%;background:${bg};color:#fff;font-size:${fs};font-weight:700" ${tip?`title="${tip}"`:''}>${dayNum}${badge}</span>`;
+        }
+
+        // Nessuna seduta → numero normale
+        if (!evts.length) {
+            return `<span style="font-size:${fs};color:#495057">${dayNum}</span>`;
+        }
+
+        // Cerchio colorato per seduta/e
+        const color = STATO_COLORE[evts[0].stato] || '#64748b';
+        const tip   = evts.map(s => s.titolo).join(', ');
+        const badge = evts.length > 1
+            ? `<span style="position:absolute;top:-2px;right:-3px;width:${bdgSz};height:${bdgSz};border-radius:50%;background:#1e293b;color:#fff;font-size:${bdgFs};font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1">${evts.length}</span>`
+            : '';
+        return `<a href="${evts.length === 1 ? evts[0].url : '#'}" style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:${sz};height:${sz};border-radius:50%;background:${color};color:#fff;font-size:${fs};font-weight:700;text-decoration:none" title="${tip}">${dayNum}${badge}</a>`;
+    }
+
     // Unità didattiche che coprono questo giorno → array di {colore, titolo}
     function udForKey(key) {
         return UNITA.filter(u => key >= u.da && key <= u.a);
@@ -556,14 +588,8 @@
             const sty   = bgCol ? `background:${bgCol};${brCol ? `border-top:3px solid ${brCol};` : ''}` : '';
 
             html += `<a href="${dayUrl(key)}" class="mob-month-cell ${oth ? 'other-month' : ''} ${tod ? 'today-cell' : ''}" style="${sty}">`;
-            html += `<span class="mob-day-num ${tod ? 'today-mini' : ''}">${day.getDate()}</span>`;
-            if (evts.length) {
-                html += '<span class="mob-dots">';
-                evts.slice(0, 4).forEach(s =>
-                    html += `<span class="mob-dot" style="background:${STATO_COLORE[s.stato] || '#64748b'}" title="${s.titolo}"></span>`);
-                if (evts.length > 4) html += `<span class="mob-dot-more">+${evts.length - 4}</span>`;
-                html += '</span>';
-            }
+            if (!oth) html += dayCircle(day.getDate(), evts, tod, true);
+            else      html += `<span class="mob-day-num" style="color:#adb5bd">${day.getDate()}</span>`;
             if (!oth) html += udLines(key, true);
             html += '</a>';
 
@@ -689,50 +715,24 @@
                     html += `<a href="${dayUrl(key)}"
                                 class="cal-cell-mini cal-cell-mini--link ${oth?'other-month':''} ${tod?'today-cell':''}"
                                 ${sty}>`;
-                    html += `<span class="${numCls}">${day.getDate()}</span>`;
-                    if (evts.length) {
-                        html += '<div class="mini-dots">';
-                        evts.slice(0, 4).forEach(s =>
-                            html += `<span class="mini-dot" style="background:${STATO_COLORE[s.stato]||'#64748b'}" title="${s.titolo}"></span>`);
-                        if (evts.length > 4) html += `<span class="mini-dot-more">+${evts.length-4}</span>`;
-                        html += '</div>';
-                    }
+                    if (!oth) html += dayCircle(day.getDate(), evts, tod, true);
+                    else      html += `<span class="mini-day-num" style="color:#ced4da">${day.getDate()}</span>`;
                     html += udLines(key, true);
                     html += '</a>';
                 } else {
-                    // Desktop anno/stagione: comportamento esistente
-                    if (evts.length === 1) {
-                        // Cella intera = link alla seduta
-                        html += `<a href="${evts[0].url}"
-                                    class="cal-cell-mini cal-cell-mini--link ${oth?'other-month':''} ${tod?'today-cell':''}"
-                                    ${sty}
-                                    title="${evts[0].titolo}">`;
-                    } else {
-                        html += `<div class="cal-cell-mini ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
-                    }
-                    const numCls = evts.length === 1
-                        ? `mini-day-num ${tod?'today-mini':''} mini-day-num--event`
-                        : `mini-day-num ${tod?'today-mini':''}`;
-                    html += `<span class="${numCls}">${day.getDate()}</span>`;
-                    if (evts.length > 1) {
-                        // Più sedute: pallini cliccabili con tooltip
-                        html += '<div class="mini-dots">';
-                        evts.slice(0, 4).forEach(s => html += eventChip(s, true));
-                        if (evts.length > 4) html += `<span class="mini-dot-more">+${evts.length-4}</span>`;
-                        html += '</div>';
-                    }
+                    // Desktop anno/stagione
+                    html += `<div class="cal-cell-mini ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
+                    if (!oth) html += dayCircle(day.getDate(), evts, tod, true);
+                    else      html += `<span class="mini-day-num" style="color:#ced4da">${day.getDate()}</span>`;
                     html += udLines(key, true);
-                    html += evts.length === 1 ? '</a>' : '</div>';
+                    html += '</div>';
                 }
             } else {
                 html += `<div class="cal-cell ${oth?'other-month':''} ${tod?'today-cell':''}" ${sty}>`;
                 html += '<div class="cal-day-num">';
-                if (tod) html += `<span class="today-badge">${day.getDate()}</span>`;
-                else     html += `<span>${day.getDate()}</span>`;
-                if (evts.length > 1) html += `<span style="font-size:.6rem;color:#94a3b8">${evts.length}×</span>`;
+                if (!oth) html += dayCircle(day.getDate(), evts, tod, false);
+                else      html += `<span style="font-size:.72rem;color:#ced4da">${day.getDate()}</span>`;
                 html += '</div>';
-                evts.slice(0, 3).forEach(s => html += eventChip(s, false));
-                if (evts.length > 3) html += `<span style="font-size:.65rem;color:#6c757d">+${evts.length-3} altri</span>`;
                 if (!oth) html += udLines(key, false);
                 html += '</div>';
             }
