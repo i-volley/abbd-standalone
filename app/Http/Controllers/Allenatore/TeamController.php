@@ -53,9 +53,13 @@ class TeamController extends Controller
     public function update(Request $request, Team $team)
     {
         $data = $request->validate([
-            'nome'     => 'required|string|max:255',
-            'stagione' => 'required|string|max:20',
-            'sport_id' => 'nullable|exists:sports,id',
+            'nome'               => 'required|string|max:255',
+            'stagione'           => 'required|string|max:20',
+            'sport_id'           => 'nullable|exists:sports,id',
+            'soglia_salti_warn'  => 'nullable|integer|min:0|max:9999',
+            'soglia_salti_danger'=> 'nullable|integer|min:0|max:9999',
+            'soglia_gesti_warn'  => 'nullable|integer|min:0|max:9999',
+            'soglia_gesti_danger'=> 'nullable|integer|min:0|max:9999',
         ]);
 
         $team->update($data);

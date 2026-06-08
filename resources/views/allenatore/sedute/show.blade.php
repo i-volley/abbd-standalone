@@ -298,8 +298,16 @@
         {{-- Pannello carico seduta --}}
         <div class="card shadow-sm mt-3" id="card-carico">
             <div class="card-header py-2 d-flex align-items-center justify-content-between">
-                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">{{ __('Carico seduta') }}</small>
-                <small class="text-muted" id="carico-updated" style="font-size:.7rem"></small>
+                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">
+                    {{ __('Carico seduta') }}
+                </small>
+                <div class="d-flex align-items-center gap-2">
+                    {{-- Info formula --}}
+                    <span data-bs-toggle="tooltip" data-bs-html="true"
+                          title="<strong>{{ __('Formula') }}</strong><br>{{ __('Salti') }}: Σ (n_salti × serie × rip)<br>{{ __('Gesti') }}: Σ (n_gesti × serie × rip)<br>{{ __('Durata') }}: Σ durata_min<br><br><em>{{ __('Soglie team') }}: ⚡ {{ $soglie['salti_warn'] }} / ⚠️ {{ $soglie['salti_danger'] }} salti &nbsp;·&nbsp; ⚡ {{ $soglie['gesti_warn'] }} / ⚠️ {{ $soglie['gesti_danger'] }} gesti</em>"
+                          style="cursor:help;color:#6c757d;font-size:.85rem">ⓘ</span>
+                    <small class="text-muted" id="carico-updated" style="font-size:.7rem"></small>
+                </div>
             </div>
             <div class="card-body py-2">
                 <div class="d-flex gap-3 flex-wrap">
@@ -309,11 +317,11 @@
                     </div>
                     <div class="text-center">
                         <div class="fw-bold fs-5" id="carico-salti">0</div>
-                        <div class="text-muted" style="font-size:.7rem">SALTI</div>
+                        <div class="text-muted" style="font-size:.7rem">{{ strtoupper(__('Salti')) }}</div>
                     </div>
                     <div class="text-center">
                         <div class="fw-bold fs-5" id="carico-gesti">0</div>
-                        <div class="text-muted" style="font-size:.7rem">GESTI</div>
+                        <div class="text-muted" style="font-size:.7rem">{{ strtoupper(__('Gesti')) }}</div>
                     </div>
                     <div class="text-center">
                         <div class="fw-bold fs-5" id="carico-carico">—</div>
@@ -600,24 +608,39 @@
 
     cercaEsercizi();
 
+    // ── Soglie carico (configurate per il team) ──────────────────────────────
+    var SOGLIE = {
+        saltiWarn:   {{ $soglie['salti_warn'] }},
+        saltiDanger: {{ $soglie['salti_danger'] }},
+        gestiWarn:   {{ $soglie['gesti_warn'] }},
+        gestiDanger: {{ $soglie['gesti_danger'] }},
+    };
+
     // ── Carico seduta ────────────────────────────────────────────────────────
+    // Formula: totale = Σ (valore_esercizio × serie × ripetizioni)
+    // n_salti e n_gesti: usa l'override del pivot se presente, altrimenti il default dell'esercizio
     function calcolaCarico() {
         var items = lista.querySelectorAll('[data-pivot]');
         var totDurata = 0, totSalti = 0, totGesti = 0;
         var carichi = [], nCarichi = 0;
 
         items.forEach(function(li) {
-            var inputs   = li.querySelectorAll('input[type=number]');
-            var serie    = parseInt(inputs[0]?.value) || parseInt(li.dataset.serie) || 1;
-            var rip      = parseInt(inputs[1]?.value) || parseInt(li.dataset.rip)   || 1;
-            var salti    = parseInt(li.dataset.salti) || 0;
-            var gesti    = parseInt(li.dataset.gesti) || 0;
-            var durata   = parseInt(li.dataset.durata) || 0;
+            var serieInput = li.querySelector('input[name=serie]');
+            var ripInput   = li.querySelector('input[name=ripetizioni]');
+            var saltiInput = li.querySelector('input[name=n_salti]');
+            var serie  = parseInt(serieInput?.value) || parseInt(li.dataset.serie) || 1;
+            var rip    = parseInt(ripInput?.value)   || parseInt(li.dataset.rip)   || 1;
+            // FIX: usa override pivot n_salti se valorizzato, altrimenti default esercizio
+            var salti  = saltiInput && saltiInput.value !== ''
+                ? (parseInt(saltiInput.value) || 0)
+                : (parseInt(li.dataset.salti) || 0);
+            var gesti  = parseInt(li.dataset.gesti) || 0;
+            var durata = parseInt(li.dataset.durata) || 0;
+
             totDurata += durata;
             totSalti  += salti * serie * rip;
             totGesti  += gesti * serie * rip;
 
-            // carico_percepito
             var cInput = li.querySelector('input[name=carico_percepito]');
             var c = cInput ? parseInt(cInput.value) : NaN;
             if (!isNaN(c) && c >= 1 && c <= 10) { carichi.push(c); nCarichi++; }
@@ -629,26 +652,30 @@
         var elGesti = document.getElementById('carico-gesti');
         elSalti.textContent = totSalti;
         elGesti.textContent = totGesti;
-        elSalti.className = totSalti > 400 ? 'fw-bold fs-5 text-danger' : totSalti > 250 ? 'fw-bold fs-5 text-warning' : 'fw-bold fs-5 text-success';
-        elGesti.className = totGesti > 600 ? 'fw-bold fs-5 text-danger' : totGesti > 400 ? 'fw-bold fs-5 text-warning' : 'fw-bold fs-5 text-success';
+        elSalti.className = totSalti > SOGLIE.saltiDanger ? 'fw-bold fs-5 text-danger'
+                          : totSalti > SOGLIE.saltiWarn   ? 'fw-bold fs-5 text-warning'
+                          : 'fw-bold fs-5 text-success';
+        elGesti.className = totGesti > SOGLIE.gestiDanger ? 'fw-bold fs-5 text-danger'
+                          : totGesti > SOGLIE.gestiWarn   ? 'fw-bold fs-5 text-warning'
+                          : 'fw-bold fs-5 text-success';
 
         var avgCarico = nCarichi > 0 ? (carichi.reduce((a,b)=>a+b,0)/nCarichi).toFixed(1) : '—';
         document.getElementById('carico-carico').textContent = avgCarico;
 
         var warns = [];
-        if (totSalti > 400) warns.push('⚠️ Volume salti molto elevato — prevedi 48h recupero');
-        else if (totSalti > 250) warns.push('⚡ Volume salti alto');
-        if (totGesti > 600) warns.push('⚠️ Volume gesti elevato — rischio sovraccarico');
+        if (totSalti > SOGLIE.saltiDanger)      warns.push('⚠️ {{ __("Volume salti molto elevato — prevedi 48h recupero") }}');
+        else if (totSalti > SOGLIE.saltiWarn)   warns.push('⚡ {{ __("Volume salti alto") }}');
+        if (totGesti > SOGLIE.gestiDanger)       warns.push('⚠️ {{ __("Volume gesti elevato — rischio sovraccarico") }}');
 
         var wEl = document.getElementById('carico-warning');
         if (warns.length) {
-            wEl.innerHTML = warns.map(w => '<small class="text-danger d-block">' + w + '</small>').join('');
+            wEl.innerHTML = warns.map(function(w) { return '<small class="text-danger d-block">' + w + '</small>'; }).join('');
             wEl.style.display = '';
         } else {
             wEl.style.display = 'none';
         }
         document.getElementById('carico-updated').textContent =
-            new Date().toLocaleTimeString('it-IT', {hour:'2-digit',minute:'2-digit'});
+            new Date().toLocaleTimeString(navigator.language || 'it-IT', {hour:'2-digit',minute:'2-digit'});
     }
 
     lista.addEventListener('input', function(e) {

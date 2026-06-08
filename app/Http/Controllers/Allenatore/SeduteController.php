@@ -103,7 +103,15 @@ class SeduteController extends Controller
 
         $gestiFondamentali = GestoTecnico::orderBy('nome')->get();
 
-        return view('allenatore.sedute.show', compact('seduta', 'gestiFondamentali'));
+        // Soglie carico configurabili per team
+        $soglie = [
+            'salti_warn'   => $seduta->team->soglia_salti_warn   ?? 250,
+            'salti_danger' => $seduta->team->soglia_salti_danger ?? 400,
+            'gesti_warn'   => $seduta->team->soglia_gesti_warn   ?? 400,
+            'gesti_danger' => $seduta->team->soglia_gesti_danger ?? 600,
+        ];
+
+        return view('allenatore.sedute.show', compact('seduta', 'gestiFondamentali', 'soglie'));
     }
 
     public function edit(Seduta $seduta)

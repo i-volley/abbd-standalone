@@ -6,7 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
-    protected $fillable = ['sport_id', 'allenatore_id', 'nome', 'stagione'];
+    protected $fillable = [
+        'sport_id', 'allenatore_id', 'nome', 'stagione',
+        'soglia_salti_warn', 'soglia_salti_danger',
+        'soglia_gesti_warn', 'soglia_gesti_danger',
+    ];
+
+    protected $attributes = [
+        'soglia_salti_warn'   => 250,
+        'soglia_salti_danger' => 400,
+        'soglia_gesti_warn'   => 400,
+        'soglia_gesti_danger' => 600,
+    ];
 
     public function sport()
     {

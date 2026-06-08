@@ -433,5 +433,23 @@
   "Allenatore": "Coach",
   "Atleta": "Athlete",
   "Nome": "Name",
-  "Conferma password": "Confirm password"
+  "Conferma password": "Confirm password",
+
+  "Soglie carico seduta": "Session load thresholds",
+  "Formula": "Formula",
+  "Totale salti": "Total jumps",
+  "Totale gesti": "Total actions",
+  "Soglie team": "Team thresholds",
+  "Salti — warning": "Jumps — warning",
+  "Salti — danger": "Jumps — danger",
+  "Gesti — warning": "Actions — warning",
+  "Gesti — danger": "Actions — danger",
+  "Default FIPAV": "FIPAV default",
+  "Salti": "Jumps",
+  "Gesti": "Actions",
+  "Volume salti molto elevato — prevedi 48h recupero": "Very high jump volume — allow 48h recovery",
+  "Volume salti alto": "High jump volume",
+  "Volume gesti elevato — rischio sovraccarico": "High action volume — overload risk",
+  "Soglie usate nel pannello Carico durante la compilazione seduta. Formula: n_salti × serie × rip per ogni esercizio.": "Thresholds used in the Load panel during session building. Formula: n_jumps × sets × reps per exercise.",
+  "Nome team *": "Team name *"
 }
