@@ -54,10 +54,6 @@
             <input type="number" name="n_gesti" class="form-control" value="{{ old('n_gesti', $esercizio->n_gesti) }}" min="0">
         </div>
         <div class="col-md-6">
-            <label class="form-label">N. Giocatori <small class="text-muted">(es. 6, 6+1, 12)</small></label>
-            <input type="text" name="n_giocatori" class="form-control" value="{{ old('n_giocatori', $esercizio->n_giocatori) }}" placeholder="es. 6+1">
-        </div>
-        <div class="col-md-12">
             <label class="form-label">URL Video</label>
             <input type="url" name="video_url" class="form-control" value="{{ old('video_url', $esercizio->video_url) }}">
         </div>
