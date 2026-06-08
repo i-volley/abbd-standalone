@@ -74,7 +74,7 @@
     @if($unitaDidattiche->isNotEmpty())
     <div class="d-flex align-items-center gap-1 ms-2">
         <span class="rounded-pill d-inline-block" style="width:1rem;height:1rem;background:#8b5cf6;opacity:.75"></span>
-        <small class="fw-semibold">{{ __('Unità Didattiche') }}</small>
+        <small class="fw-semibold">{{ __('Microcicli') }}</small>
     </div>
     @endif
     @if($sedute->isNotEmpty())
@@ -625,7 +625,7 @@
 {{-- ── UNITÀ DIDATTICHE ─────────────────────────────────────────────────────── --}}
 @if($unitaDidattiche->isNotEmpty())
 <h5 class="fw-bold mt-4 mb-3">
-    {{ __('Unità Didattiche') }}
+    {{ __('Microcicli') }}
     <span class="badge rounded-pill ms-1" style="background:#8b5cf6;font-size:.75rem">{{ $unitaDidattiche->count() }}</span>
 </h5>
 <div class="row g-2">

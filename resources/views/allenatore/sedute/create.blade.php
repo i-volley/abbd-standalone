@@ -74,7 +74,7 @@
 @if($unitaDidattiche->isNotEmpty())
 <div class="row g-3 mb-3">
     <div class="col-md-7">
-        <label class="form-label">{{ __('Collega a unità didattica') }} <small class="text-muted">({{ __('opzionale') }})</small></label>
+        <label class="form-label">{{ __('Collega a microciclo') }} <small class="text-muted">({{ __('opzionale') }})</small></label>
         <select name="unita_didattica_id" class="form-select">
             <option value="">{{ __('– nessuna –') }}</option>
             @foreach($unitaDidattiche as $u)

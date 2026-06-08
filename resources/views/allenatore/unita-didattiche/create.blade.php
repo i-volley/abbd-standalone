@@ -1,13 +1,11 @@
 @extends('layouts.allenatore')
-@section('title', __('Nuova Unità Didattica'))
+@section('title', __('Nuovo Microciclo'))
 
 @section('content')
 <div class="row justify-content-center">
 <div class="col-lg-8">
-<h2 class="mb-1">{{ __('Nuova unità didattica') }}</h2>
-<p class="text-muted small mb-4">
-    Dal Manuale FIPAV Primo Grado, Metodologia 1-6: <em>«Obiettivo permanente costante — obiettivo principale variabile»</em>
-</p>
+<h2 class="mb-1">{{ __('Nuovo microciclo') }}</h2>
+<p class="text-muted small mb-4">{{ __('Blocco tematico su obiettivo specifico') }}</p>
 
 <form action="{{ route('allenatore.unita-didattiche.store') }}" method="POST">
     @csrf
@@ -83,7 +81,7 @@
         </div>
 
         <div class="col-12">
-            <button type="submit" class="btn btn-primary">{{ __('Crea unità didattica') }}</button>
+            <button type="submit" class="btn btn-primary">{{ __('Crea microciclo') }}</button>
             <a href="{{ route('allenatore.unita-didattiche.index') }}" class="btn btn-outline-secondary ms-2">{{ __('Annulla') }}</a>
         </div>
 

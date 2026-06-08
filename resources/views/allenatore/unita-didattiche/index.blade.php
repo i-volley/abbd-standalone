@@ -1,13 +1,13 @@
 @extends('layouts.allenatore')
-@section('title', __('Unità Didattiche'))
+@section('title', __('Microcicli'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="mb-1">{{ __('Unità Didattiche') }}</h2>
-        <p class="text-muted small mb-0">{{ __('Gruppi di sedute con obiettivo permanente condiviso — Manuale FIPAV, Metodologia 1-6') }}</p>
+        <h2 class="mb-1">{{ __('Microcicli') }}</h2>
+        <p class="text-muted small mb-0">{{ __('Blocco tematico su obiettivo specifico') }}</p>
     </div>
-    <a href="{{ route('allenatore.unita-didattiche.create') }}" class="btn btn-primary">{{ __('+ Nuova unità didattica') }}</a>
+    <a href="{{ route('allenatore.unita-didattiche.create') }}" class="btn btn-primary">{{ __('+ Nuovo microciclo') }}</a>
 </div>
 
 @forelse($unita as $u)
@@ -49,8 +49,8 @@
 </div>
 @empty
 <div class="alert alert-light border text-center py-5">
-    <p class="mb-2 text-muted">{{ __('Nessuna unità didattica ancora.') }}</p>
-    <a href="{{ route('allenatore.unita-didattiche.create') }}" class="btn btn-primary">{{ __('Nuova unità didattica') }}</a>
+    <p class="mb-2 text-muted">{{ __('Nessun microciclo ancora.') }}</p>
+    <a href="{{ route('allenatore.unita-didattiche.create') }}" class="btn btn-primary">{{ __('Nuovo microciclo') }}</a>
 </div>
 @endforelse
 

@@ -38,7 +38,7 @@
         <a href="{{ route('allenatore.unita-didattiche.index') }}" class="text-decoration-none">
             <div class="card h-100 border-0 shadow-sm text-center py-3 px-2 hover-lift">
                 <div style="font-size:2rem">📚</div>
-                <div class="fw-semibold mt-1">{{ __('Unità Didattiche') }}</div>
+                <div class="fw-semibold mt-1">{{ __('Microcicli') }}</div>
                 <small class="text-muted">{{ __('Obiettivi') }} · {{ __('Progressione') }}</small>
             </div>
         </a>

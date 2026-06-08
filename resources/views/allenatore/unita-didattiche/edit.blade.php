@@ -1,5 +1,5 @@
 @extends('layouts.allenatore')
-@section('title', __('Modifica Unità Didattica'))
+@section('title', __('Modifica Microciclo'))
 
 @section('content')
 <div class="row justify-content-center">
@@ -88,9 +88,9 @@
 
 <hr class="mt-4">
 <form action="{{ route('allenatore.unita-didattiche.destroy', $unitaDidattica) }}" method="POST"
-      data-confirm="{{ __('Eliminare questa unità? Le sedute collegate diventeranno indipendenti.') }}">
+      data-confirm="{{ __('Eliminare questo microciclo? Le sedute collegate diventeranno indipendenti.') }}">
     @csrf @method('DELETE')
-    <button type="submit" class="btn btn-sm btn-outline-danger">{{ __('Elimina unità didattica') }}</button>
+    <button type="submit" class="btn btn-sm btn-outline-danger">{{ __('Elimina microciclo') }}</button>
 </form>
 </div>
 </div>

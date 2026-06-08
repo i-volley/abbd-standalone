@@ -82,7 +82,7 @@
             <a class="nav-link ps-4 {{ request()->routeIs('allenatore.unita-didattiche*') ? 'active' : '' }}"
                href="{{ route('allenatore.unita-didattiche.index') }}"
                style="font-size:.9rem">
-                {{ __('↳ Unità Didattiche') }}
+                {{ __('↳ Microcicli') }}
             </a>
         </li>
         @endif
