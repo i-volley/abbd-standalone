@@ -530,6 +530,11 @@
             btn.textContent = 'Aggiunto ✓';
             document.getElementById('durata-display').textContent = data.durata_tot;
             document.getElementById('empty-msg').classList.add('d-none');
+            // Salva stato filtri prima del reload
+            sessionStorage.setItem('sf_q',     document.getElementById('filtro-q').value);
+            sessionStorage.setItem('sf_fase',   document.getElementById('filtro-fase').value);
+            sessionStorage.setItem('sf_met',    document.getElementById('filtro-metodologia').value);
+            sessionStorage.setItem('sf_campo',  campoSel ? campoSel.value : '');
             location.reload();
         });
     });
@@ -605,6 +610,20 @@
             clearTimeout(timer); timer = setTimeout(cercaEsercizi, 300);
         });
     });
+
+    // Ripristina filtri dopo reload da aggiunta esercizio
+    (function() {
+        var keys = ['sf_q','sf_fase','sf_met','sf_campo'];
+        var ids  = ['filtro-q','filtro-fase','filtro-metodologia','add-to-campo'];
+        var found = keys.some(function(k) { return sessionStorage.getItem(k) !== null; });
+        if (!found) return;
+        keys.forEach(function(k, i) {
+            var val = sessionStorage.getItem(k);
+            var el  = document.getElementById(ids[i]);
+            if (val !== null && el) el.value = val;
+            sessionStorage.removeItem(k);
+        });
+    })();
 
     cercaEsercizi();
 
