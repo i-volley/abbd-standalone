@@ -57,18 +57,18 @@
 
         {{-- Mobile (< md): dropdown — i bottoni sforano in larghezza --}}
         <select id="viewSelect" class="form-select form-select-sm d-md-none" style="width:auto">
-            <option value="month" selected>{{ __('Mese') }}</option>
+            <option value="month" {{ !$stagioneDates ? 'selected' : '' }}>{{ __('Mese') }}</option>
             <option value="week">{{ __('Settimana') }}</option>
             <option value="year">{{ __('Anno') }}</option>
-            <option value="season" {{ $stagioneDates ? '' : 'disabled' }}>{{ __('Stagione') }}</option>
+            <option value="season" {{ $stagioneDates ? 'selected' : 'disabled' }}>{{ __('Stagione') }}</option>
         </select>
 
         {{-- Tablet/Desktop (≥ md): gruppo bottoni --}}
         <div class="btn-group btn-group-sm d-none d-md-inline-flex" role="group">
-            <button id="btnMonth"   type="button" class="btn btn-primary">{{ __('Mese') }}</button>
+            <button id="btnMonth"   type="button" class="btn {{ $stagioneDates ? 'btn-outline-primary' : 'btn-primary' }}">{{ __('Mese') }}</button>
             <button id="btnWeek"    type="button" class="btn btn-outline-primary">{{ __('Settimana') }}</button>
             <button id="btnYear"    type="button" class="btn btn-outline-primary">{{ __('Anno') }}</button>
-            <button id="btnSeason"  type="button" class="btn btn-outline-primary"
+            <button id="btnSeason"  type="button" class="btn {{ $stagioneDates ? 'btn-primary' : 'btn-outline-primary' }}"
                     {{ $stagioneDates ? '' : 'disabled' }}
                     title="{{ $stagioneDates ? $stagioneDates['nome'] : __('Nessuna stagione') }}">
                 {{ __('Stagione') }}
@@ -455,7 +455,7 @@
                         'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
     const MESI_SHORT = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
 
-    let view     = 'month';
+    let view     = STAGIONE ? 'season' : 'month';
     let curYear  = new Date().getFullYear();
     let curMonth = new Date().getMonth();
     let curWeek  = weekStart(new Date());
@@ -785,6 +785,7 @@
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────
+    setActive(view === 'season' ? 'btnSeason' : 'btnMonth');
     render();
 })();
 </script>
