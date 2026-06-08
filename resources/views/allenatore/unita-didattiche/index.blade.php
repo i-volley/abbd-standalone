@@ -11,21 +11,25 @@
 </div>
 
 @forelse($unita as $u)
-@php
-$progLabel = \App\Models\UnitaDidattica::progressioni()[$u->progressione] ?? $u->progressione;
-$colori = ['analitico_globale' => 'bg-primary', 'sintetico_globale' => 'bg-warning text-dark', 'libera' => 'bg-secondary'];
-@endphp
 <div class="card shadow-sm border-0 mb-3">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-start gap-3">
             <div class="flex-grow-1">
                 <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    @if($u->colore)
+                    <span class="rounded-pill d-inline-block flex-shrink-0"
+                          style="width:.75rem;height:.75rem;background:{{ $u->colore }};box-shadow:0 0 0 1px rgba(0,0,0,.12)"></span>
+                    @endif
                     <h6 class="mb-0 fw-bold">
                         <a href="{{ route('allenatore.unita-didattiche.show', $u) }}" class="text-decoration-none">{{ $u->titolo }}</a>
                     </h6>
-                    <span class="badge {{ $colori[$u->progressione] ?? 'bg-secondary' }} rounded-pill" style="font-size:.7rem">{{ $progLabel }}</span>
                     @if($u->data_inizio)
-                        <small class="text-muted">📅 {{ $u->data_inizio->format('d/m/Y') }}</small>
+                        <small class="text-muted">
+                            📅 {{ $u->data_inizio->format('d/m/Y') }}
+                            @if($u->data_fine)
+                                → {{ $u->data_fine->format('d/m/Y') }}
+                            @endif
+                        </small>
                     @endif
                 </div>
                 <p class="small text-muted mb-2">🎯 {{ Str::limit($u->obiettivo_permanente, 100) }}</p>

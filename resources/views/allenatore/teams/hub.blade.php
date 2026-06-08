@@ -444,6 +444,7 @@
     const SEDUTE     = @json($sedutePerData);
     const MACROCICLI = @json($macrocicli);
     const STAGIONE   = @json($stagioneDates);   // {nome, da, a, url} | null
+    const UNITA      = @json($unitaDidattiche); // [{titolo, colore, da, a}] — barre allenatore
     const DAY_URL    = @json(route('allenatore.teams.giorno', ['team' => $team->id, 'data' => '__DATA__']));
     const IS_MOBILE  = () => window.matchMedia('(max-width: 767.98px)').matches;
     function dayUrl(key) { return DAY_URL.replace('__DATA__', key); }
@@ -508,6 +509,22 @@
         return null;
     }
 
+    // Unità didattiche che coprono questo giorno → array di {colore, titolo}
+    function udForKey(key) {
+        return UNITA.filter(u => key >= u.da && key <= u.a);
+    }
+
+    // Genera linee colorate UD per una cella (compact o full)
+    function udLines(key, compact) {
+        const uds = udForKey(key);
+        if (!uds.length) return '';
+        const h = compact ? '.22rem' : '.28rem';
+        const r = compact ? '1px' : '2px';
+        return uds.map(u =>
+            `<span title="${u.titolo}" style="display:block;height:${h};background:${u.colore};border-radius:${r};margin-top:.08rem;opacity:.85"></span>`
+        ).join('');
+    }
+
     // ── Render mese (pieno) ──────────────────────────────────────────────────
     function renderMonth() {
         titleEl.textContent = `${MESI_LONG[curMonth]} ${curYear}`;
@@ -547,6 +564,7 @@
                 if (evts.length > 4) html += `<span class="mob-dot-more">+${evts.length - 4}</span>`;
                 html += '</span>';
             }
+            if (!oth) html += udLines(key, true);
             html += '</a>';
 
             day.setDate(day.getDate() + 1);
@@ -679,6 +697,7 @@
                         if (evts.length > 4) html += `<span class="mini-dot-more">+${evts.length-4}</span>`;
                         html += '</div>';
                     }
+                    html += udLines(key, true);
                     html += '</a>';
                 } else {
                     // Desktop anno/stagione: comportamento esistente
@@ -702,6 +721,7 @@
                         if (evts.length > 4) html += `<span class="mini-dot-more">+${evts.length-4}</span>`;
                         html += '</div>';
                     }
+                    html += udLines(key, true);
                     html += evts.length === 1 ? '</a>' : '</div>';
                 }
             } else {
@@ -713,6 +733,7 @@
                 html += '</div>';
                 evts.slice(0, 3).forEach(s => html += eventChip(s, false));
                 if (evts.length > 3) html += `<span style="font-size:.65rem;color:#6c757d">+${evts.length-3} altri</span>`;
+                if (!oth) html += udLines(key, false);
                 html += '</div>';
             }
 

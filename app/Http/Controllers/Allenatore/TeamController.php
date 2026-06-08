@@ -136,7 +136,19 @@ class TeamController extends Controller
             'url'  => route('allenatore.stagioni.show', $stagione),
         ] : null;
 
-        return view('allenatore.teams.hub', compact('team', 'sedutePerData', 'macrocicli', 'prossime', 'stagioneDates'));
+        // Unità didattiche con periodo — barre colorate nel calendario (solo allenatore)
+        $unitaDidattiche = \App\Models\UnitaDidattica::where('team_id', $team->id)
+            ->whereNotNull('data_inizio')
+            ->whereNotNull('data_fine')
+            ->get(['titolo', 'data_inizio', 'data_fine', 'colore'])
+            ->map(fn($u) => [
+                'titolo' => $u->titolo,
+                'colore' => $u->colore ?? '#6366f1',
+                'da'     => $u->data_inizio->format('Y-m-d'),
+                'a'      => $u->data_fine->format('Y-m-d'),
+            ]);
+
+        return view('allenatore.teams.hub', compact('team', 'sedutePerData', 'macrocicli', 'prossime', 'stagioneDates', 'unitaDidattiche'));
     }
 
     /** Dettaglio di un singolo giorno: sedute di quella data (vista mobile calendario) */
