@@ -133,7 +133,7 @@
             <a class="nav-link {{ request()->routeIs('allenatore.paradigma*') ? 'active' : '' }}"
                href="{{ route('allenatore.paradigma.settings') }}"
                style="{{ request()->routeIs('allenatore.paradigma*') ? '' : 'color:#a78bfa;font-weight:600' }}">
-                {{ __('🧠 Paradigma') }}
+                {{ __('🧠 Tipologia') }}
             </a>
         </li>
 

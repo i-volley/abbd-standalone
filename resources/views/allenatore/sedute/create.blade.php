@@ -63,7 +63,7 @@
 @php $suggestedTemplate = auth()->user()->getPreferredSessionTemplate(); @endphp
 @if($suggestedTemplate)
 <div class="alert alert-secondary d-flex align-items-center gap-3 mb-3" style="font-size:.9rem">
-    <span>🧠 {{ __('Template suggerito per il tuo paradigma:') }}
+    <span>🧠 {{ __('Template suggerito per la tua tipologia:') }}
         <strong>{{ $suggestedTemplate->name }}</strong></span>
     <a href="{{ route('allenatore.paradigma.preview', $suggestedTemplate) }}"
        class="btn btn-sm btn-outline-secondary ms-auto" target="_blank">{{ __('Anteprima') }}</a>

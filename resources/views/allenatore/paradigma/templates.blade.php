@@ -5,7 +5,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2>{{ __('Template di Seduta') }}</h2>
-        <p class="text-muted mb-0">{{ __('Template di sistema per ogni paradigma pedagogico.') }}</p>
+        <p class="text-muted mb-0">{{ __('Template di sistema per ogni tipologia di allenamento.') }}</p>
     </div>
     <a href="{{ route('allenatore.paradigma.settings') }}" class="btn btn-outline-secondary">← {{ __('Impostazioni') }}</a>
 </div>
@@ -21,7 +21,7 @@
     <h5>
         <span class="badge bg-{{ $paradigmColors[$par] }} me-2">{{ $paradigmLabels[$par] }}</span>
         @if($coach->paradigm === $par)
-        <span class="badge bg-dark">{{ __('Il tuo paradigma') }}</span>
+        <span class="badge bg-dark">{{ __('La tua tipologia') }}</span>
         @endif
     </h5>
     <div class="row g-3">

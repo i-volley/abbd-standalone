@@ -1,5 +1,5 @@
 @extends('layouts.allenatore')
-@section('title', __('Paradigma Pedagogico'))
+@section('title', __('Tipologia di allenamento'))
 
 @push('styles')
 <style>
@@ -18,14 +18,14 @@
 
 @section('content')
 <div class="mb-4">
-    <h2>{{ __('Paradigma Pedagogico') }}</h2>
+    <h2>{{ __('Tipologia di allenamento') }}</h2>
     <p class="text-muted">{{ __('Scegli il tuo approccio metodologico. Non esclude nessun esercizio — cambia template, filtri, domande di feedback e tono AI.') }}</p>
 </div>
 
 <form action="{{ route('allenatore.paradigma.update') }}" method="POST">
 @csrf
 
-{{-- ── Selezione paradigma ─────────────────────────────────────────────────── --}}
+{{-- ── Selezione tipologia ─────────────────────────────────────────────────── --}}
 <div class="row g-3 mb-4">
     @php
         $paradigms = [
@@ -111,7 +111,7 @@
 </div>
 
 <div class="d-flex align-items-center gap-3">
-    <button type="submit" class="btn btn-primary">{{ __('Salva paradigma') }}</button>
+    <button type="submit" class="btn btn-primary">{{ __('Salva tipologia') }}</button>
     <a href="{{ route('allenatore.paradigma.templates') }}" class="btn btn-outline-secondary">
         📋 {{ __('Vedi template disponibili') }}
     </a>
@@ -120,7 +120,7 @@
 
 {{-- ── Preview domande feedback ────────────────────────────────────────────── --}}
 <div class="card mt-4">
-    <div class="card-header">{{ __('Domande feedback attive per il tuo paradigma') }}</div>
+    <div class="card-header">{{ __('Domande feedback attive per la tua tipologia') }}</div>
     <div class="card-body p-0">
         <ul class="list-group list-group-flush" id="feedback-questions-preview">
             @foreach($coach->getActiveFeedbackQuestions() as $q)

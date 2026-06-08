@@ -72,7 +72,7 @@
 
 @if($coach->paradigm === $template->paradigm)
 <div class="alert alert-success mt-4">
-    <strong>✓ {{ __('Questo è il template suggerito per il tuo paradigma.') }}</strong>
+    <strong>✓ {{ __('Questo è il template suggerito per la tua tipologia.') }}</strong>
     {{ __('Quando crei una nuova seduta troverai questo come struttura di partenza.') }}
 </div>
 @endif

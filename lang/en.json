@@ -10,6 +10,7 @@
   "↳ Parametri esercizio": "↳ Exercise Parameters",
   "↳ Tipi allenamento": "↳ Training Types",
   "🧠 Paradigma": "🧠 Paradigm",
+  "🧠 Tipologia": "🧠 Training type",
   "Esci": "Log out",
   "Apri menu": "Open menu",
   "Cambia team": "Change team",
@@ -167,6 +168,7 @@
   "es. Palestra A": "e.g. Gym A",
   "Anteprima": "Preview",
   "Template suggerito per il tuo paradigma:": "Suggested template for your paradigm:",
+  "Template suggerito per la tua tipologia:": "Suggested template for your training type:",
 
   "+ Nuovo team": "+ New team",
   "Team attivo:": "Active team:",
@@ -403,6 +405,7 @@
   "Cambio palla / Break": "Ball change / Break",
 
   "Paradigma Pedagogico": "Pedagogical Paradigm",
+  "Tipologia di allenamento": "Training type",
   "Scegli il tuo approccio metodologico. Non esclude nessun esercizio — cambia template, filtri, domande di feedback e tono AI.": "Choose your methodological approach. It does not exclude any exercises — it changes templates, filters, feedback questions and AI tone.",
   "Peso approccio ecologico": "Ecological approach weight",
   "Stile feedback agli atleti": "Athlete feedback style",
@@ -410,13 +413,17 @@
   "Numero blocchi preferito per seduta": "Preferred number of blocks per session",
   "Il template suggerito userà questo numero di blocchi.": "The suggested template will use this number of blocks.",
   "Salva paradigma": "Save paradigm",
+  "Salva tipologia": "Save training type",
   "Vedi template disponibili": "View available templates",
   "Domande feedback attive per il tuo paradigma": "Active feedback questions for your paradigm",
+  "Domande feedback attive per la tua tipologia": "Active feedback questions for your training type",
 
   "Template di Seduta": "Session Templates",
   "Template di sistema per ogni paradigma pedagogico.": "System templates for each pedagogical paradigm.",
+  "Template di sistema per ogni tipologia di allenamento.": "System templates for each training type.",
   "← Impostazioni": "← Settings",
   "Il tuo paradigma": "Your paradigm",
+  "La tua tipologia": "Your training type",
   "altri blocchi...": "more blocks...",
   "Vedi anteprima completa": "View full preview",
 
@@ -426,6 +433,7 @@
   "Durata totale stimata": "Estimated total duration",
   "minuti": "minutes",
   "Questo è il template suggerito per il tuo paradigma.": "This is the suggested template for your paradigm.",
+  "Questo è il template suggerito per la tua tipologia.": "This is the suggested template for your training type.",
   "Quando crei una nuova seduta troverai questo come struttura di partenza.": "When you create a new session you will find this as the starting structure.",
 
   "Non hai un account?": "Don't have an account?",
