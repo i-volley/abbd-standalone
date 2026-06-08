@@ -128,9 +128,16 @@ class SeduteController extends Controller
 
     public function edit(Seduta $seduta)
     {
-        $seduta->load(['sedutaEsercizi.esercizio.capacita']);
-        $teams = Team::where('allenatore_id', auth()->id())->get();
-        return view('allenatore.sedute.edit', compact('seduta', 'teams'));
+        $templates = \App\Models\SessionTemplate::with('blocks')
+            ->where(fn($q) => $q
+                ->where('created_by', auth()->id())
+                ->orWhere('is_system', true)
+            )
+            ->orderByRaw('CASE WHEN is_system = 0 THEN 0 ELSE 1 END')
+            ->orderBy('name')
+            ->get();
+
+        return view('allenatore.sedute.edit', compact('seduta', 'templates'));
     }
 
     public function update(Request $request, Seduta $seduta)
@@ -142,6 +149,7 @@ class SeduteController extends Controller
             'n_atlete'             => 'nullable|integer|min:1|max:100',
             'obiettivo_principale' => 'nullable|string|max:255',
             'obiettivo_secondario' => 'nullable|string|max:255',
+            'session_template_id'  => 'nullable|exists:session_templates,id',
             'scadenza_feedback'    => 'nullable|date',
             'visibile_atleti'      => 'boolean',
             'note_allenatore'      => 'nullable|string',
