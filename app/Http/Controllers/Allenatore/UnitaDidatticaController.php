@@ -47,6 +47,8 @@ class UnitaDidatticaController extends Controller
             'note'                 => 'nullable|string',
         ]);
 
+        $this->validaDateStagione($data);
+
         $unita = UnitaDidattica::create([...$data, 'allenatore_id' => auth()->id()]);
 
         return redirect()->route('allenatore.unita-didattiche.show', $unita)
@@ -80,6 +82,8 @@ class UnitaDidatticaController extends Controller
             'note'                 => 'nullable|string',
         ]);
 
+        $this->validaDateStagione($data);
+
         $unitaDidattica->update($data);
 
         return redirect()->route('allenatore.unita-didattiche.show', $unitaDidattica)
@@ -91,6 +95,44 @@ class UnitaDidatticaController extends Controller
         $unitaDidattica->delete();
         return redirect()->route('allenatore.unita-didattiche.index')
                          ->with('success', 'Unità eliminata.');
+    }
+
+    // ── Helper: valida che le date siano dentro la stagione attiva del team ──────
+
+    private function validaDateStagione(array $data): void
+    {
+        if (empty($data['data_inizio']) && empty($data['data_fine'])) {
+            return;
+        }
+
+        $stagione = Stagione::where('team_id', $data['team_id'])
+            ->orderByDesc('attiva')
+            ->orderByDesc('data_inizio')
+            ->first();
+
+        if (!$stagione) {
+            return; // Nessuna stagione → nessun vincolo
+        }
+
+        $errors = [];
+        $range  = $stagione->data_inizio->format('d/m/Y') . ' – ' . $stagione->data_fine->format('d/m/Y');
+
+        if (!empty($data['data_inizio'])) {
+            $di = \Carbon\Carbon::parse($data['data_inizio']);
+            if ($di->lt($stagione->data_inizio) || $di->gt($stagione->data_fine)) {
+                $errors['data_inizio'] = "Data inizio fuori dalla stagione ({$range}).";
+            }
+        }
+        if (!empty($data['data_fine'])) {
+            $df = \Carbon\Carbon::parse($data['data_fine']);
+            if ($df->lt($stagione->data_inizio) || $df->gt($stagione->data_fine)) {
+                $errors['data_fine'] = "Data fine fuori dalla stagione ({$range}).";
+            }
+        }
+
+        if ($errors) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors);
+        }
     }
 
     // ── Helper: dati stagione+macrocicli per ogni team (per il calendar widget JS) ──

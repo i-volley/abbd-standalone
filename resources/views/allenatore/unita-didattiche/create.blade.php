@@ -130,7 +130,7 @@
         return null;
     }
 
-    function buildMonthMini(year, month, macrocicli, daKey, aKey, udColore) {
+    function buildMonthMini(year, month, macrocicli, daKey, aKey, udColore, stagioneDa, stagioneA) {
         const firstDay = new Date(year, month, 1);
         const lastDay  = new Date(year, month + 1, 0);
         const fd       = firstDay.getDay();
@@ -147,26 +147,31 @@
         let day = new Date(start);
         const today = dateKey(new Date());
         while (day <= lastDay || (day.getDay() !== 1)) {
-            const key  = dateKey(day);
-            const oth  = day.getMonth() !== month;
-            const tod  = key === today;
-            const inRange = daKey && aKey && key >= daKey && key <= aKey;
-            const isStart = key === daKey;
-            const isEnd   = key === aKey;
-            const macro   = !oth ? macroBgForKey(key, macrocicli) : null;
+            const key          = dateKey(day);
+            const oth          = day.getMonth() !== month;
+            const outOfSeason  = !oth && stagioneDa && stagioneA && (key < stagioneDa || key > stagioneA);
+            const disabled     = oth || outOfSeason;
+            const tod          = key === today;
+            const inRange      = !disabled && daKey && aKey && key >= daKey && key <= aKey;
+            const isStart      = key === daKey;
+            const isEnd        = key === aKey;
+            const macro        = !disabled ? macroBgForKey(key, macrocicli) : null;
 
-            let cellBg = '#fff';
+            let cellBg     = disabled ? '#f3f4f6' : '#fff';
             let cellBorder = '';
-            if (macro) { cellBg = macro.bg; cellBorder = `border-top:2px solid ${macro.border};`; }
-            if (inRange) { cellBg = hexAlpha(udColore, 0.25); }
+            if (macro)            { cellBg = macro.bg; cellBorder = `border-top:2px solid ${macro.border};`; }
+            if (inRange)          { cellBg = hexAlpha(udColore, 0.25); }
             if (isStart || isEnd) { cellBg = udColore; }
 
-            const numColor = (isStart || isEnd) ? '#fff' : (oth ? '#ced4da' : tod ? '#3b82f6' : '#343a40');
+            const numColor  = (isStart || isEnd) ? '#fff'
+                            : disabled           ? '#d1d5db'
+                            : tod                ? '#3b82f6'
+                            :                      '#343a40';
             const numWeight = (tod || isStart || isEnd) ? '700' : '400';
-            const cursor = oth ? 'default' : 'pointer';
-            const dataKey = oth ? '' : `data-key="${key}"`;
+            const cursor    = disabled ? 'not-allowed' : 'pointer';
+            const dataAttr  = disabled ? '' : `data-key="${key}"`;
 
-            html += `<div class="ud-cal-cell" ${dataKey} style="min-height:26px;text-align:center;padding:.2rem .05rem;border-right:1px solid #f1f3f5;border-bottom:1px solid #f1f3f5;${cellBorder}background:${cellBg};cursor:${cursor}">`;
+            html += `<div class="ud-cal-cell" ${dataAttr} style="min-height:26px;text-align:center;padding:.2rem .05rem;border-right:1px solid #f1f3f5;border-bottom:1px solid #f1f3f5;${cellBorder}background:${cellBg};cursor:${cursor}">`;
             html += `<span style="font-size:.65rem;color:${numColor};font-weight:${numWeight};display:block;line-height:1.4">${day.getDate()}</span>`;
             html += `</div>`;
 
@@ -187,10 +192,25 @@
     function renderCal() {
         const tid  = teamSel.value;
         const td   = TEAMS_DATA[tid];
-        if (!td || !td.stagione) { calWrap.style.display = 'none'; return; }
+        if (!td || !td.stagione) {
+            calWrap.style.display = 'none';
+            inpInizio.min = ''; inpInizio.max = '';
+            inpFine.min   = ''; inpFine.max   = '';
+            return;
+        }
 
         calWrap.style.display = '';
         calNome.textContent = td.stagione.nome;
+
+        // Imposta min/max sui native date inputs
+        inpInizio.min = td.stagione.da;
+        inpInizio.max = td.stagione.a;
+        inpFine.min   = td.stagione.da;
+        inpFine.max   = td.stagione.a;
+
+        // Azzera date fuori range (es. cambio team)
+        if (inpInizio.value && (inpInizio.value < td.stagione.da || inpInizio.value > td.stagione.a)) inpInizio.value = '';
+        if (inpFine.value   && (inpFine.value   < td.stagione.da || inpFine.value   > td.stagione.a)) inpFine.value   = '';
 
         const daKey = inpInizio.value || null;
         const aKey  = inpFine.value   || null;
@@ -209,7 +229,7 @@
         // Griglia responsive di mini-mesi
         const cols = Math.min(months.length, window.innerWidth < 768 ? 2 : 4);
         calGrid.style.gridTemplateColumns = `repeat(${cols}, minmax(140px, 1fr))`;
-        calGrid.innerHTML = months.map(([y, m]) => buildMonthMini(y, m, td.macrocicli, daKey, aKey, udCol)).join('');
+        calGrid.innerHTML = months.map(([y, m]) => buildMonthMini(y, m, td.macrocicli, daKey, aKey, udCol, td.stagione.da, td.stagione.a)).join('');
 
         // Legenda macrocicli
         calLegenda.innerHTML = td.macrocicli.map(m =>
