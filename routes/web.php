@@ -48,6 +48,21 @@ Route::get('/_debug_templates', function () {
     }
 });
 
+Route::get('/_debug_render', function () {
+    try {
+        $templates = \App\Models\SessionTemplate::with('blocks')
+            ->where('is_system', true)->get();
+        $teams = collect([]);
+        $unitaDidattiche = collect([]);
+        $defaultTeamId = null;
+        $rendered = view('allenatore.sedute.create', compact('templates', 'teams', 'unitaDidattiche', 'defaultTeamId'))->render();
+        return response('VIEW RENDER OK. Length: ' . strlen($rendered))->header('Content-Type', 'text/plain');
+    } catch (\Throwable $e) {
+        return response('ERROR rendering create view: ' . get_class($e) . ': ' . $e->getMessage() . "\n\nFile: " . $e->getFile() . ':' . $e->getLine() . "\n\nTrace:\n" . $e->getTraceAsString(), 500)
+            ->header('Content-Type', 'text/plain');
+    }
+});
+
 Route::get('/_debug_view', function () {
     try {
         $templates = \App\Models\SessionTemplate::with('blocks')
