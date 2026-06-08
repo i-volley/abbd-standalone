@@ -60,21 +60,21 @@
 </div>
 
 {{-- Selettore template (opzionale) --}}
-@if($templates->isNotEmpty())
 <div class="mb-3">
-    <label class="form-label fw-semibold">📋 {{ __('Template di seduta') }} <small class="text-muted fw-normal">({{ __('opzionale — usato come guida nel costruttore') }})</small></label>
+    <label class="form-label fw-semibold">📋 {{ __('Template di seduta') }} <small class="text-muted fw-normal">({{ __('opzionale — guida non vincolante nel costruttore') }})</small></label>
+    @if($templates->isNotEmpty())
+    @php
+        $myTpls  = $templates->where('is_system', false);
+        $sysTpls = $templates->where('is_system', true);
+    @endphp
     <div class="d-flex gap-2 align-items-start flex-wrap">
         <select name="session_template_id" id="tpl-select" class="form-select" style="max-width:380px">
             <option value="">– {{ __('nessun template') }} –</option>
-            @php
-                $myTpls  = $templates->where('is_system', false);
-                $sysTpls = $templates->where('is_system', true);
-            @endphp
             @if($myTpls->isNotEmpty())
             <optgroup label="{{ __('I miei template') }}">
                 @foreach($myTpls as $tpl)
                 <option value="{{ $tpl->id }}" {{ old('session_template_id') == $tpl->id ? 'selected' : '' }}>
-                    {{ $tpl->name }} ({{ $tpl->blocks->sum('suggested_duration_minutes') ?: '?' }}')
+                    {{ $tpl->name }}@if($tpl->blocks->sum('suggested_duration_minutes')) ({{ $tpl->blocks->sum('suggested_duration_minutes') }}')@endif
                 </option>
                 @endforeach
             </optgroup>
@@ -91,8 +91,21 @@
         </select>
         <div id="tpl-preview" class="flex-grow-1" style="display:none;min-width:220px"></div>
     </div>
+    <div class="mt-1">
+        <a href="{{ route('allenatore.paradigma.template-custom.create') }}" class="small text-muted" target="_blank">
+            + {{ __('Crea nuovo template') }}
+        </a>
+    </div>
+    @else
+    <div class="d-flex align-items-center gap-3 p-2 border rounded" style="background:#f8f9fa">
+        <span class="text-muted small">{{ __('Nessun template disponibile.') }}</span>
+        <a href="{{ route('allenatore.paradigma.template-custom.create') }}" class="btn btn-sm btn-outline-primary" target="_blank">
+            + {{ __('Crea il primo template') }}
+        </a>
+        <small class="text-muted">{{ __('(apre in nuova scheda — ricarica questa pagina dopo)') }}</small>
+    </div>
+    @endif
 </div>
-@endif
 
 {{-- Collegamento unità didattica (opzionale) --}}
 @if($unitaDidattiche->isNotEmpty())
@@ -128,6 +141,8 @@
 @if($templates->isNotEmpty())
 <script>
 (function() {
+    const sel = document.getElementById('tpl-select');
+    if (!sel) return;
     const TEMPLATES = @json($templates->keyBy('id')->map(fn($t) => [
         'name'   => $t->name,
         'blocks' => $t->blocks->map(fn($b) => [
@@ -143,7 +158,6 @@
         cooldown:'#6b7280', free:'#1e293b'
     };
 
-    const sel     = document.getElementById('tpl-select');
     const preview = document.getElementById('tpl-preview');
 
     function renderPreview(id) {
