@@ -35,24 +35,24 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
         <div class="d-flex flex-column gap-1 flex-shrink-0 ms-2">
             @if(!in_array($e->id, $aggiuntiIds))
             <select class="form-select form-select-sm track-select" style="width:130px;font-size:.72rem">
-                <option value="completo">👥 Tutti</option>
-                <option value="alzatore">🖐️ Alzatore</option>
-                <option value="ricevitore_attaccante">🤸 Schiacciatore</option>
-                <option value="centrale">🏛️ Centrale</option>
-                <option value="opposto">⚔️ Opposto</option>
-                <option value="libero">🛡️ Libero</option>
+                <option value="completo">👥 {{ __('Tutti') }}</option>
+                <option value="alzatore">🖐️ {{ __('Alzatore') }}</option>
+                <option value="ricevitore_attaccante">🤸 {{ __('Schiacciatore') }}</option>
+                <option value="centrale">🏛️ {{ __('Centrale') }}</option>
+                <option value="opposto">⚔️ {{ __('Opposto') }}</option>
+                <option value="libero">🛡️ {{ __('Libero') }}</option>
             </select>
             @endif
             <button class="btn btn-sm btn-success btn-aggiungi"
                     data-esercizio-id="{{ $e->id }}"
                     data-seduta-id="{{ $sedutaId }}"
                     {{ in_array($e->id, $aggiuntiIds) ? 'disabled' : '' }}>
-                {{ in_array($e->id, $aggiuntiIds) ? 'Aggiunto ✓' : '+ Aggiungi' }}
+                {{ in_array($e->id, $aggiuntiIds) ? __('Aggiunto ✓') : __('+ Aggiungi') }}
             </button>
         </div>
         @endif
     </div>
 </div>
 @empty
-<p class="text-muted text-center py-3">Nessun esercizio trovato.</p>
+<p class="text-muted text-center py-3">{{ __('Nessun esercizio trovato.') }}</p>
 @endforelse

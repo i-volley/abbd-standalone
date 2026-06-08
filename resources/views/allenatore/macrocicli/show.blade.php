@@ -13,8 +13,8 @@
         </small>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('allenatore.macrocicli.edit', $macrociclo) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
-        <a href="{{ route('allenatore.macrocicli.microcicli.create', $macrociclo) }}" class="btn btn-primary btn-sm">+ Microciclo</a>
+        <a href="{{ route('allenatore.macrocicli.edit', $macrociclo) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
+        <a href="{{ route('allenatore.macrocicli.microcicli.create', $macrociclo) }}" class="btn btn-primary btn-sm">{{ __('+ Microciclo') }}</a>
     </div>
 </div>
 
@@ -22,21 +22,21 @@
 <div class="card shadow-sm mb-2">
     <div class="card-body d-flex justify-content-between align-items-center">
         <div>
-            <strong>Settimana {{ $m->numero }}</strong>
-            <small class="text-muted ms-2">{{ $m->data_inizio->format('d/m/Y') }} · intensità:
+            <strong>{{ __('Settimana') }} {{ $m->numero }}</strong>
+            <small class="text-muted ms-2">{{ $m->data_inizio->format('d/m/Y') }} · {{ __('intensità') }}:
                 <span class="badge bg-secondary">{{ $m->intensita }}</span>
             </small>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('allenatore.microcicli.edit', $m) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+            <a href="{{ route('allenatore.microcicli.edit', $m) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
             <form action="{{ route('allenatore.microcicli.destroy', $m) }}" method="POST" data-confirm="Eliminare?">
                 @csrf @method('DELETE')
-                <button class="btn btn-sm btn-outline-danger">Elimina</button>
+                <button class="btn btn-sm btn-outline-danger">{{ __('Elimina') }}</button>
             </form>
         </div>
     </div>
 </div>
 @empty
-<div class="alert alert-info">Nessun microciclo.</div>
+<div class="alert alert-info">{{ __('Nessun microciclo.') }}</div>
 @endforelse
 @endsection

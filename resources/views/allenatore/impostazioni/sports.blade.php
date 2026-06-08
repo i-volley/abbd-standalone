@@ -1,8 +1,8 @@
 @extends('layouts.allenatore')
-@section('title', 'Impostazioni')
+@section('title', __('Impostazioni'))
 
 @section('content')
-<h2 class="mb-4">Impostazioni — Sport &amp; Gesti Tecnici</h2>
+<h2 class="mb-4">{{ __('Impostazioni') }} — {{ __('Sport') }} &amp; {{ __('Gesti tecnici') }}</h2>
 
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -27,7 +27,7 @@
         <button class="nav-link text-success fw-semibold" id="tab-nuovo-sport"
                 data-bs-toggle="tab" data-bs-target="#pane-nuovo-sport"
                 type="button" role="tab">
-            + Nuovo sport
+            + {{ __('Nuovo sport') }}
         </button>
     </li>
 </ul>
@@ -43,7 +43,7 @@
 
                 {{-- CATEGORIE ────────────────────────────────────────────────── --}}
                 <h6 class="text-uppercase text-muted fw-bold mb-2" style="font-size:.72rem;letter-spacing:.08em">
-                    Categorie
+                    {{ __('Categoria') }}
                 </h6>
 
                 @forelse($sport->categorieGesto as $cat)
@@ -63,7 +63,7 @@
                         <input type="color" name="colore" value="{{ $cat->colore }}"
                                class="form-control form-control-color form-control-sm"
                                style="width:2.5rem;height:2rem;padding:.1rem .2rem" title="Scegli colore">
-                        <button type="submit" class="btn btn-sm btn-outline-primary">Salva</button>
+                        <button type="submit" class="btn btn-sm btn-outline-primary">{{ __('Salva') }}</button>
                     </form>
 
                     {{-- Elimina categoria --}}
@@ -74,7 +74,7 @@
                     </form>
                 </div>
                 @empty
-                <p class="text-muted fst-italic small mb-2">Nessuna categoria. Aggiungine una →</p>
+                <p class="text-muted fst-italic small mb-2">{{ __('Nessuna categoria. Aggiungine una →') }}</p>
                 @endforelse
 
                 {{-- Aggiungi categoria --}}
@@ -87,12 +87,12 @@
                     <input type="color" name="colore" value="#0d6efd"
                            class="form-control form-control-color form-control-sm"
                            style="width:2.5rem;height:2rem;padding:.1rem .2rem" title="Scegli colore">
-                    <button type="submit" class="btn btn-sm btn-primary">+ Aggiungi</button>
+                    <button type="submit" class="btn btn-sm btn-primary">{{ __('+ Aggiungi') }}</button>
                 </form>
 
                 {{-- GESTI TECNICI ─────────────────────────────────────────────── --}}
                 <h6 class="text-uppercase text-muted fw-bold mb-2" style="font-size:.72rem;letter-spacing:.08em">
-                    Gesti tecnici <span class="badge bg-secondary rounded-pill">{{ $sport->gestiTecnici->count() }}</span>
+                    {{ __('Gesti tecnici') }} <span class="badge bg-secondary rounded-pill">{{ $sport->gestiTecnici->count() }}</span>
                 </h6>
 
                 @forelse($sport->gestiTecnici as $g)
@@ -101,7 +101,7 @@
                     <x-badge-categoria-gesto :categoria="$g->categoriaGesto" />
                     <span class="text-muted small" style="min-width:3rem">№ {{ $g->ordinamento }}</span>
                     <a href="{{ route('allenatore.gesti-tecnici.edit', $g) }}"
-                       class="btn btn-sm btn-outline-secondary">Modifica</a>
+                       class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
                     <form action="{{ route('allenatore.gesti-tecnici.destroy', $g) }}" method="POST"
                           data-confirm="Eliminare {{ addslashes($g->nome) }}?">
                         @csrf @method('DELETE')
@@ -109,7 +109,7 @@
                     </form>
                 </div>
                 @empty
-                <p class="text-muted fst-italic small">Nessun gesto tecnico. Aggiungine uno →</p>
+                <p class="text-muted fst-italic small">{{ __('Nessun gesto tecnico. Aggiungine uno →') }}</p>
                 @endforelse
 
             </div>
@@ -117,40 +117,40 @@
             {{-- ── COLONNA DESTRA: form aggiungi gesto + danger zone ─────────── --}}
             <div class="col-lg-5">
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent fw-semibold">+ Aggiungi gesto tecnico</div>
+                    <div class="card-header bg-transparent fw-semibold">{{ __('+ Aggiungi gesto tecnico') }}</div>
                     <div class="card-body">
                         <form action="{{ route('allenatore.gesti-tecnici.store') }}" method="POST">
                             @csrf
                             <input type="hidden" name="sport_id" value="{{ $sport->id }}">
 
                             <div class="mb-2">
-                                <label class="form-label form-label-sm">Nome *</label>
+                                <label class="form-label form-label-sm">{{ __('Nome *') }}</label>
                                 <input type="text" name="nome" class="form-control form-control-sm"
-                                       placeholder="es. Battuta float" required>
+                                       placeholder="{{ __('es. Battuta float') }}" required>
                             </div>
 
                             <div class="mb-2">
-                                <label class="form-label form-label-sm">Categoria *</label>
+                                <label class="form-label form-label-sm">{{ __('Categoria') }} *</label>
                                 <select name="categoria_id" class="form-select form-select-sm" required>
-                                    <option value="">Scegli categoria...</option>
+                                    <option value="">{{ __('Scegli...') }}</option>
                                     @foreach($sport->categorieGesto as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->nome }}</option>
                                     @endforeach
                                 </select>
                                 @if($sport->categorieGesto->isEmpty())
-                                <div class="form-text text-warning">Crea prima almeno una categoria.</div>
+                                <div class="form-text text-warning">{{ __('Crea prima almeno una categoria.') }}</div>
                                 @endif
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label form-label-sm">Ordinamento</label>
+                                <label class="form-label form-label-sm">{{ __('Ordine') }}</label>
                                 <input type="number" name="ordinamento" class="form-control form-control-sm"
                                        value="{{ $sport->gestiTecnici->count() + 1 }}" min="1">
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-sm w-100"
                                     {{ $sport->categorieGesto->isEmpty() ? 'disabled' : '' }}>
-                                Aggiungi gesto tecnico
+                                {{ __('Aggiungi gesto') }}
                             </button>
                         </form>
                     </div>
@@ -158,12 +158,12 @@
 
                 <div class="mt-3">
                     <details>
-                        <summary class="text-danger small" style="cursor:pointer">Zona pericolosa</summary>
+                        <summary class="text-danger small" style="cursor:pointer">{{ __('Zona pericolosa') }}</summary>
                         <div class="mt-2">
                             <form action="{{ route('allenatore.sports.destroy', $sport) }}" method="POST"
                                   data-confirm="ATTENZIONE: eliminare {{ addslashes($sport->nome) }}? Verranno eliminati anche tutti i gesti tecnici e le categorie associate.">
                                 @csrf @method('DELETE')
-                                <button class="btn btn-sm btn-danger w-100">Elimina sport {{ $sport->nome }}</button>
+                                <button class="btn btn-sm btn-danger w-100">{{ __('Elimina sport') }} {{ $sport->nome }}</button>
                             </form>
                         </div>
                     </details>
@@ -178,22 +178,22 @@
     <div class="tab-pane fade" id="pane-nuovo-sport" role="tabpanel">
         <div class="row">
             <div class="col-md-5">
-                <h5 class="mb-3 fw-bold">Aggiungi nuovo sport</h5>
+                <h5 class="mb-3 fw-bold">{{ __('Aggiungi nuovo sport') }}</h5>
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
                         <form action="{{ route('allenatore.sports.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label class="form-label">Nome sport *</label>
+                                <label class="form-label">{{ __('Nome sport *') }}</label>
                                 <input type="text" name="nome" class="form-control"
-                                       placeholder="es. Basket, Calcio, Tennis..." required>
+                                       placeholder="{{ __('es. Basket, Calcio, Tennis...') }}" required>
                             </div>
-                            <button type="submit" class="btn btn-success w-100">Crea sport</button>
+                            <button type="submit" class="btn btn-success w-100">{{ __('Crea sport') }}</button>
                         </form>
                     </div>
                 </div>
                 <p class="text-muted small mt-2">
-                    Dopo aver creato lo sport, selezionalo dal tab per aggiungere categorie e gesti tecnici.
+                    {{ __('Dopo aver creato lo sport, selezionalo dal tab per aggiungere categorie e gesti tecnici.') }}
                 </p>
             </div>
         </div>

@@ -25,20 +25,20 @@
                        value="{{ old('email') }}" required autofocus>
             </div>
             <div class="mb-3">
-                <label class="form-label">Password</label>
+                <label class="form-label">{{ __('Password') }}</label>
                 <input type="password" name="password" class="form-control" required>
             </div>
             <div class="mb-3 form-check">
                 <input type="checkbox" name="remember" class="form-check-input" id="remember">
-                <label class="form-check-label" for="remember">Ricordami</label>
+                <label class="form-check-label" for="remember">{{ __('Ricordami') }}</label>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Accedi</button>
+            <button type="submit" class="btn btn-primary w-100">{{ __('Accedi') }}</button>
         </form>
 
         <hr>
         <p class="text-center mb-0 small">
-            Non hai un account?
-            <a href="{{ route('register') }}">Registrati</a>
+            {{ __('Non hai un account?') }}
+            <a href="{{ route('register') }}">{{ __('Registrati') }}</a>
         </p>
     </div>
 </div>

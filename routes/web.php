@@ -26,6 +26,14 @@ require __DIR__.'/auth.php';
 
 Route::get('/', [HomeController::class, 'index']);
 
+// ── LANGUAGE SWITCHER ────────────────────────────────────────────────────────
+Route::get('/lang/{locale}', function (string $locale) {
+    if (in_array($locale, ['it', 'en'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back()->withInput();
+})->name('lang.switch');
+
 // ── AREA ALLENATORE ──────────────────────────────────────────────────────────
 Route::prefix('allenatore')->name('allenatore.')
     ->middleware(['auth', 'role:allenatore'])->group(function () {

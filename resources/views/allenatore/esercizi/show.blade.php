@@ -28,7 +28,7 @@ $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-d
             @endforeach
         </div>
     </div>
-    <a href="{{ route('allenatore.esercizi.edit', $esercizio) }}" class="btn btn-outline-secondary">Modifica</a>
+    <a href="{{ route('allenatore.esercizi.edit', $esercizio) }}" class="btn btn-outline-secondary">{{ __('Modifica') }}</a>
 </div>
 
 <div class="row g-4">
@@ -36,38 +36,38 @@ $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-d
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header py-2 bg-transparent">
-                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">Parametri</small>
+                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">{{ __('Parametri') }}</small>
             </div>
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-5">Fase seduta</dt>
+                    <dt class="col-5">{{ __('Fase seduta') }}</dt>
                     <dd class="col-7"><span class="badge bg-secondary">{{ $esercizio->fase }}</span></dd>
 
-                    <dt class="col-5">Metodologia</dt>
+                    <dt class="col-5">{{ __('Metodologia') }}</dt>
                     <dd class="col-7">
                         <span class="badge {{ $metodBadge[$esercizio->metodologia] ?? 'bg-secondary' }}">
                             {{ ucfirst($esercizio->metodologia) }}
                         </span>
                     </dd>
 
-                    <dt class="col-5">Gesto tecnico</dt>
+                    <dt class="col-5">{{ __('Gesto tecnico') }}</dt>
                     <dd class="col-7">{{ $esercizio->gestoTecnico?->nome ?? '—' }}</dd>
 
-                    <dt class="col-5">Durata</dt>
+                    <dt class="col-5">{{ __('Durata') }}</dt>
                     <dd class="col-7">{{ $esercizio->durata_min }} min</dd>
 
                     @if($esercizio->n_salti > 0)
-                    <dt class="col-5">N. Salti</dt>
+                    <dt class="col-5">{{ __('N. Salti') }}</dt>
                     <dd class="col-7">{{ $esercizio->n_salti }}</dd>
                     @endif
 
                     @if($esercizio->n_gesti > 0)
-                    <dt class="col-5">N. Gesti</dt>
+                    <dt class="col-5">{{ __('N. Gesti') }}</dt>
                     <dd class="col-7">{{ $esercizio->n_gesti }}</dd>
                     @endif
 
                     @if($esercizio->n_giocatori)
-                    <dt class="col-5">N. Giocatori</dt>
+                    <dt class="col-5">{{ __('N. Giocatori') }}</dt>
                     <dd class="col-7">{{ $esercizio->n_giocatori }}</dd>
                     @endif
                 </dl>
@@ -79,22 +79,22 @@ $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-d
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header py-2 bg-transparent">
-                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">Assi metodologici FIPAV</small>
+                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">{{ __('Assi metodologici FIPAV') }}</small>
             </div>
             <div class="card-body">
                 <dl class="row mb-0">
                     @if($esercizio->obiettivo)
-                    <dt class="col-5">Obiettivo</dt>
+                    <dt class="col-5">{{ __('Obiettivo') }}</dt>
                     <dd class="col-7">{{ ucfirst($esercizio->obiettivo) }}</dd>
                     @endif
 
                     @if($esercizio->fase_seduta)
-                    <dt class="col-5">Fase (didattica)</dt>
+                    <dt class="col-5">{{ __('Fase (didattica)') }}</dt>
                     <dd class="col-7">{{ ucfirst($esercizio->fase_seduta) }}</dd>
                     @endif
 
                     @if($esercizio->fase_gioco)
-                    <dt class="col-5">Fase di gioco</dt>
+                    <dt class="col-5">{{ __('Fase di gioco') }}</dt>
                     <dd class="col-7">
                         <span class="badge {{ $labFaseGiocoBadge[$esercizio->fase_gioco] ?? 'bg-secondary' }}">
                             {{ $labFaseGioco[$esercizio->fase_gioco] }}
@@ -103,24 +103,24 @@ $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-d
                     @endif
 
                     @if($esercizio->componente)
-                    <dt class="col-5">Componente</dt>
+                    <dt class="col-5">{{ __('Componente') }}</dt>
                     <dd class="col-7">{{ ucfirst($esercizio->componente) }}</dd>
                     @endif
 
                     @if($esercizio->rendimento)
-                    <dt class="col-5">Rendimento</dt>
+                    <dt class="col-5">{{ __('Rendimento') }}</dt>
                     <dd class="col-7">{{ str_replace('_', ' ', ucfirst($esercizio->rendimento)) }}</dd>
                     @endif
 
                     @if($esercizio->livello)
-                    <dt class="col-5">Livello</dt>
+                    <dt class="col-5">{{ __('Livello') }}</dt>
                     <dd class="col-7">{{ ucfirst($esercizio->livello) }}</dd>
                     @endif
 
-                    <dt class="col-5">Ruoli</dt>
+                    <dt class="col-5">{{ __('Ruoli') }}</dt>
                     <dd class="col-7">
                         @if($esercizio->ruoli->isEmpty())
-                            <span class="text-muted">Tutti</span>
+                            <span class="text-muted">{{ __('Tutti') }}</span>
                         @else
                             <div class="d-flex flex-wrap gap-1">
                                 @foreach($esercizio->ruoli as $r)
@@ -139,7 +139,7 @@ $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-d
         @if($esercizio->capacita->count())
         <div class="card shadow-sm mb-3">
             <div class="card-header py-2 bg-transparent">
-                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">Capacità allenate</small>
+                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">{{ __('Capacità allenate') }}</small>
             </div>
             <div class="card-body d-flex flex-wrap gap-2">
                 @foreach($esercizio->capacita as $c)
@@ -153,7 +153,7 @@ $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-d
         <div class="card shadow-sm">
             <div class="card-body">
                 <a href="{{ $esercizio->video_url }}" target="_blank" rel="noopener" class="btn btn-outline-primary">
-                    ▶ Guarda il video
+                    {{ __('▶ Guarda il video') }}
                 </a>
             </div>
         </div>
@@ -166,8 +166,8 @@ $metodBadge    = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-d
         <div class="card shadow-sm">
             <div class="card-header py-2 bg-transparent">
                 <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">
-                    🏐 Campo di gioco
-                    @if($esercizio->descrizione) · Note metodologiche @endif
+                    {{ __('🏐 Campo di gioco') }}
+                    @if($esercizio->descrizione) {{ __('· Note metodologiche') }} @endif
                 </small>
             </div>
             <div class="card-body p-0">

@@ -1,10 +1,10 @@
 @extends('layouts.allenatore')
-@section('title', 'Tipi Allenamento')
+@section('title', __('Tipi Allenamento'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">⚙️ Tipi di allenamento</h2>
-    <a href="{{ route('allenatore.parametri.index') }}" class="btn btn-outline-secondary btn-sm">← Impostazioni</a>
+    <h2 class="mb-0">⚙️ {{ __('Tipi di allenamento') }}</h2>
+    <a href="{{ route('allenatore.parametri.index') }}" class="btn btn-outline-secondary btn-sm">← {{ __('Impostazioni') }}</a>
 </div>
 
 @if(session('success'))
@@ -15,7 +15,7 @@
 @endif
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header bg-transparent fw-semibold">Tipi configurati per questo team</div>
+    <div class="card-header bg-transparent fw-semibold">{{ __('Tipi configurati per questo team') }}</div>
     <div class="card-body p-0">
         @forelse($tipi as $tipo)
         <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
@@ -25,7 +25,7 @@
                 @csrf @method('PATCH')
                 <input type="text" name="nome" value="{{ $tipo->nome }}"
                        class="form-control form-control-sm" style="max-width:250px">
-                <button class="btn btn-sm btn-outline-primary">Salva</button>
+                <button class="btn btn-sm btn-outline-primary">{{ __('Salva') }}</button>
             </form>
             {{-- Elimina --}}
             <form action="{{ route('allenatore.tipo-allenamento.destroy', $tipo) }}" method="POST"
@@ -35,7 +35,7 @@
             </form>
         </div>
         @empty
-        <p class="text-muted px-3 py-2 mb-0">Nessun tipo configurato.</p>
+        <p class="text-muted px-3 py-2 mb-0">{{ __('Nessun tipo configurato.') }}</p>
         @endforelse
     </div>
 
@@ -46,7 +46,7 @@
             @csrf
             <input type="text" name="nome" class="form-control form-control-sm"
                    placeholder="Nuovo tipo (es. Crossfit, Tennis...)" required maxlength="100" style="max-width:300px">
-            <button class="btn btn-success btn-sm">+ Aggiungi</button>
+            <button class="btn btn-success btn-sm">{{ __('+ Aggiungi') }}</button>
         </form>
     </div>
 </div>

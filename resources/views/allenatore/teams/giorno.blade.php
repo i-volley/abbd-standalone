@@ -6,7 +6,7 @@
 
 <div class="d-flex align-items-center gap-2 mb-1">
     <a href="{{ route('allenatore.teams.hub', $team) }}"
-       class="btn btn-sm btn-outline-secondary px-2" title="Torna al calendario">‹</a>
+       class="btn btn-sm btn-outline-secondary px-2" title="{{ __('Torna al calendario') }}">‹</a>
     <h4 class="mb-0">{{ $giorno->translatedFormat('l d F Y') }}</h4>
 </div>
 <p class="text-muted mb-3" style="font-size:.9rem">{{ $team->nome }}</p>
@@ -37,18 +37,18 @@
                 @endif
             </div>
         </div>
-        <a href="{{ route('allenatore.sedute.show', $s) }}" class="btn btn-sm btn-outline-primary">Apri</a>
+        <a href="{{ route('allenatore.sedute.show', $s) }}" class="btn btn-sm btn-outline-primary">{{ __('Apri') }}</a>
     </div>
 </div>
 @empty
 <div class="alert alert-light border text-center text-muted py-4">
-    Nessuna seduta in questo giorno.
+    {{ __('Nessuna seduta in questo giorno.') }}
 </div>
 @endforelse
 
 {{-- Nuova seduta su questa data --}}
 <a href="{{ route('allenatore.sedute.create', ['data' => $giorno->toDateString()]) }}"
    class="btn btn-primary w-100 mt-2">
-    + Nuova seduta il {{ $giorno->format('d/m') }}
+    {{ __('+ Nuova seduta il') }} {{ $giorno->format('d/m') }}
 </a>
 @endsection

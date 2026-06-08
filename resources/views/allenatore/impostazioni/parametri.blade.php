@@ -1,11 +1,11 @@
 @extends('layouts.allenatore')
-@section('title', 'Parametri Esercizio')
+@section('title', __('Parametri Esercizio'))
 
 @section('content')
-<h2 class="mb-1">Parametri scheda esercizio</h2>
+<h2 class="mb-1">{{ __('Parametri scheda esercizio') }}</h2>
 <p class="text-muted mb-4">
-    Gestisci le voci dei menu (Fase, Metodologia, assi FIPAV) della scheda di creazione esercizio.
-    Le voci <strong>di sistema</strong> FIPAV non sono eliminabili ma puoi disattivarle.
+    {{ __('Gestisci le voci dei menu (Fase, Metodologia, assi FIPAV) della scheda di creazione esercizio.') }}
+    {{ __('Le voci di sistema FIPAV non sono eliminabili ma puoi disattivarle.') }}
 </p>
 
 <x-alert />
@@ -49,10 +49,10 @@
                         </span>
                         <code class="text-muted small flex-grow-1">{{ $p->valore }}</code>
                         @unless($p->attivo)
-                            <span class="badge bg-secondary" style="font-size:.65rem">disattivo</span>
+                            <span class="badge bg-secondary" style="font-size:.65rem">{{ __('disattivo') }}</span>
                         @endunless
                         @if($p->di_sistema)
-                            <span class="badge bg-light text-muted border" style="font-size:.65rem">sistema</span>
+                            <span class="badge bg-light text-muted border" style="font-size:.65rem">{{ __('sistema') }}</span>
                         @endif
 
                         {{-- Pulsante modifica --}}
@@ -76,23 +76,23 @@
                             @csrf @method('PATCH')
 
                             <div>
-                                <label class="form-label form-label-sm mb-1">Etichetta</label>
+                                <label class="form-label form-label-sm mb-1">{{ __('Etichetta') }}</label>
                                 <input type="text" name="etichetta" value="{{ $p->etichetta }}"
                                        class="form-control form-control-sm" style="width:160px" required>
                             </div>
                             <div>
-                                <label class="form-label form-label-sm mb-1">Colore</label>
+                                <label class="form-label form-label-sm mb-1">{{ __('Colore') }}</label>
                                 <input type="color" name="colore" value="{{ $p->colore ?? '#6c757d' }}"
                                        class="form-control form-control-color form-control-sm"
                                        style="width:2.5rem;height:2rem;padding:.1rem .2rem">
                             </div>
                             <div>
-                                <label class="form-label form-label-sm mb-1">Ordine</label>
+                                <label class="form-label form-label-sm mb-1">{{ __('Ordine') }}</label>
                                 <input type="number" name="ordinamento" value="{{ $p->ordinamento }}"
                                        class="form-control form-control-sm" style="width:4.5rem" min="0">
                             </div>
                             <div class="d-flex flex-column align-items-center">
-                                <label class="form-label form-label-sm mb-1">Attivo</label>
+                                <label class="form-label form-label-sm mb-1">{{ __('Attivo') }}</label>
                                 <div class="form-check form-switch mt-1">
                                     <input class="form-check-input" type="checkbox"
                                            name="attivo" value="1"
@@ -100,16 +100,16 @@
                                 </div>
                             </div>
                             <div class="d-flex gap-1">
-                                <button type="submit" class="btn btn-sm btn-primary">💾 Salva</button>
+                                <button type="submit" class="btn btn-sm btn-primary">{{ __('💾 Salva') }}</button>
                                 <button type="button" class="btn btn-sm btn-outline-secondary param-edit-cancel"
-                                        data-target="edit-{{ $p->id }}">Annulla</button>
+                                        data-target="edit-{{ $p->id }}">{{ __('Annulla') }}</button>
                             </div>
                         </form>
                     </div>
 
                 </div>
                 @empty
-                <p class="text-muted fst-italic small">Nessuna voce. Aggiungine una →</p>
+                <p class="text-muted fst-italic small">{{ __('Nessuna voce. Aggiungine una →') }}</p>
                 @endforelse
             </div>
 
@@ -123,25 +123,25 @@
                             <input type="hidden" name="tipo" value="{{ $tipo }}">
 
                             <div class="mb-2">
-                                <label class="form-label form-label-sm">Etichetta *</label>
+                                <label class="form-label form-label-sm">{{ __('Etichetta *') }}</label>
                                 <input type="text" name="etichetta" class="form-control form-control-sm"
                                        placeholder="es. Trasformazione" required>
                             </div>
                             <div class="mb-2">
-                                <label class="form-label form-label-sm">Valore <small class="text-muted">(opzionale)</small></label>
+                                <label class="form-label form-label-sm">{{ __('Valore') }} <small class="text-muted">({{ __('opzionale') }})</small></label>
                                 <input type="text" name="valore" class="form-control form-control-sm"
-                                       placeholder="auto da etichetta">
+                                       placeholder="{{ __('auto da etichetta') }}">
                                 <div class="form-text" style="font-size:.7rem">
-                                    Codice salvato sugli esercizi. Lascia vuoto = generato dall'etichetta.
+                                    {{ __('Codice salvato sugli esercizi. Lascia vuoto = generato dall\'etichetta.') }}
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label form-label-sm">Colore badge</label>
+                                <label class="form-label form-label-sm">{{ __('Colore badge') }}</label>
                                 <input type="color" name="colore" value="#0d6efd"
                                        class="form-control form-control-color form-control-sm"
                                        style="width:3rem;height:2rem;padding:.1rem .2rem">
                             </div>
-                            <button type="submit" class="btn btn-primary btn-sm w-100">Aggiungi voce</button>
+                            <button type="submit" class="btn btn-primary btn-sm w-100">{{ __('Aggiungi voce') }}</button>
                         </form>
                     </div>
                 </div>

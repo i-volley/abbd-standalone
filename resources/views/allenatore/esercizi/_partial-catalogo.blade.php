@@ -8,7 +8,7 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
 
 {{-- ── I MIEI ESERCIZI ─────────────────────────────────────────────────────── --}}
 <div class="d-flex align-items-center gap-2 mb-3 mt-1">
-    <h5 class="mb-0 fw-bold">I miei esercizi</h5>
+    <h5 class="mb-0 fw-bold">{{ __('I miei esercizi') }}</h5>
     <span class="badge bg-dark rounded-pill">{{ $miei->count() }}</span>
 </div>
 
@@ -37,7 +37,7 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                     @if($e->n_salti > 0)<span>{{ $e->n_salti }} salti</span>@endif
                     @if($e->n_gesti > 0)<span>{{ $e->n_gesti }} gesti</span>@endif
                     @if($e->n_giocatori)<span>{{ $e->n_giocatori }}</span>@endif
-                    @if($e->campo_visivo)<span title="Campo di gioco disponibile">🏐</span>@endif
+                    @if($e->campo_visivo)<span title="{{ __('Campo di gioco disponibile') }}">🏐</span>@endif
                 </div>
                 <div class="d-flex flex-wrap gap-1">
                     @foreach($e->capacita as $c)
@@ -46,27 +46,27 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                 </div>
             </div>
             <div class="d-flex flex-wrap gap-1 flex-shrink-0 align-items-start">
-                <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-dark">Scheda</a>
-                <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+                <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-dark">{{ __('Scheda') }}</a>
+                <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
                 <form action="{{ route('allenatore.esercizi.destroy', $e) }}" method="POST" class="d-inline"
                       data-confirm="Eliminare {{ addslashes($e->nome) }}?">
                     @csrf @method('DELETE')
-                    <button class="btn btn-sm btn-outline-danger">Elimina</button>
+                    <button class="btn btn-sm btn-outline-danger">{{ __('Elimina') }}</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 @empty
-<p class="text-muted py-2">Nessun esercizio creato da te. <a href="{{ route('allenatore.esercizi.create') }}">Crea il primo</a>.</p>
+<p class="text-muted py-2">{{ __('Nessun esercizio creato da te.') }} <a href="{{ route('allenatore.esercizi.create') }}">{{ __('Crea il primo') }}</a>.</p>
 @endforelse
 
 {{-- ── CATALOGO ESERCITAZIONI ──────────────────────────────────────────────── --}}
 <hr class="my-4">
 <div class="d-flex align-items-center gap-2 mb-3">
-    <h5 class="mb-0 fw-bold">Catalogo esercitazioni</h5>
+    <h5 class="mb-0 fw-bold">{{ __('Catalogo esercitazioni') }}</h5>
     <span class="badge bg-dark rounded-pill">{{ $catalogo->count() }}</span>
-    <small class="text-muted">Database generale</small>
+    <small class="text-muted">{{ __('Database generale') }}</small>
 </div>
 
 @forelse($catalogo as $e)
@@ -81,7 +81,7 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                     @if($e->categoria_eta)
                         <x-badge-categoria-eta :categoria="$e->categoria_eta" />
                     @endif
-                    @if($e->campo_visivo)<span title="Campo di gioco disponibile">🏐</span>@endif
+                    @if($e->campo_visivo)<span title="{{ __('Campo di gioco disponibile') }}">🏐</span>@endif
                 </div>
                 <div class="small text-muted d-flex gap-2 flex-wrap mb-1">
                     @if($e->gestoTecnico)<span>{{ $e->gestoTecnico->nome }}</span>@endif
@@ -97,12 +97,12 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                 </div>
             </div>
             <div class="d-flex flex-wrap gap-1 flex-shrink-0 align-items-start">
-                <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-dark">Scheda</a>
-                <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+                <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-dark">{{ __('Scheda') }}</a>
+                <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
             </div>
         </div>
     </div>
 </div>
 @empty
-<p class="text-muted py-2">Nessun esercizio nel catalogo generale.</p>
+<p class="text-muted py-2">{{ __('Nessun esercizio nel catalogo generale.') }}</p>
 @endforelse

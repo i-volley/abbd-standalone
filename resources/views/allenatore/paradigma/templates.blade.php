@@ -1,13 +1,13 @@
 @extends('layouts.allenatore')
-@section('title', 'Template di Seduta')
+@section('title', __('Template di Seduta'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2>Template di Seduta</h2>
-        <p class="text-muted mb-0">Template di sistema per ogni paradigma pedagogico.</p>
+        <h2>{{ __('Template di Seduta') }}</h2>
+        <p class="text-muted mb-0">{{ __('Template di sistema per ogni paradigma pedagogico.') }}</p>
     </div>
-    <a href="{{ route('allenatore.paradigma.settings') }}" class="btn btn-outline-secondary">← Impostazioni</a>
+    <a href="{{ route('allenatore.paradigma.settings') }}" class="btn btn-outline-secondary">← {{ __('Impostazioni') }}</a>
 </div>
 
 @php
@@ -21,7 +21,7 @@
     <h5>
         <span class="badge bg-{{ $paradigmColors[$par] }} me-2">{{ $paradigmLabels[$par] }}</span>
         @if($coach->paradigm === $par)
-        <span class="badge bg-dark">Il tuo paradigma</span>
+        <span class="badge bg-dark">{{ __('Il tuo paradigma') }}</span>
         @endif
     </h5>
     <div class="row g-3">
@@ -31,7 +31,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <strong class="small">{{ $tpl->name }}</strong>
                     @if($tpl->is_system)
-                    <span class="badge bg-secondary" style="font-size:.65rem">sistema</span>
+                    <span class="badge bg-secondary" style="font-size:.65rem">{{ __('sistema') }}</span>
                     @endif
                 </div>
                 <div class="card-body">
@@ -52,13 +52,13 @@
                         </div>
                         @endforeach
                         @if($tpl->blocks->count() > 4)
-                        <small class="text-muted">+ {{ $tpl->blocks->count() - 4 }} altri blocchi...</small>
+                        <small class="text-muted">+ {{ $tpl->blocks->count() - 4 }} {{ __('altri blocchi...') }}</small>
                         @endif
                     </div>
                 </div>
                 <div class="card-footer bg-transparent">
                     <a href="{{ route('allenatore.paradigma.preview', $tpl) }}" class="btn btn-sm btn-outline-secondary">
-                        Vedi anteprima completa
+                        {{ __('Vedi anteprima completa') }}
                     </a>
                 </div>
             </div>

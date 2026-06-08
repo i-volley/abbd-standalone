@@ -24,7 +24,7 @@
         <form action="{{ route('register') }}" method="POST">
             @csrf
             <div class="mb-3">
-                <label class="form-label">Nome</label>
+                <label class="form-label">{{ __('Nome') }}</label>
                 <input type="text" name="name" class="form-control" value="{{ old('name') }}" required autofocus>
             </div>
             <div class="mb-3">
@@ -32,28 +32,28 @@
                 <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Password</label>
+                <label class="form-label">{{ __('Password') }}</label>
                 <input type="password" name="password" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Conferma password</label>
+                <label class="form-label">{{ __('Conferma password') }}</label>
                 <input type="password" name="password_confirmation" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Ruolo</label>
+                <label class="form-label">{{ __('Ruolo') }}</label>
                 <select name="ruolo" class="form-select" required>
-                    <option value="">Scegli ruolo...</option>
-                    <option value="allenatore" {{ old('ruolo') === 'allenatore' ? 'selected' : '' }}>Allenatore</option>
-                    <option value="atleta" {{ old('ruolo') === 'atleta' ? 'selected' : '' }}>Atleta</option>
+                    <option value="">{{ __('Scegli...') }}</option>
+                    <option value="allenatore" {{ old('ruolo') === 'allenatore' ? 'selected' : '' }}>{{ __('Allenatore') }}</option>
+                    <option value="atleta" {{ old('ruolo') === 'atleta' ? 'selected' : '' }}>{{ __('Atleta') }}</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Registrati</button>
+            <button type="submit" class="btn btn-primary w-100">{{ __('Registrati') }}</button>
         </form>
 
         <hr>
         <p class="text-center mb-0 small">
-            Hai già un account?
-            <a href="{{ route('login') }}">Accedi</a>
+            {{ __('Hai già un account?') }}
+            <a href="{{ route('login') }}">{{ __('Accedi') }}</a>
         </p>
     </div>
 </div>

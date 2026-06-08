@@ -1,18 +1,18 @@
 @extends('layouts.allenatore')
-@section('title', 'I miei Team')
+@section('title', __('I miei Team'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>I miei Team</h2>
-    <a href="{{ route('allenatore.teams.create') }}" class="btn btn-primary">+ Nuovo team</a>
+    <h2>{{ __('I miei Team') }}</h2>
+    <a href="{{ route('allenatore.teams.create') }}" class="btn btn-primary">{{ __('+ Nuovo team') }}</a>
 </div>
 
 @if(session('current_team_id'))
 <div class="alert alert-info d-flex align-items-center gap-2 mb-4" style="font-size:.9rem">
     <span>👥</span>
     <span>
-        Team attivo: <strong>{{ session('current_team_nome') }}</strong>.
-        Clicca <strong>Entra</strong> su un altro team per cambiarlo.
+        {{ __('Team attivo:') }} <strong>{{ session('current_team_nome') }}</strong>.
+        {{ __('Clicca') }} <strong>{{ __('Entra') }}</strong> {{ __('su un altro team per cambiarlo.') }}
     </span>
 </div>
 @endif
@@ -23,7 +23,7 @@
         <div class="card shadow-sm h-100 {{ session('current_team_id') == $team->id ? 'border-primary' : '' }}">
             @if(session('current_team_id') == $team->id)
             <div class="card-header bg-primary text-white py-1" style="font-size:.75rem;font-weight:600">
-                ✓ Team attivo
+                {{ __('✓ Team attivo') }}
             </div>
             @endif
             <div class="card-body">
@@ -33,14 +33,14 @@
                 {{-- Entra: imposta contesto team --}}
                 <a href="{{ route('allenatore.teams.entra', $team) }}"
                    class="btn btn-sm {{ session('current_team_id') == $team->id ? 'btn-primary' : 'btn-outline-primary' }} w-100 mb-2">
-                    {{ session('current_team_id') == $team->id ? '✓ Team attivo' : 'Entra →' }}
+                    {{ session('current_team_id') == $team->id ? __('✓ Team attivo') : __('Entra →') }}
                 </a>
 
                 <div class="d-flex gap-2">
                     <a href="{{ route('allenatore.teams.edit', $team) }}"
-                       class="btn btn-sm btn-outline-secondary">Modifica</a>
+                       class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
                     <a href="{{ route('allenatore.teams.show', $team) }}"
-                       class="btn btn-sm btn-outline-secondary flex-grow-1">Gestisci atleti</a>
+                       class="btn btn-sm btn-outline-secondary flex-grow-1">{{ __('Gestisci atleti') }}</a>
                     <form action="{{ route('allenatore.teams.destroy', $team) }}" method="POST"
                           data-confirm="Eliminare il team {{ addslashes($team->nome) }}?">
                         @csrf @method('DELETE')
@@ -53,8 +53,8 @@
     @empty
     <div class="col-12">
         <div class="alert alert-info">
-            Nessun team ancora.
-            <a href="{{ route('allenatore.teams.create') }}">Crea il primo →</a>
+            {{ __('Nessun team ancora.') }}
+            <a href="{{ route('allenatore.teams.create') }}">{{ __('Crea il primo →') }}</a>
         </div>
     </div>
     @endforelse

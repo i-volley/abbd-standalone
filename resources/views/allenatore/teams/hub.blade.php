@@ -6,11 +6,11 @@
 <div class="d-flex justify-content-between align-items-start mb-4">
     <div>
         <h2 class="mb-0">{{ $team->nome }}</h2>
-        <small class="text-muted">{{ $team->sport->nome }} · Stagione {{ $team->stagione }}</small>
+        <small class="text-muted">{{ $team->sport->nome }} · {{ __('Stagione') }} {{ $team->stagione }}</small>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('allenatore.teams.edit', $team) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
-        <a href="{{ route('allenatore.teams.show', $team) }}" class="btn btn-sm btn-outline-secondary">Gestisci atleti</a>
+        <a href="{{ route('allenatore.teams.edit', $team) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
+        <a href="{{ route('allenatore.teams.show', $team) }}" class="btn btn-sm btn-outline-secondary">{{ __('Gestisci atleti') }}</a>
     </div>
 </div>
 
@@ -20,8 +20,8 @@
         <a href="{{ route('allenatore.stagioni.index') }}" class="text-decoration-none">
             <div class="card h-100 border-0 shadow-sm text-center py-3 px-2 hover-lift">
                 <div style="font-size:2rem">📅</div>
-                <div class="fw-semibold mt-1">Pianificazione</div>
-                <small class="text-muted">Stagioni · Macrocicli</small>
+                <div class="fw-semibold mt-1">{{ __('Pianificazione') }}</div>
+                <small class="text-muted">{{ __('Stagioni') }} · {{ __('Macrocicli') }}</small>
             </div>
         </a>
     </div>
@@ -29,8 +29,8 @@
         <a href="{{ route('allenatore.sedute.create') }}" class="text-decoration-none">
             <div class="card h-100 border-0 shadow-sm text-center py-3 px-2 hover-lift">
                 <div style="font-size:2rem">➕</div>
-                <div class="fw-semibold mt-1">Nuova Seduta</div>
-                <small class="text-muted">Aggiungi allenamento</small>
+                <div class="fw-semibold mt-1">{{ __('Nuova Seduta') }}</div>
+                <small class="text-muted">{{ __('Aggiungi allenamento') }}</small>
             </div>
         </a>
     </div>
@@ -38,8 +38,8 @@
         <a href="{{ route('allenatore.unita-didattiche.index') }}" class="text-decoration-none">
             <div class="card h-100 border-0 shadow-sm text-center py-3 px-2 hover-lift">
                 <div style="font-size:2rem">📚</div>
-                <div class="fw-semibold mt-1">Unità Didattiche</div>
-                <small class="text-muted">Obiettivi · Progressione</small>
+                <div class="fw-semibold mt-1">{{ __('Unità Didattiche') }}</div>
+                <small class="text-muted">{{ __('Obiettivi') }} · {{ __('Progressione') }}</small>
             </div>
         </a>
     </div>
@@ -52,26 +52,26 @@
             <button id="btnPrev" class="btn btn-sm btn-outline-secondary px-2" style="line-height:1">‹</button>
             <span id="calTitle" class="fw-semibold text-center" style="min-width:9rem"></span>
             <button id="btnNext" class="btn btn-sm btn-outline-secondary px-2" style="line-height:1">›</button>
-            <button id="btnToday" class="btn btn-sm btn-outline-secondary ms-1">Oggi</button>
+            <button id="btnToday" class="btn btn-sm btn-outline-secondary ms-1">{{ __('Oggi') }}</button>
         </div>
 
         {{-- Mobile (< md): dropdown — i bottoni sforano in larghezza --}}
         <select id="viewSelect" class="form-select form-select-sm d-md-none" style="width:auto">
-            <option value="month" selected>Mese</option>
-            <option value="week">Settimana</option>
-            <option value="year">Anno</option>
-            <option value="season" {{ $stagioneDates ? '' : 'disabled' }}>Stagione</option>
+            <option value="month" selected>{{ __('Mese') }}</option>
+            <option value="week">{{ __('Settimana') }}</option>
+            <option value="year">{{ __('Anno') }}</option>
+            <option value="season" {{ $stagioneDates ? '' : 'disabled' }}>{{ __('Stagione') }}</option>
         </select>
 
         {{-- Tablet/Desktop (≥ md): gruppo bottoni --}}
         <div class="btn-group btn-group-sm d-none d-md-inline-flex" role="group">
-            <button id="btnMonth"   type="button" class="btn btn-primary">Mese</button>
-            <button id="btnWeek"    type="button" class="btn btn-outline-primary">Settimana</button>
-            <button id="btnYear"    type="button" class="btn btn-outline-primary">Anno</button>
+            <button id="btnMonth"   type="button" class="btn btn-primary">{{ __('Mese') }}</button>
+            <button id="btnWeek"    type="button" class="btn btn-outline-primary">{{ __('Settimana') }}</button>
+            <button id="btnYear"    type="button" class="btn btn-outline-primary">{{ __('Anno') }}</button>
             <button id="btnSeason"  type="button" class="btn btn-outline-primary"
                     {{ $stagioneDates ? '' : 'disabled' }}
-                    title="{{ $stagioneDates ? $stagioneDates['nome'] : 'Nessuna stagione' }}">
-                Stagione
+                    title="{{ $stagioneDates ? $stagioneDates['nome'] : __('Nessuna stagione') }}">
+                {{ __('Stagione') }}
             </button>
         </div>
     </div>
@@ -91,16 +91,16 @@
     </span>
     @endforeach
     @if($macrocicli->isNotEmpty())<span class="text-muted" style="font-size:.7rem">|</span>@endif
-    <span><span class="badge rounded-pill me-1" style="background:#94a3b8">●</span>Bozza</span>
-    <span><span class="badge rounded-pill me-1" style="background:#3b82f6">●</span>Pubblicata</span>
-    <span><span class="badge rounded-pill me-1" style="background:#10b981">●</span>Completata</span>
+    <span><span class="badge rounded-pill me-1" style="background:#94a3b8">●</span>{{ __('Bozza') }}</span>
+    <span><span class="badge rounded-pill me-1" style="background:#3b82f6">●</span>{{ __('Pubblicata') }}</span>
+    <span><span class="badge rounded-pill me-1" style="background:#10b981">●</span>{{ __('Completata') }}</span>
 </div>
 
 
 {{-- ── PROSSIME SEDUTE ─────────────────────────────────────────────────────── --}}
 @if($prossime->isNotEmpty())
 <h6 class="fw-bold text-uppercase text-muted mb-2" style="font-size:.72rem;letter-spacing:.08em">
-    Prossime sedute
+    {{ __('Prossime sedute') }}
 </h6>
 @php $statoColore = ['bozza'=>'#94a3b8','pubblicata'=>'#3b82f6','completata'=>'#10b981']; @endphp
 <div class="row g-2 mb-4">
@@ -127,7 +127,7 @@
 {{-- ── ATLETI ───────────────────────────────────────────────────────────────── --}}
 @if($team->atleti->isNotEmpty())
 <h6 class="fw-bold text-uppercase text-muted mb-2" style="font-size:.72rem;letter-spacing:.08em">
-    Atleti ({{ $team->atleti->count() }})
+    {{ __('Atleti') }} ({{ $team->atleti->count() }})
 </h6>
 <div class="d-flex flex-wrap gap-2">
     @foreach($team->atleti as $atleta)

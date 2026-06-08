@@ -1,5 +1,5 @@
 @extends('layouts.allenatore')
-@section('title', 'Risultati Wizard')
+@section('title', __('Risultati Wizard'))
 
 @section('content')
 @php
@@ -16,7 +16,7 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
             <span style="font-size:2rem">🔍</span>
             <div class="flex-grow-1">
                 <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                    <h5 class="mb-0 fw-bold">Diagnosi FIPAV</h5>
+                    <h5 class="mb-0 fw-bold">{{ __('Diagnosi FIPAV') }}</h5>
                     <span class="badge {{ $metodBadge[$diagnosi['metodologia']] }}">{{ strtoupper($diagnosi['metodologia']) }}</span>
                     @if($diagnosi['componente'])
                         <span class="badge bg-secondary">{{ $diagnosi['componente'] }}</span>
@@ -38,36 +38,36 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
         <form action="{{ route('allenatore.wizard.risultati') }}" method="GET" class="row g-2 align-items-end">
             <input type="hidden" name="sintomo" value="{{ $sintomo }}">
             <div class="col-auto">
-                <label class="form-label small mb-1">Fondamentale</label>
+                <label class="form-label small mb-1">{{ __('Gesto tecnico') }}</label>
                 <select name="gesto_tecnico_id" class="form-select form-select-sm">
-                    <option value="tutti">Tutti</option>
+                    <option value="tutti">{{ __('Tutti') }}</option>
                     @foreach($gesti as $g)
                         <option value="{{ $g->id }}" {{ request('gesto_tecnico_id') == $g->id ? 'selected' : '' }}>{{ $g->nome }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-auto">
-                <label class="form-label small mb-1">Fase di gioco</label>
+                <label class="form-label small mb-1">{{ __('Fase di gioco') }}</label>
                 <select name="fase_gioco" class="form-select form-select-sm">
-                    @foreach(['tutti' => 'Tutte', 'cambio_palla' => 'Cambio palla', 'break_point' => 'Break point', 'ricostruzione' => 'Ricostruzione'] as $v => $l)
+                    @foreach(['tutti' => __('Tutte'), 'cambio_palla' => __('Cambio palla'), 'break_point' => __('Break point'), 'ricostruzione' => __('Ricostruzione')] as $v => $l)
                         <option value="{{ $v }}" {{ request('fase_gioco', 'tutti') === $v ? 'selected' : '' }}>{{ $l }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-auto">
-                <label class="form-label small mb-1">Ruolo</label>
+                <label class="form-label small mb-1">{{ __('Ruolo') }}</label>
                 <select name="ruolo" class="form-select form-select-sm">
-                    <option value="tutti" {{ request('ruolo', 'tutti') === 'tutti' ? 'selected' : '' }}>Tutti</option>
-                    @foreach(['alzatore' => 'Alzatore', 'ricevitore_attaccante' => 'Schiacciatore', 'centrale' => 'Centrale', 'opposto' => 'Opposto', 'libero' => 'Libero'] as $v => $l)
+                    <option value="tutti" {{ request('ruolo', 'tutti') === 'tutti' ? 'selected' : '' }}>{{ __('Tutti') }}</option>
+                    @foreach(['alzatore' => __('Alzatore'), 'ricevitore_attaccante' => __('Schiacciatore'), 'centrale' => __('Centrale'), 'opposto' => __('Opposto'), 'libero' => __('Libero')] as $v => $l)
                         <option value="{{ $v }}" {{ request('ruolo') === $v ? 'selected' : '' }}>{{ $l }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-primary">Aggiorna</button>
+                <button type="submit" class="btn btn-sm btn-primary">{{ __('Aggiorna') }}</button>
             </div>
             <div class="col-auto ms-auto">
-                <a href="{{ route('allenatore.wizard.index') }}" class="btn btn-sm btn-outline-secondary">← Nuova diagnosi</a>
+                <a href="{{ route('allenatore.wizard.index') }}" class="btn btn-sm btn-outline-secondary">← {{ __('Nuova diagnosi') }}</a>
             </div>
         </form>
     </div>
@@ -75,10 +75,10 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
 
 {{-- ── RISULTATI ─────────────────────────────────────────────────────────────── --}}
 <div class="d-flex align-items-center gap-2 mb-3">
-    <h5 class="mb-0 fw-bold">Esercizi prescritti</h5>
+    <h5 class="mb-0 fw-bold">{{ __('Esercizi prescritti') }}</h5>
     <span class="badge bg-dark rounded-pill">{{ $esercizi->count() }}</span>
     @if($esercizi->isEmpty())
-        <small class="text-muted">Prova ad allargare i filtri</small>
+        <small class="text-muted">{{ __('Prova ad allargare i filtri') }}</small>
     @endif
 </div>
 
@@ -119,8 +119,8 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                 </div>
             </div>
             <div class="d-flex gap-1 flex-shrink-0">
-                <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-primary">Dettaglio</a>
-                <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+                <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-primary">{{ __('Scheda') }}</a>
+                <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
             </div>
         </div>
     </div>

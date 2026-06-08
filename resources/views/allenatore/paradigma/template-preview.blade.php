@@ -10,10 +10,10 @@
             {{ ['traditional'=>'Tradizionale','ecological'=>'Ecologico','hybrid'=>'Ibrido'][$template->paradigm] ?? $template->paradigm }}
         </span>
         @if($template->is_system)
-        <span class="badge bg-dark ms-1">Template di sistema</span>
+        <span class="badge bg-dark ms-1">{{ __('Template di sistema') }}</span>
         @endif
     </div>
-    <a href="{{ route('allenatore.paradigma.templates') }}" class="btn btn-outline-secondary">← Tutti i template</a>
+    <a href="{{ route('allenatore.paradigma.templates') }}" class="btn btn-outline-secondary">← {{ __('Tutti i template') }}</a>
 </div>
 
 @if($template->description)
@@ -43,7 +43,7 @@
                         </span>
                         @if($block->constraint_focus && $block->constraint_focus !== 'none')
                         <span class="badge bg-outline-success border border-success text-success" style="font-size:.7rem">
-                            Vincolo: {{ \App\Services\ParadigmService::constraintLabel($block->constraint_focus) }}
+                            {{ __('Vincolo') }}: {{ \App\Services\ParadigmService::constraintLabel($block->constraint_focus) }}
                         </span>
                         @endif
                         @if($block->suggested_duration_minutes)
@@ -66,14 +66,14 @@
 @php $totMin = $template->blocks->sum('suggested_duration_minutes'); @endphp
 @if($totMin)
 <div class="mt-3 text-muted small">
-    Durata totale stimata: <strong>{{ $totMin }} minuti</strong>
+    {{ __('Durata totale stimata') }}: <strong>{{ $totMin }} {{ __('minuti') }}</strong>
 </div>
 @endif
 
 @if($coach->paradigm === $template->paradigm)
 <div class="alert alert-success mt-4">
-    <strong>✓ Questo è il template suggerito per il tuo paradigma.</strong>
-    Quando crei una nuova seduta troverai questo come struttura di partenza.
+    <strong>✓ {{ __('Questo è il template suggerito per il tuo paradigma.') }}</strong>
+    {{ __('Quando crei una nuova seduta troverai questo come struttura di partenza.') }}
 </div>
 @endif
 @endsection

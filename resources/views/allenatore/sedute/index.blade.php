@@ -1,18 +1,18 @@
 @extends('layouts.allenatore')
-@section('title', 'Sedute')
+@section('title', __('Sedute'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Sedute</h2>
-    <a href="{{ route('allenatore.sedute.create') }}" class="btn btn-primary">+ Nuova seduta</a>
+    <h2>{{ __('Sedute') }}</h2>
+    <a href="{{ route('allenatore.sedute.create') }}" class="btn btn-primary">{{ __('+ Nuova seduta') }}</a>
 </div>
 
 <div class="table-responsive">
     <table class="table table-hover align-middle">
         <thead class="table-light">
             <tr>
-                <th>Titolo</th><th>Data</th><th>Team</th><th>Stato</th>
-                <th>Visibile</th><th>Scadenza</th><th>Feedback</th><th></th>
+                <th>{{ __('Titolo') }}</th><th>{{ __('Data *') }}</th><th>{{ __('Team *') }}</th><th>{{ __('Stato') }}</th>
+                <th>{{ __('Visibile') }}</th><th>{{ __('Scadenza') }}</th><th>{{ __('Feedback') }}</th><th></th>
             </tr>
         </thead>
         <tbody>
@@ -40,16 +40,16 @@
                     <span class="badge bg-info">{{ $s->feedback_count ?? 0 }}</span>
                 </td>
                 <td>
-                    <a href="{{ route('allenatore.sedute.show', $s) }}" class="btn btn-sm btn-outline-primary">Apri</a>
+                    <a href="{{ route('allenatore.sedute.show', $s) }}" class="btn btn-sm btn-outline-primary">{{ __('Apri') }}</a>
                     <form action="{{ route('allenatore.sedute.destroy', $s) }}" method="POST" class="d-inline"
                           data-confirm="Eliminare la seduta?">
                         @csrf @method('DELETE')
-                        <button class="btn btn-sm btn-outline-danger">Elimina</button>
+                        <button class="btn btn-sm btn-outline-danger">{{ __('Elimina') }}</button>
                     </form>
                 </td>
             </tr>
         @empty
-            <tr><td colspan="8" class="text-center text-muted py-4">Nessuna seduta ancora.</td></tr>
+            <tr><td colspan="8" class="text-center text-muted py-4">{{ __('Nessuna seduta ancora.') }}</td></tr>
         @endforelse
         </tbody>
     </table>

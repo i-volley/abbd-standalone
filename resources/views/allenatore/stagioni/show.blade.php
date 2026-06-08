@@ -9,12 +9,12 @@
         <h2 class="mb-0">{{ $stagione->nome }}</h2>
         <small class="text-muted">
             {{ $stagione->data_inizio->format('d/m/Y') }} → {{ $stagione->data_fine->format('d/m/Y') }}
-            · {{ $stagione->data_inizio->diffInDays($stagione->data_fine) }} giorni
+            · {{ $stagione->data_inizio->diffInDays($stagione->data_fine) }} {{ __('giorni') }}
         </small>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('allenatore.stagioni.edit', $stagione) }}" class="btn btn-outline-secondary">Modifica stagione</a>
-        <a href="{{ route('allenatore.stagioni.macrocicli.create', $stagione) }}" class="btn btn-primary">+ Macrociclo</a>
+        <a href="{{ route('allenatore.stagioni.edit', $stagione) }}" class="btn btn-outline-secondary">{{ __('Modifica stagione') }}</a>
+        <a href="{{ route('allenatore.stagioni.macrocicli.create', $stagione) }}" class="btn btn-primary">{{ __('+ Macrociclo') }}</a>
     </div>
 </div>
 
@@ -58,7 +58,7 @@
 
 @if($stagione->macrocicli->isEmpty())
 <div class="alert alert-info">
-    Nessun macrociclo. <a href="{{ route('allenatore.stagioni.macrocicli.create', $stagione) }}">Aggiungi il primo →</a>
+    {{ __('Nessun macrociclo.') }} <a href="{{ route('allenatore.stagioni.macrocicli.create', $stagione) }}">{{ __('Aggiungi il primo →') }}</a>
 </div>
 @else
 
@@ -74,13 +74,13 @@
     @if($unitaDidattiche->isNotEmpty())
     <div class="d-flex align-items-center gap-1 ms-2">
         <span class="rounded-pill d-inline-block" style="width:1rem;height:1rem;background:#8b5cf6;opacity:.75"></span>
-        <small class="fw-semibold">Unità Didattiche</small>
+        <small class="fw-semibold">{{ __('Unità Didattiche') }}</small>
     </div>
     @endif
     @if($sedute->isNotEmpty())
     <div class="d-flex align-items-center gap-1 ms-2">
         <span class="rounded-circle d-inline-block border" style="width:.75rem;height:.75rem;background:#3b82f6"></span>
-        <small class="fw-semibold">Sedute</small>
+        <small class="fw-semibold">{{ __('Sedute') }}</small>
     </div>
     @endif
 </div>
@@ -248,9 +248,9 @@
 {{-- ── GIORNI DI ALLENAMENTO PROGRAMMATI ───────────────────────────────────── --}}
 <div class="card shadow-sm mb-4">
     <div class="card-header d-flex justify-content-between align-items-center bg-transparent py-2">
-        <span class="fw-semibold">📅 Giorni di allenamento programmati</span>
+        <span class="fw-semibold">📅 {{ __('Giorni di allenamento programmati') }}</span>
         <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#form-aggiungi-giorno">
-            + Aggiungi giorno
+            {{ __('+ Aggiungi giorno') }}
         </button>
     </div>
 
@@ -262,7 +262,7 @@
                 {{-- Riga 1: giorno, tipo, nome seduta --}}
                 <div class="row g-2 mb-2">
                     <div class="col-sm-2">
-                        <label class="form-label small mb-1">Giorno *</label>
+                        <label class="form-label small mb-1">{{ __('Giorno *') }}</label>
                         <select name="giorno_settimana" class="form-select form-select-sm" required>
                             @foreach(\App\Models\GiornoAllenamento::labelGiorni() as $val => $lbl)
                                 <option value="{{ $val }}">{{ $lbl }}</option>
@@ -270,41 +270,41 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
-                        <label class="form-label small mb-1">Tipo allenamento</label>
+                        <label class="form-label small mb-1">{{ __('Tipo allenamento') }}</label>
                         <select name="tipo_allenamento_id" class="form-select form-select-sm">
-                            <option value="">— nessuno —</option>
+                            <option value="">{{ __('— nessuno —') }}</option>
                             @foreach($tipiAllenamento as $tipo)
                                 <option value="{{ $tipo->id }}">{{ $tipo->nome }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-sm-4">
-                        <label class="form-label small mb-1">Nome seduta *</label>
+                        <label class="form-label small mb-1">{{ __('Nome seduta *') }}</label>
                         <input type="text" name="titolo_base" id="add_titolo_base" class="form-control form-control-sm"
                                required placeholder="es. Sala Pesi, Tecnico Tattico" maxlength="120">
                     </div>
                     <div class="col-sm-3">
-                        <label class="form-label small mb-1">Note</label>
-                        <input type="text" name="note" class="form-control form-control-sm" placeholder="note" maxlength="255">
+                        <label class="form-label small mb-1">{{ __('Note') }}</label>
+                        <input type="text" name="note" class="form-control form-control-sm" placeholder="{{ __('note') }}" maxlength="255">
                     </div>
                 </div>
                 {{-- Riga 2: orari --}}
                 <div class="row g-2 mb-2">
                     <div class="col-sm-2">
-                        <label class="form-label small mb-1">Inizio *</label>
+                        <label class="form-label small mb-1">{{ __('Inizio *') }}</label>
                         <input type="time" name="ora_inizio" id="add_ora_inizio" class="form-control form-control-sm" required value="18:00">
                     </div>
                     <div class="col-sm-2">
-                        <label class="form-label small mb-1">Fine</label>
+                        <label class="form-label small mb-1">{{ __('Fine') }}</label>
                         <input type="time" name="ora_fine" class="form-control form-control-sm" value="20:00">
                     </div>
                     <div class="col-sm-2">
-                        <label class="form-label small mb-1">Ritrovo</label>
+                        <label class="form-label small mb-1">{{ __('Ritrovo') }}</label>
                         <input type="time" name="ora_ritrovo" id="add_ora_ritrovo" class="form-control form-control-sm"
                                placeholder="auto -15min">
                     </div>
                     <div class="col-sm-4">
-                        <label class="form-label small mb-1">Note ritrovo</label>
+                        <label class="form-label small mb-1">{{ __('Note ritrovo') }}</label>
                         <input type="text" name="note_ritrovo" class="form-control form-control-sm"
                                placeholder="es. ingresso laterale" maxlength="255">
                     </div>
@@ -312,21 +312,21 @@
                 {{-- Riga 3: luogo con mappa --}}
                 <div class="row g-2 mb-2">
                     <div class="col-sm-3">
-                        <label class="form-label small mb-1">Nome luogo</label>
+                        <label class="form-label small mb-1">{{ __('Nome luogo') }}</label>
                         <input type="text" name="luogo" class="form-control form-control-sm" placeholder="Palestra A" maxlength="255">
                     </div>
                     <div class="col-sm-4">
-                        <label class="form-label small mb-1">Indirizzo</label>
+                        <label class="form-label small mb-1">{{ __('Indirizzo') }}</label>
                         <input type="text" name="indirizzo" id="add_indirizzo" class="form-control form-control-sm"
                                placeholder="Via Roma 1" maxlength="255">
                     </div>
                     <div class="col-sm-2">
-                        <label class="form-label small mb-1">Città</label>
+                        <label class="form-label small mb-1">{{ __('Città') }}</label>
                         <input type="text" name="citta" id="add_citta" class="form-control form-control-sm"
                                placeholder="Milano" maxlength="100">
                     </div>
                     <div class="col-sm-3">
-                        <label class="form-label small mb-1">Cerca su mappa</label>
+                        <label class="form-label small mb-1">{{ __('Cerca su mappa') }}</label>
                         <div class="input-group input-group-sm">
                             <input type="text" id="add_cerca_mappa" class="form-control form-control-sm"
                                    placeholder="Cerca indirizzo...">
@@ -342,7 +342,7 @@
                         <input type="hidden" name="lat" id="add_lat">
                         <input type="hidden" name="lng" id="add_lng">
                         <button type="button" class="btn btn-link btn-sm p-0 mt-1" onclick="toggleMappa('add')">
-                            🗺️ Mostra/nascondi mappa
+                            🗺️ {{ __('Mostra/nascondi mappa') }}
                         </button>
                     </div>
                 </div>
@@ -350,7 +350,7 @@
                     <div class="form-text">
                         Seduta generata: <em>"[Nome seduta] [Giorno] [Ora]"</em> — es. <strong>Sala Pesi Lunedì 09:00</strong>
                     </div>
-                    <button class="btn btn-sm btn-success">💾 Salva giorno</button>
+                    <button class="btn btn-sm btn-success">💾 {{ __('Salva giorno') }}</button>
                 </div>
             </form>
         </div>
@@ -386,7 +386,7 @@
                     <button class="btn btn-sm btn-outline-success"
                             data-bs-toggle="modal"
                             data-bs-target="#modal-genera-{{ $g->id }}">
-                        ⚡ Genera
+                        ⚡ {{ __('Genera') }}
                     </button>
                     <form action="{{ route('allenatore.stagioni.giorni.destroy', [$stagione, $g]) }}" method="POST"
                           data-confirm="Rimuovere {{ $g->label_giorno }} {{ $g->orario }}?">
@@ -430,8 +430,8 @@
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Annulla</button>
-                            <button type="submit" class="btn btn-success btn-sm">⚡ Genera</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">{{ __('Annulla') }}</button>
+                            <button type="submit" class="btn btn-success btn-sm">⚡ {{ __('Genera') }}</button>
                         </div>
                     </form>
                 </div>
@@ -451,7 +451,7 @@
                             <div class="row g-2">
                                 {{-- Giorno + Tipo + Nome --}}
                                 <div class="col-sm-3">
-                                    <label class="form-label small mb-1">Giorno *</label>
+                                    <label class="form-label small mb-1">{{ __('Giorno *') }}</label>
                                     <select name="giorno_settimana" class="form-select form-select-sm" required>
                                         @foreach(\App\Models\GiornoAllenamento::labelGiorni() as $val => $lbl)
                                             <option value="{{ $val }}" {{ $g->giorno_settimana == $val ? 'selected' : '' }}>{{ $lbl }}</option>
@@ -459,62 +459,62 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
-                                    <label class="form-label small mb-1">Tipo</label>
+                                    <label class="form-label small mb-1">{{ __('Tipo') }}</label>
                                     <select name="tipo_allenamento_id" class="form-select form-select-sm">
-                                        <option value="">— nessuno —</option>
+                                        <option value="">{{ __('— nessuno —') }}</option>
                                         @foreach($tipiAllenamento as $tipo)
                                             <option value="{{ $tipo->id }}" {{ $g->tipo_allenamento_id == $tipo->id ? 'selected' : '' }}>{{ $tipo->nome }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label class="form-label small mb-1">Nome seduta *</label>
+                                    <label class="form-label small mb-1">{{ __('Nome seduta *') }}</label>
                                     <input type="text" name="titolo_base" class="form-control form-control-sm"
                                            required maxlength="120" value="{{ $g->titolo_base }}">
                                 </div>
                                 {{-- Orari --}}
                                 <div class="col-sm-3">
-                                    <label class="form-label small mb-1">Inizio *</label>
+                                    <label class="form-label small mb-1">{{ __('Inizio *') }}</label>
                                     <input type="time" name="ora_inizio" id="edit_ora_inizio_{{ $g->id }}"
                                            class="form-control form-control-sm edit-ora-inizio"
                                            data-ritrovo-id="edit_ora_ritrovo_{{ $g->id }}"
                                            required value="{{ substr($g->ora_inizio, 0, 5) }}">
                                 </div>
                                 <div class="col-sm-3">
-                                    <label class="form-label small mb-1">Fine</label>
+                                    <label class="form-label small mb-1">{{ __('Fine') }}</label>
                                     <input type="time" name="ora_fine" class="form-control form-control-sm"
                                            value="{{ $g->ora_fine ? substr($g->ora_fine, 0, 5) : '' }}">
                                 </div>
                                 <div class="col-sm-3">
-                                    <label class="form-label small mb-1">Ritrovo</label>
+                                    <label class="form-label small mb-1">{{ __('Ritrovo') }}</label>
                                     <input type="time" name="ora_ritrovo" id="edit_ora_ritrovo_{{ $g->id }}"
                                            class="form-control form-control-sm"
                                            value="{{ $g->ora_ritrovo ? substr($g->ora_ritrovo, 0, 5) : '' }}">
                                 </div>
                                 <div class="col-sm-3">
-                                    <label class="form-label small mb-1">Note ritrovo</label>
+                                    <label class="form-label small mb-1">{{ __('Note ritrovo') }}</label>
                                     <input type="text" name="note_ritrovo" class="form-control form-control-sm"
                                            maxlength="255" value="{{ $g->note_ritrovo }}">
                                 </div>
                                 {{-- Luogo --}}
                                 <div class="col-sm-3">
-                                    <label class="form-label small mb-1">Nome luogo</label>
+                                    <label class="form-label small mb-1">{{ __('Nome luogo') }}</label>
                                     <input type="text" name="luogo" class="form-control form-control-sm"
                                            maxlength="255" value="{{ $g->luogo }}">
                                 </div>
                                 <div class="col-sm-5">
-                                    <label class="form-label small mb-1">Indirizzo</label>
+                                    <label class="form-label small mb-1">{{ __('Indirizzo') }}</label>
                                     <input type="text" name="indirizzo" id="edit_indirizzo_{{ $g->id }}"
                                            class="form-control form-control-sm" maxlength="255" value="{{ $g->indirizzo }}">
                                 </div>
                                 <div class="col-sm-4">
-                                    <label class="form-label small mb-1">Città</label>
+                                    <label class="form-label small mb-1">{{ __('Città') }}</label>
                                     <input type="text" name="citta" id="edit_citta_{{ $g->id }}"
                                            class="form-control form-control-sm" maxlength="100" value="{{ $g->citta }}">
                                 </div>
                                 {{-- Cerca mappa --}}
                                 <div class="col-sm-8">
-                                    <label class="form-label small mb-1">Cerca su mappa</label>
+                                    <label class="form-label small mb-1">{{ __('Cerca su mappa') }}</label>
                                     <div class="input-group input-group-sm">
                                         <input type="text" id="edit_cerca_mappa_{{ $g->id }}"
                                                class="form-control form-control-sm" placeholder="Cerca indirizzo..."
@@ -537,28 +537,28 @@
                                 </div>
                                 {{-- Note generali --}}
                                 <div class="col-12">
-                                    <label class="form-label small mb-1">Note</label>
+                                    <label class="form-label small mb-1">{{ __('Note') }}</label>
                                     <input type="text" name="note" class="form-control form-control-sm"
                                            maxlength="255" value="{{ $g->note }}">
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Annulla</button>
-                            <button type="submit" class="btn btn-primary btn-sm">💾 Salva modifiche</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">{{ __('Annulla') }}</button>
+                            <button type="submit" class="btn btn-primary btn-sm">💾 {{ __('Salva modifiche') }}</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
         @empty
-        <p class="text-muted small mb-0">Nessun giorno configurato. Aggiungine uno con il tasto sopra.</p>
+        <p class="text-muted small mb-0">{{ __('Nessun giorno configurato. Aggiungine uno con il tasto sopra.') }}</p>
         @endforelse
     </div>
 </div>
 
 {{-- ── LISTA MACROCICLI ────────────────────────────────────────────────────── --}}
-<h5 class="fw-bold mb-3">Macrocicli</h5>
+<h5 class="fw-bold mb-3">{{ __('Macrocicli') }}</h5>
 
 @forelse($stagione->macrocicli as $m)
 <div class="card shadow-sm mb-2" style="border-left:4px solid {{ $m->colore ?? '#4f46e5' }}">
@@ -578,8 +578,8 @@
             @endif
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('allenatore.macrocicli.show', $m) }}" class="btn btn-sm btn-outline-primary">Apri</a>
-            <a href="{{ route('allenatore.macrocicli.edit', $m) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+            <a href="{{ route('allenatore.macrocicli.show', $m) }}" class="btn btn-sm btn-outline-primary">{{ __('Apri') }}</a>
+            <a href="{{ route('allenatore.macrocicli.edit', $m) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
             <form action="{{ route('allenatore.macrocicli.destroy', $m) }}" method="POST"
                   data-confirm="Eliminare il macrociclo «{{ addslashes($m->nome) }}»? Verranno eliminati anche i microcicli collegati.">
                 @csrf @method('DELETE')
@@ -589,14 +589,14 @@
     </div>
 </div>
 @empty
-<div class="alert alert-info">Nessun macrociclo.</div>
+<div class="alert alert-info">{{ __('Nessun macrociclo.') }}</div>
 @endforelse
 
 
 {{-- ── RIEPILOGO SEDUTE ────────────────────────────────────────────────────── --}}
 @if($sedute->isNotEmpty())
 <h5 class="fw-bold mt-4 mb-3">
-    Sedute della stagione
+    {{ __('Sedute della stagione') }}
     <span class="badge bg-secondary rounded-pill ms-1" style="font-size:.75rem">{{ $sedute->count() }}</span>
 </h5>
 <div class="row g-2">
@@ -625,7 +625,7 @@
 {{-- ── UNITÀ DIDATTICHE ─────────────────────────────────────────────────────── --}}
 @if($unitaDidattiche->isNotEmpty())
 <h5 class="fw-bold mt-4 mb-3">
-    Unità Didattiche
+    {{ __('Unità Didattiche') }}
     <span class="badge rounded-pill ms-1" style="background:#8b5cf6;font-size:.75rem">{{ $unitaDidattiche->count() }}</span>
 </h5>
 <div class="row g-2">
@@ -636,7 +636,7 @@
                 <div class="card-body py-2 px-3">
                     <small class="fw-semibold text-dark d-block">{{ $ud->titolo }}</small>
                     <small class="text-muted">
-                        dal {{ $ud->data_inizio->format('d/m/Y') }}
+                        {{ __('dal') }} {{ $ud->data_inizio->format('d/m/Y') }}
                         · {{ $ud->progressione ? ucfirst(str_replace('_', ' ', $ud->progressione)) : '' }}
                     </small>
                 </div>

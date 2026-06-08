@@ -1,13 +1,13 @@
 @extends('layouts.allenatore')
-@section('title', 'Unità Didattiche')
+@section('title', __('Unità Didattiche'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="mb-1">Unità Didattiche</h2>
-        <p class="text-muted small mb-0">Gruppi di sedute con obiettivo permanente condiviso — Manuale FIPAV, Metodologia 1-6</p>
+        <h2 class="mb-1">{{ __('Unità Didattiche') }}</h2>
+        <p class="text-muted small mb-0">{{ __('Gruppi di sedute con obiettivo permanente condiviso — Manuale FIPAV, Metodologia 1-6') }}</p>
     </div>
-    <a href="{{ route('allenatore.unita-didattiche.create') }}" class="btn btn-primary">+ Nuova unità</a>
+    <a href="{{ route('allenatore.unita-didattiche.create') }}" class="btn btn-primary">{{ __('+ Nuova unità didattica') }}</a>
 </div>
 
 @forelse($unita as $u)
@@ -30,23 +30,23 @@ $colori = ['analitico_globale' => 'bg-primary', 'sintetico_globale' => 'bg-warni
                 </div>
                 <p class="small text-muted mb-2">🎯 {{ Str::limit($u->obiettivo_permanente, 100) }}</p>
                 <div class="d-flex gap-2 flex-wrap">
-                    <span class="badge bg-light text-dark border">{{ $u->sedute->count() }} sedute</span>
+                    <span class="badge bg-light text-dark border">{{ $u->sedute->count() }} {{ __('Sedute') }}</span>
                     @if($u->team)
                         <span class="badge bg-light text-dark border">{{ $u->team->nome }}</span>
                     @endif
                 </div>
             </div>
             <div class="d-flex gap-1 flex-shrink-0">
-                <a href="{{ route('allenatore.unita-didattiche.show', $u) }}" class="btn btn-sm btn-outline-primary">Vedi</a>
-                <a href="{{ route('allenatore.unita-didattiche.edit', $u) }}" class="btn btn-sm btn-outline-secondary">Modifica</a>
+                <a href="{{ route('allenatore.unita-didattiche.show', $u) }}" class="btn btn-sm btn-outline-primary">{{ __('Vedi') }}</a>
+                <a href="{{ route('allenatore.unita-didattiche.edit', $u) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
             </div>
         </div>
     </div>
 </div>
 @empty
 <div class="alert alert-light border text-center py-5">
-    <p class="mb-2 text-muted">Nessuna unità didattica creata.</p>
-    <a href="{{ route('allenatore.unita-didattiche.create') }}" class="btn btn-primary">Crea la prima unità</a>
+    <p class="mb-2 text-muted">{{ __('Nessuna unità didattica ancora.') }}</p>
+    <a href="{{ route('allenatore.unita-didattiche.create') }}" class="btn btn-primary">{{ __('Nuova unità didattica') }}</a>
 </div>
 @endforelse
 

@@ -1,10 +1,10 @@
 @extends('layouts.allenatore')
-@section('title', 'Catalogo Esercizi')
+@section('title', __('Catalogo Esercizi'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Catalogo Esercizi</h2>
-    <a href="{{ route('allenatore.esercizi.create') }}" class="btn btn-primary">+ Nuovo esercizio</a>
+    <h2 class="mb-0">{{ __('Catalogo Esercizi') }}</h2>
+    <a href="{{ route('allenatore.esercizi.create') }}" class="btn btn-primary">{{ __('+ Nuovo esercizio') }}</a>
 </div>
 
 {{-- ── FILTRI ───────────────────────────────────────────────────────────────── --}}
@@ -13,20 +13,20 @@
 
         {{-- Metodologia --}}
         <div class="mb-1">
-            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Metodologia</small>
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Metodologia') }}</small>
         </div>
         <div class="d-flex gap-2 flex-wrap mb-3">
-            <button type="button" class="btn btn-lg btn-outline-secondary filtro-metod active-all" data-val="">TUTTE</button>
+            <button type="button" class="btn btn-lg btn-outline-secondary filtro-metod active-all" data-val="">{{ __('TUTTE') }}</button>
             <button type="button" class="btn btn-lg btn-outline-primary filtro-metod" data-val="analitico"
-                    style="--btn-color:#0d6efd">ANALITICO</button>
+                    style="--btn-color:#0d6efd">{{ __('ANALITICO') }}</button>
             <button type="button" class="btn btn-lg filtro-metod" data-val="sintetico"
-                    style="background:none;border:2px solid #e6a817;color:#cc8c00;font-weight:600;font-size:1.125rem;padding:.5rem 1rem;border-radius:.375rem">SINTETICO</button>
-            <button type="button" class="btn btn-lg btn-outline-success filtro-metod" data-val="globale">GLOBALE</button>
+                    style="background:none;border:2px solid #e6a817;color:#cc8c00;font-weight:600;font-size:1.125rem;padding:.5rem 1rem;border-radius:.375rem">{{ __('SINTETICO') }}</button>
+            <button type="button" class="btn btn-lg btn-outline-success filtro-metod" data-val="globale">{{ __('GLOBALE') }}</button>
         </div>
 
         {{-- Gesto tecnico (nascosto finché non si sceglie metodologia) --}}
         <div id="filtro-gesti-wrap" class="d-none mb-3">
-            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Gesto tecnico</small>
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Gesto tecnico') }}</small>
             <div class="d-flex gap-1 flex-wrap mt-1">
                 @foreach($gesti as $g)
                 <button type="button" class="btn btn-sm btn-outline-secondary filtro-gesto" data-val="{{ $g->id }}">{{ $g->nome }}</button>
@@ -36,10 +36,10 @@
 
         {{-- Categoria età --}}
         <div class="mb-1">
-            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Categoria età</small>
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Categoria età') }}</small>
         </div>
         <div class="d-flex gap-1 flex-wrap mb-3">
-            <button type="button" class="btn btn-sm btn-secondary filtro-cat active-all" data-val="">Tutte</button>
+            <button type="button" class="btn btn-sm btn-secondary filtro-cat active-all" data-val="">{{ __('Tutte') }}</button>
             @foreach($categorie as $cat)
             @php $col = \App\Models\Esercizio::catEtaColore($cat); @endphp
             <button type="button" class="btn btn-sm filtro-cat"
@@ -50,21 +50,21 @@
 
         {{-- Fase di gioco --}}
         <div class="mb-1">
-            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Fase di gioco</small>
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Fase di gioco') }}</small>
         </div>
         <div class="d-flex gap-1 flex-wrap mb-3">
-            <button type="button" class="btn btn-sm btn-secondary filtro-fase-gioco active-all" data-val="">Tutte</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="cambio_palla">Cambio palla</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="break_point">Break point</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="ricostruzione">Ricostruzione</button>
+            <button type="button" class="btn btn-sm btn-secondary filtro-fase-gioco active-all" data-val="">{{ __('Tutte') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="cambio_palla">{{ __('Cambio palla') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="break_point">{{ __('Break point') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-fase-gioco" data-val="ricostruzione">{{ __('Ricostruzione') }}</button>
         </div>
 
         {{-- Ruolo --}}
         <div class="mb-1">
-            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Ruolo</small>
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Ruolo') }}</small>
         </div>
         <div class="d-flex gap-1 flex-wrap mb-3">
-            <button type="button" class="btn btn-sm btn-secondary filtro-ruolo active-all" data-val="">Tutti</button>
+            <button type="button" class="btn btn-sm btn-secondary filtro-ruolo active-all" data-val="">{{ __('Tutti') }}</button>
             @php
             $labRuoli = ['alzatore'=>'Alzatore','ricevitore_attaccante'=>'Schiacciatore','centrale'=>'Centrale','opposto'=>'Opposto','libero'=>'Libero'];
             @endphp
@@ -75,10 +75,10 @@
 
         {{-- Prevenzione --}}
         <div class="mb-1">
-            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Prevenzione distretto</small>
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Prevenzione distretto') }}</small>
         </div>
         <div class="d-flex gap-1 flex-wrap mb-3">
-            <button type="button" class="btn btn-sm btn-secondary filtro-prev active-all" data-val="">Tutti</button>
+            <button type="button" class="btn btn-sm btn-secondary filtro-prev active-all" data-val="">{{ __('Tutti') }}</button>
             @php $labDist = ['caviglia'=>'🦶 Caviglia','ginocchio'=>'🦵 Ginocchio','lombare'=>'🔙 Lombare','spalla'=>'💪 Spalla']; @endphp
             @foreach($distretti as $d)
             <button type="button" class="btn btn-sm btn-outline-secondary filtro-prev" data-val="{{ $d }}">{{ $labDist[$d] }}</button>
@@ -87,7 +87,7 @@
 
         {{-- Testo libero --}}
         <input type="text" id="cerca-nome" class="form-control"
-               placeholder="Cerca per nome o descrizione...">
+               placeholder="{{ __('Cerca per nome o descrizione...') }}">
     </div>
 </div>
 

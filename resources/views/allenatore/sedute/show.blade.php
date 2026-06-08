@@ -34,22 +34,22 @@
         <h2>{{ $seduta->titolo }}</h2>
         <x-stato-seduta :stato="$seduta->stato" />
         @if($seduta->visibile_atleti)
-            <span class="badge bg-success ms-1">Visibile atleti</span>
+            <span class="badge bg-success ms-1">{{ __('Visibile atleti') }}</span>
         @endif
     </div>
     <div class="d-flex gap-2 flex-wrap">
         @if($seduta->stato === 'bozza')
             <form action="{{ route('allenatore.sedute.pubblica', $seduta) }}" method="POST">
-                @csrf<button class="btn btn-primary">Pubblica</button>
+                @csrf<button class="btn btn-primary">{{ __('Pubblica') }}</button>
             </form>
         @endif
         <form action="{{ route('allenatore.sedute.visibilita', $seduta) }}" method="POST">
             @csrf
             <button class="btn {{ $seduta->visibile_atleti ? 'btn-warning' : 'btn-success' }}">
-                {{ $seduta->visibile_atleti ? 'Nascondi atleti' : 'Rendi visibile + Notifica' }}
+                {{ $seduta->visibile_atleti ? __('Nascondi atleti') : __('Rendi visibile + Notifica') }}
             </button>
         </form>
-        <a href="{{ route('allenatore.sedute.edit', $seduta) }}" class="btn btn-outline-secondary">Modifica info</a>
+        <a href="{{ route('allenatore.sedute.edit', $seduta) }}" class="btn btn-outline-secondary">{{ __('Modifica info') }}</a>
     </div>
 </div>
 
@@ -64,7 +64,7 @@
     </div>
     @endif
     <div class="col-auto">
-        <small class="text-muted">Durata: <strong id="durata-display">{{ $seduta->durata_tot_min }}</strong> min</small>
+        <small class="text-muted">{{ __('Durata') }}: <strong id="durata-display">{{ $seduta->durata_tot_min }}</strong> min</small>
     </div>
     @if($seduta->n_atlete)
     <div class="col-auto">
@@ -73,7 +73,7 @@
     @endif
     @if($seduta->scadenza_feedback)
     <div class="col-auto">
-        <small class="text-muted">Scadenza: <strong>{{ $seduta->scadenza_feedback->format('d/m/Y H:i') }}</strong></small>
+        <small class="text-muted">{{ __('Scadenza') }}: <strong>{{ $seduta->scadenza_feedback->format('d/m/Y H:i') }}</strong></small>
         <x-countdown-scadenza :scadenza="$seduta->scadenza_feedback" />
     </div>
     @endif
@@ -101,7 +101,7 @@
 
 {{-- ── Campi toolbar ────────────────────────────────────────────────────────── --}}
 <div class="d-flex align-items-center gap-2 mb-3 flex-wrap" id="campi-toolbar">
-    <small class="text-muted fw-semibold">Campi:</small>
+    <small class="text-muted fw-semibold">{{ __('Campi:') }}</small>
     @foreach($seduta->campi as $campo)
     <span class="d-inline-flex align-items-center gap-1 badge campo-pill"
           data-campo-id="{{ $campo->id }}"
@@ -115,7 +115,7 @@
     </span>
     @endforeach
     <button class="btn btn-sm btn-outline-secondary" id="btn-aggiungi-campo" style="font-size:.8rem">
-        + Campo
+        {{ __('+ Campo') }}
     </button>
 </div>
 
@@ -125,23 +125,23 @@
     {{-- Colonna sinistra: catalogo ──────────────────────────────────────────── --}}
     <div>
         <div class="card shadow-sm mb-3">
-            <div class="card-header">Filtri catalogo</div>
+            <div class="card-header">{{ __('Filtri catalogo') }}</div>
             <div class="card-body">
                 <div class="row g-2">
                     <div class="col-12">
-                        <input type="text" id="filtro-q" class="form-control form-control-sm" placeholder="Cerca nome...">
+                        <input type="text" id="filtro-q" class="form-control form-control-sm" placeholder="{{ __('Cerca nome...') }}">
                     </div>
                     <div class="col-6">
                         <select id="filtro-fase" class="form-select form-select-sm">
-                            <option value="">Tutte le fasi</option>
-                            <option value="riscaldamento">Riscaldamento</option>
-                            <option value="potenziamento">Potenziamento</option>
-                            <option value="stretching">Stretching</option>
+                            <option value="">{{ __('Tutte le fasi') }}</option>
+                            <option value="riscaldamento">{{ __('Riscaldamento') }}</option>
+                            <option value="potenziamento">{{ __('Potenziamento') }}</option>
+                            <option value="stretching">{{ __('Stretching') }}</option>
                         </select>
                     </div>
                     <div class="col-6">
                         <select id="filtro-metodologia" class="form-select form-select-sm">
-                            <option value="">Tutte le metodologie</option>
+                            <option value="">{{ __('Tutte le metodologie') }}</option>
                             <option value="analitico">Analitico</option>
                             <option value="sintetico">Sintetico</option>
                             <option value="globale">Globale</option>
@@ -150,7 +150,7 @@
                     {{-- Campo target per l'aggiunta --}}
                     <div class="col-12" id="add-campo-wrapper" {{ $seduta->campi->isEmpty() ? 'style=display:none' : '' }}>
                         <select id="add-to-campo" class="form-select form-select-sm">
-                            <option value="">— nessun campo —</option>
+                            <option value="">{{ __('— nessun campo —') }}</option>
                             @foreach($seduta->campi as $campo)
                             <option value="{{ $campo->id }}">{{ $campo->nome }}</option>
                             @endforeach
@@ -160,7 +160,7 @@
             </div>
         </div>
         <div id="catalogo-risultati">
-            <p class="text-muted text-center py-3">Usa i filtri per cercare esercizi...</p>
+            <p class="text-muted text-center py-3">{{ __('Usa i filtri per cercare esercizi...') }}</p>
         </div>
     </div>
 
@@ -170,7 +170,7 @@
         @if($seduta->campi->isNotEmpty())
         <div class="d-flex gap-1 mb-2 flex-wrap" id="campo-filter-tabs">
             <button class="btn btn-sm btn-dark campo-tab-btn attivo" data-filter="all"
-                    style="font-size:.78rem">Tutti</button>
+                    style="font-size:.78rem">{{ __('Tutti') }}</button>
             @foreach($seduta->campi as $campo)
             <button class="btn btn-sm campo-tab-btn" data-filter="{{ $campo->id }}"
                     style="background:{{ $campo->colore }};color:#fff;font-size:.78rem">
@@ -182,9 +182,9 @@
 
         <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Esercizi nella seduta</span>
+                <span>{{ __('Esercizi nella seduta') }}</span>
                 <div class="d-flex align-items-center gap-2">
-                    <span class="save-dot" id="save-indicator" title="Stato salvataggio metriche"></span>
+                    <span class="save-dot" id="save-indicator" title="{{ __('Stato salvataggio metriche') }}"></span>
                     <span class="badge bg-info" id="count-esercizi">{{ $seduta->sedutaEsercizi->count() }}</span>
                 </div>
             </div>
@@ -255,11 +255,11 @@
                                     <input type="number" placeholder="Min" class="form-control metrica"
                                            style="width:55px" name="minuti_lavoro"
                                            value="{{ $se->minuti_lavoro }}" min="0"
-                                           title="Minuti di lavoro">
+                                           title="{{ __('Minuti di lavoro') }}">
                                     <input type="number" placeholder="1-10" class="form-control metrica"
                                            style="width:58px" name="carico_percepito"
                                            value="{{ $se->carico_percepito }}" min="1" max="10"
-                                           title="Carico percepito (1=lieve, 10=massimo)">
+                                           title="{{ __('Carico percepito (1=lieve, 10=massimo)') }}">
                                     @if($seduta->campi->isNotEmpty())
                                     <select class="form-select metrica campo-select" name="campo_id"
                                             style="width:105px" data-pivot="{{ $se->id }}">
@@ -291,14 +291,14 @@
                     @endforeach
                 </ul>
                 <p class="text-muted text-center py-4 {{ $seduta->sedutaEsercizi->count() ? 'd-none' : '' }}"
-                   id="empty-msg">Aggiungi esercizi dal catalogo</p>
+                   id="empty-msg">{{ __('+ Aggiungi') }} esercizi dal catalogo</p>
             </div>
         </div>
 
         {{-- Pannello carico seduta --}}
         <div class="card shadow-sm mt-3" id="card-carico">
             <div class="card-header py-2 d-flex align-items-center justify-content-between">
-                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">Carico seduta</small>
+                <small class="fw-semibold text-uppercase text-muted" style="font-size:.7rem;letter-spacing:.07em">{{ __('Carico seduta') }}</small>
                 <small class="text-muted" id="carico-updated" style="font-size:.7rem"></small>
             </div>
             <div class="card-body py-2">
@@ -334,33 +334,33 @@
                     <input type="hidden" name="luogo" value="{{ $seduta->luogo }}">
                     <div class="row g-2 mb-2">
                         <div class="col-md-2">
-                            <label class="form-label small">N. atlete</label>
+                            <label class="form-label small">{{ __('N. atlete') }}</label>
                             <input type="number" name="n_atlete" class="form-control form-control-sm"
                                    value="{{ $seduta->n_atlete }}" min="1" max="100">
                         </div>
                         <div class="col-md-5">
-                            <label class="form-label small">Obiettivo principale</label>
+                            <label class="form-label small">{{ __('Obiettivo principale') }}</label>
                             <input type="text" name="obiettivo_principale" class="form-control form-control-sm"
                                    value="{{ $seduta->obiettivo_principale }}"
-                                   placeholder="es. Ricezione + contrattacco">
+                                   placeholder="{{ __('es. Ricezione + contrattacco') }}">
                         </div>
                         <div class="col-md-5">
-                            <label class="form-label small">Obiettivo secondario</label>
+                            <label class="form-label small">{{ __('Obiettivo secondario') }}</label>
                             <input type="text" name="obiettivo_secondario" class="form-control form-control-sm"
                                    value="{{ $seduta->obiettivo_secondario }}"
-                                   placeholder="es. Gestione punto da seconda linea">
+                                   placeholder="{{ __('es. Gestione del punto da seconda linea') }}">
                         </div>
                     </div>
                     <div class="mb-2">
-                        <label class="form-label small">Scadenza feedback</label>
+                        <label class="form-label small">{{ __('Scadenza feedback') }}</label>
                         <input type="datetime-local" name="scadenza_feedback" class="form-control form-control-sm"
                                value="{{ $seduta->scadenza_feedback?->format('Y-m-d\TH:i') }}">
                     </div>
                     <div class="mb-2">
-                        <label class="form-label small">Note allenatore</label>
+                        <label class="form-label small">{{ __('Note allenatore') }}</label>
                         <textarea name="note_allenatore" class="form-control form-control-sm" rows="2">{{ $seduta->note_allenatore }}</textarea>
                     </div>
-                    <button type="submit" class="btn btn-sm btn-outline-primary">Salva info seduta</button>
+                    <button type="submit" class="btn btn-sm btn-outline-primary">{{ __('Salva info seduta') }}</button>
                 </form>
             </div>
         </div>
@@ -370,11 +370,11 @@
 {{-- ── Feedback ──────────────────────────────────────────────────────────────── --}}
 @if($seduta->feedback->count() > 0)
 <div class="card shadow-sm mt-4">
-    <div class="card-header">Feedback ricevuti ({{ $seduta->feedback->count() }})</div>
+    <div class="card-header">{{ __('Feedback ricevuti') }} ({{ $seduta->feedback->count() }})</div>
     <div class="card-body p-0 table-responsive">
         <table class="table table-sm mb-0">
             <thead class="table-light">
-                <tr><th>Atleta</th><th>RPE</th><th>Qualità</th><th>Impegno</th><th>Fond.</th><th>Nota</th></tr>
+                <tr><th>{{ __('Atleta') }}</th><th>RPE</th><th>{{ __('Qualità media') }}</th><th>{{ __('Impegno squadra') }}</th><th>Fond.</th><th>Nota</th></tr>
             </thead>
             <tbody>
             @foreach($seduta->feedback as $fb)

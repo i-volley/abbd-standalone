@@ -1,5 +1,5 @@
 @extends('layouts.allenatore')
-@section('title', 'Wizard Diagnostico')
+@section('title', __('Wizard Diagnostico'))
 
 @push('styles')
 <style>
@@ -41,8 +41,8 @@
 <div class="col-lg-8">
 
 <div class="mb-4">
-    <h2 class="mb-1">🔍 Wizard Diagnostico</h2>
-    <p class="text-muted mb-0">Dimmi cosa vedi in partita — il sistema prescrive gli esercizi giusti secondo il metodo FIPAV.</p>
+    <h2 class="mb-1">🔍 {{ __('Wizard Diagnostico') }}</h2>
+    <p class="text-muted mb-0">{{ __('Dimmi cosa vedi in partita — il sistema prescrive gli esercizi giusti secondo il metodo FIPAV.') }}</p>
 </div>
 
 {{-- Step indicator --}}
@@ -60,8 +60,8 @@
 
     {{-- ── STEP 1: SINTOMO ──────────────────────────────────────────────── --}}
     <div class="wizard-step active" id="step-1">
-        <h5 class="fw-bold mb-1">Che problema vedi nella tua squadra?</h5>
-        <p class="text-muted small mb-4">Scegli il sintomo prevalente osservato in allenamento o partita.</p>
+        <h5 class="fw-bold mb-1">{{ __('Che problema vedi nella tua squadra?') }}</h5>
+        <p class="text-muted small mb-4">{{ __('Scegli il sintomo prevalente osservato in allenamento o partita.') }}</p>
 
         <input type="hidden" name="sintomo" id="input-sintomo" required>
 
@@ -115,33 +115,33 @@
 
         <div class="mt-4 d-flex justify-content-end">
             <button type="button" class="btn btn-primary" id="btn-next-1" disabled onclick="goToStep(2)">
-                Avanti →
+                {{ __('Avanti →') }}
             </button>
         </div>
     </div>
 
     {{-- ── STEP 2: FONDAMENTALE ─────────────────────────────────────────── --}}
     <div class="wizard-step" id="step-2">
-        <h5 class="fw-bold mb-1">Su quale fondamentale?</h5>
-        <p class="text-muted small mb-4">Indica il gesto tecnico specifico. Puoi lasciare "Tutti" per vedere tutti gli esercizi prescritti.</p>
+        <h5 class="fw-bold mb-1">{{ __('Su quale fondamentale?') }}</h5>
+        <p class="text-muted small mb-4">{{ __('Indica il gesto tecnico specifico. Puoi lasciare "Tutti" per vedere tutti gli esercizi prescritti.') }}</p>
 
         <select name="gesto_tecnico_id" class="form-select form-select-lg mb-3">
-            <option value="tutti">🏐 Tutti i fondamentali</option>
+            <option value="tutti">🏐 {{ __('Tutti i fondamentali') }}</option>
             @foreach($gesti as $g)
                 <option value="{{ $g->id }}">{{ $g->nome }}</option>
             @endforeach
         </select>
 
         <div class="mt-4 d-flex justify-content-between">
-            <button type="button" class="btn btn-outline-secondary" onclick="goToStep(1)">← Indietro</button>
-            <button type="button" class="btn btn-primary" onclick="goToStep(3)">Avanti →</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="goToStep(1)">← {{ __('Indietro') }}</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(3)">{{ __('Avanti →') }}</button>
         </div>
     </div>
 
     {{-- ── STEP 3: FASE DI GIOCO ───────────────────────────────────────── --}}
     <div class="wizard-step" id="step-3">
-        <h5 class="fw-bold mb-1">In quale fase di gioco si manifesta?</h5>
-        <p class="text-muted small mb-4">Opzionale — aiuta a restringere la selezione.</p>
+        <h5 class="fw-bold mb-1">{{ __('In quale fase di gioco si manifesta?') }}</h5>
+        <p class="text-muted small mb-4">{{ __('Opzionale — aiuta a restringere la selezione.') }}</p>
 
         <div class="d-flex flex-column gap-2">
             @foreach([
@@ -162,15 +162,15 @@
         </div>
 
         <div class="mt-4 d-flex justify-content-between">
-            <button type="button" class="btn btn-outline-secondary" onclick="goToStep(2)">← Indietro</button>
-            <button type="button" class="btn btn-primary" onclick="goToStep(4)">Avanti →</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="goToStep(2)">← {{ __('Indietro') }}</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(4)">{{ __('Avanti →') }}</button>
         </div>
     </div>
 
     {{-- ── STEP 4: RUOLO ───────────────────────────────────────────────── --}}
     <div class="wizard-step" id="step-4">
-        <h5 class="fw-bold mb-1">Quale ruolo vuoi allenare?</h5>
-        <p class="text-muted small mb-4">Filtra per ruolo specifico o cerca esercizi per tutta la squadra.</p>
+        <h5 class="fw-bold mb-1">{{ __('Quale ruolo vuoi allenare?') }}</h5>
+        <p class="text-muted small mb-4">{{ __('Filtra per ruolo specifico o cerca esercizi per tutta la squadra.') }}</p>
 
         <div class="d-flex flex-wrap gap-2 mb-4">
             @foreach([
@@ -190,9 +190,9 @@
         </div>
 
         <div class="mt-4 d-flex justify-content-between">
-            <button type="button" class="btn btn-outline-secondary" onclick="goToStep(3)">← Indietro</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="goToStep(3)">← {{ __('Indietro') }}</button>
             <button type="submit" class="btn btn-success btn-lg px-4">
-                🔍 Mostra esercizi prescritti
+                🔍 {{ __('Mostra esercizi prescritti') }}
             </button>
         </div>
     </div>

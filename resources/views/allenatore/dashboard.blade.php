@@ -1,5 +1,5 @@
 @extends('layouts.allenatore')
-@section('title', 'Dashboard')
+@section('title', __('Dashboard'))
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -11,28 +11,28 @@
 
 @if(!$team)
     <div class="alert alert-info">
-        Nessun team ancora. <a href="{{ route('allenatore.teams.create') }}">Crea il tuo primo team</a>.
+        {{ __('Nessun team ancora.') }} <a href="{{ route('allenatore.teams.create') }}">{{ __('Crea il tuo primo team') }}</a>.
     </div>
 @else
 
 <div class="row g-3 mb-4">
     <div class="col-md-2">
-        <x-card-kpi label="Sedute totali" :value="$stats['totale_sedute']" color="primary" />
+        <x-card-kpi label="{{ __('Sedute totali') }}" :value="$stats['totale_sedute']" color="primary" />
     </div>
     <div class="col-md-2">
-        <x-card-kpi label="Sedute visibili" :value="$stats['sedute_visibili']" color="info" />
+        <x-card-kpi label="{{ __('Sedute visibili') }}" :value="$stats['sedute_visibili']" color="info" />
     </div>
     <div class="col-md-2">
-        <x-card-kpi label="Feedback ricevuti" :value="$stats['totale_feedback']" color="success" />
+        <x-card-kpi label="{{ __('Feedback ricevuti') }}" :value="$stats['totale_feedback']" color="success" />
     </div>
     <div class="col-md-2">
-        <x-card-kpi label="RPE medio" :value="$stats['avg_rpe']" color="warning" suffix="/10" />
+        <x-card-kpi label="{{ __('RPE medio') }}" :value="$stats['avg_rpe']" color="warning" suffix="/10" />
     </div>
     <div class="col-md-2">
-        <x-card-kpi label="Qualità media" :value="$stats['avg_qualita']" color="primary" suffix="/10" />
+        <x-card-kpi label="{{ __('Qualità media') }}" :value="$stats['avg_qualita']" color="primary" suffix="/10" />
     </div>
     <div class="col-md-2">
-        <x-card-kpi label="Impegno squadra" :value="$stats['avg_impegno']" color="secondary" suffix="/10" />
+        <x-card-kpi label="{{ __('Impegno squadra') }}" :value="$stats['avg_impegno']" color="secondary" suffix="/10" />
     </div>
 </div>
 
@@ -41,8 +41,8 @@
 <div class="card border-0 shadow-sm mb-4" style="border-left:4px solid #dc3545 !important">
     <div class="card-header bg-transparent py-2 d-flex align-items-center gap-2">
         <span>🔍</span>
-        <small class="fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">Insight diagnostici — ultimi 30 giorni</small>
-        <small class="text-muted ms-auto">Basati sul feedback degli atleti · Metodo FIPAV</small>
+        <small class="fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Insight diagnostici — ultimi 30 giorni') }}</small>
+        <small class="text-muted ms-auto">{{ __('Basati sul feedback degli atleti · Metodo FIPAV') }}</small>
     </div>
     <div class="card-body py-2">
         @foreach($insights as $ins)
@@ -55,7 +55,7 @@
                     @if($ins['fondamentale'])
                         <strong>{{ $ins['fondamentale'] }}</strong>
                     @else
-                        <strong>Generale</strong>
+                        <strong>{{ __('Generale') }}</strong>
                     @endif
                     <span class="badge {{ $metodBadge[$ins['metodologia_consigliata']] ?? 'bg-secondary' }} rounded-pill" style="font-size:.7rem">
                         → {{ strtoupper($ins['metodologia_consigliata']) }}
@@ -65,7 +65,7 @@
                 <small class="text-muted">{{ $ins['descrizione'] }}</small>
             </div>
             <a href="{{ route('allenatore.wizard.risultati') }}?{{ $ins['wizard_params'] }}" class="btn btn-sm btn-outline-primary flex-shrink-0">
-                Prescrivi →
+                {{ __('Prescrivi →') }}
             </a>
         </div>
         @endforeach
@@ -76,7 +76,7 @@
 <div class="row g-4">
     <div class="col-lg-7">
         <div class="card shadow-sm">
-            <div class="card-header">RPE per seduta (ultime 10)</div>
+            <div class="card-header">{{ __('RPE per seduta (ultime 10)') }}</div>
             <div class="card-body">
                 <canvas id="chartRpe" height="120"></canvas>
             </div>
@@ -85,12 +85,12 @@
     <div class="col-lg-5">
         <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between">
-                Ultimi feedback
-                <a href="{{ route('allenatore.sedute.index') }}" class="btn btn-sm btn-outline-primary">Vedi sedute</a>
+                {{ __('Ultimi feedback') }}
+                <a href="{{ route('allenatore.sedute.index') }}" class="btn btn-sm btn-outline-primary">{{ __('Vedi sedute') }}</a>
             </div>
             <div class="card-body p-0 table-responsive">
                 <table class="table table-sm mb-0">
-                    <thead><tr><th>Seduta</th><th>Atleta</th><th>RPE</th></tr></thead>
+                    <thead><tr><th>{{ __('Seduta') }}</th><th>{{ __('Atleta') }}</th><th>RPE</th></tr></thead>
                     <tbody>
                     @forelse($ultimeFeedback ?? [] as $fb)
                         <tr>
@@ -99,7 +99,7 @@
                             <td><span class="badge bg-warning text-dark">{{ $fb->rpe }}</span></td>
                         </tr>
                     @empty
-                        <tr><td colspan="3" class="text-muted text-center py-3">Nessun feedback ancora</td></tr>
+                        <tr><td colspan="3" class="text-muted text-center py-3">{{ __('Nessun feedback ancora') }}</td></tr>
                     @endforelse
                     </tbody>
                 </table>

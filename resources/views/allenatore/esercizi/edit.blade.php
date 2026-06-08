@@ -1,23 +1,23 @@
 @extends('layouts.allenatore')
-@section('title', 'Modifica Esercizio')
+@section('title', __('Modifica Esercizio'))
 
 @section('content')
-<h2 class="mb-4">Modifica: {{ $esercizio->nome }}</h2>
+<h2 class="mb-4">{{ __('Modifica Esercizio') }}: {{ $esercizio->nome }}</h2>
 
 <form action="{{ route('allenatore.esercizi.update', $esercizio) }}" method="POST">
     @csrf @method('PUT')
     <div class="row g-3">
         <div class="col-md-8">
-            <label class="form-label">Nome *</label>
+            <label class="form-label">{{ __('Nome *') }}</label>
             <input type="text" name="nome" class="form-control" value="{{ old('nome', $esercizio->nome) }}" required>
         </div>
         <div class="col-md-4">
-            <label class="form-label">Durata (min)</label>
+            <label class="form-label">{{ __('Durata (min)') }}</label>
             <input type="number" name="durata_min" class="form-control" value="{{ old('durata_min', $esercizio->durata_min) }}" min="1">
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">Fase *</label>
+            <label class="form-label">{{ __('Fase *') }}</label>
             <select name="fase" class="form-select" required>
                 @foreach(($parametri['fase'] ?? collect()) as $p)
                     <option value="{{ $p->valore }}" {{ old('fase', $esercizio->fase) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
@@ -25,7 +25,7 @@
             </select>
         </div>
         <div class="col-md-4">
-            <label class="form-label">Metodologia *</label>
+            <label class="form-label">{{ __('Metodologia *') }}</label>
             <select name="metodologia" class="form-select" required>
                 @foreach(($parametri['metodologia'] ?? collect()) as $p)
                     <option value="{{ $p->valore }}" {{ old('metodologia', $esercizio->metodologia) === $p->valore ? 'selected' : '' }}>{{ $p->etichetta }}</option>
@@ -33,9 +33,9 @@
             </select>
         </div>
         <div class="col-md-4">
-            <label class="form-label">Gesto tecnico</label>
+            <label class="form-label">{{ __('Gesto tecnico') }}</label>
             <select name="gesto_tecnico_id" class="form-select">
-                <option value="">Nessuno</option>
+                <option value="">{{ __('Nessuno') }}</option>
                 @foreach($gesti as $g)
                     <option value="{{ $g->id }}"
                         {{ old('gesto_tecnico_id', $esercizio->gesto_tecnico_id) == $g->id ? 'selected' : '' }}>
@@ -46,20 +46,20 @@
         </div>
 
         <div class="col-md-3">
-            <label class="form-label">N. Salti</label>
+            <label class="form-label">{{ __('N. Salti') }}</label>
             <input type="number" name="n_salti" class="form-control" value="{{ old('n_salti', $esercizio->n_salti) }}" min="0">
         </div>
         <div class="col-md-3">
-            <label class="form-label">N. Gesti</label>
+            <label class="form-label">{{ __('N. Gesti') }}</label>
             <input type="number" name="n_gesti" class="form-control" value="{{ old('n_gesti', $esercizio->n_gesti) }}" min="0">
         </div>
         <div class="col-md-6">
-            <label class="form-label">URL Video</label>
+            <label class="form-label">{{ __('URL Video') }}</label>
             <input type="url" name="video_url" class="form-control" value="{{ old('video_url', $esercizio->video_url) }}">
         </div>
 
         <div class="col-12">
-            <label class="form-label">Capacità</label>
+            <label class="form-label">{{ __('Capacità') }}</label>
             <div class="d-flex flex-wrap gap-2">
                 @php $selezionate = old('capacita_ids', $esercizio->capacita->pluck('id')->toArray()); @endphp
                 @foreach($capacita as $c)
@@ -76,9 +76,9 @@
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">Categoria età</label>
+            <label class="form-label">{{ __('Categoria età') }}</label>
             <select name="categoria_eta" class="form-select">
-                <option value="">Nessuna (trasversale)</option>
+                <option value="">{{ __('Nessuna (trasversale)') }}</option>
                 @foreach($categorie as $cat)
                     @php $col = \App\Models\Esercizio::catEtaColore($cat); @endphp
                     <option value="{{ $cat }}"
@@ -93,8 +93,8 @@
                 <input class="form-check-input" type="checkbox" name="is_pubblico" id="is_pubblico" value="1"
                        {{ old('is_pubblico', $esercizio->is_pubblico) ? 'checked' : '' }}>
                 <label class="form-check-label" for="is_pubblico">
-                    Rendi pubblico nel catalogo generale
-                    <small class="text-muted d-block">Visibile a tutti gli allenatori</small>
+                    {{ __('Rendi pubblico nel catalogo generale') }}
+                    <small class="text-muted d-block">{{ __('Visibile a tutti gli allenatori') }}</small>
                 </label>
             </div>
         </div>
@@ -106,8 +106,8 @@
         @include('allenatore.esercizi._campo-editor')
 
         <div class="col-12">
-            <button type="submit" class="btn btn-primary">Salva modifiche</button>
-            <a href="{{ route('allenatore.esercizi.index') }}" class="btn btn-outline-secondary ms-2">Annulla</a>
+            <button type="submit" class="btn btn-primary">{{ __('Salva modifiche') }}</button>
+            <a href="{{ route('allenatore.esercizi.index') }}" class="btn btn-outline-secondary ms-2">{{ __('Annulla') }}</a>
         </div>
     </div>
 </form>

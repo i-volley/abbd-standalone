@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'ABBD') — Allenatore</title>
+    <title>@yield('title', 'ABBD') — {{ __('Allenatore') }}</title>
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
     @stack('styles')
 </head>
@@ -12,7 +12,7 @@
 
 {{-- ── TOPBAR MOBILE (visibile solo < 768px via CSS) ──────────────────────── --}}
 <div class="mobile-topbar">
-    <button class="hamburger" id="abbd-sidebar-toggle" aria-label="Apri menu">☰</button>
+    <button class="hamburger" id="abbd-sidebar-toggle" aria-label="{{ __('Apri menu') }}">☰</button>
     <a class="brand" href="{{ route('allenatore.dashboard') }}">⚡ ABBD</a>
 </div>
 <div class="sidebar-overlay" id="abbd-sidebar-overlay"></div>
@@ -38,7 +38,7 @@
         <li class="nav-item">
             <a class="nav-link fw-semibold {{ request()->routeIs('allenatore.teams*') ? 'active' : '' }}"
                href="{{ route('allenatore.teams.index') }}">
-                👥 I miei Team
+                👥 {{ __('I miei Team') }}
             </a>
         </li>
 
@@ -52,7 +52,7 @@
                     {{ Str::limit($currentTeam->nome, 20) }}
                 </small>
                 <a href="{{ route('allenatore.teams.index') }}"
-                   class="text-white-50 ms-1" style="font-size:.7rem;text-decoration:none" title="Cambia team">✕</a>
+                   class="text-white-50 ms-1" style="font-size:.7rem;text-decoration:none" title="{{ __('Cambia team') }}">✕</a>
             </div>
         </li>
 
@@ -61,28 +61,28 @@
             <a class="nav-link ps-4 {{ request()->routeIs('allenatore.teams.hub') ? 'active' : '' }}"
                href="{{ route('allenatore.teams.hub', $currentTeam) }}"
                style="font-size:.9rem">
-                ↳ Riepilogo team
+                {{ __('↳ Riepilogo team') }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link ps-4 {{ request()->routeIs('allenatore.stagioni*') ? 'active' : '' }}"
                href="{{ route('allenatore.stagioni.index') }}"
                style="font-size:.9rem">
-                ↳ Pianificazione
+                {{ __('↳ Pianificazione') }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link ps-4 {{ request()->routeIs('allenatore.sedute*') ? 'active' : '' }}"
                href="{{ route('allenatore.sedute.index') }}"
                style="font-size:.9rem">
-                ↳ Sedute
+                {{ __('↳ Sedute') }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link ps-4 {{ request()->routeIs('allenatore.unita-didattiche*') ? 'active' : '' }}"
                href="{{ route('allenatore.unita-didattiche.index') }}"
                style="font-size:.9rem">
-                ↳ Unità Didattiche
+                {{ __('↳ Unità Didattiche') }}
             </a>
         </li>
         @endif
@@ -97,14 +97,14 @@
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('allenatore.esercizi*') ? 'active' : '' }}"
                href="{{ route('allenatore.esercizi.index') }}">
-                Catalogo Esercizi
+                {{ __('Catalogo Esercizi') }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('allenatore.wizard*') ? 'active' : '' }}"
                href="{{ route('allenatore.wizard.index') }}"
                style="{{ request()->routeIs('allenatore.wizard*') ? '' : 'color:#f59e0b;font-weight:600' }}">
-                🔍 Wizard Diagnostico
+                {{ __('🔍 Wizard Diagnostico') }}
             </a>
         </li>
 
@@ -112,38 +112,47 @@
         <li class="nav-item mt-3">
             <a class="nav-link {{ request()->routeIs('allenatore.sports*') ? 'active' : '' }}"
                href="{{ route('allenatore.sports.index') }}">
-                Impostazioni
+                {{ __('Impostazioni') }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link ps-4 {{ request()->routeIs('allenatore.parametri*') ? 'active' : '' }}"
                href="{{ route('allenatore.parametri.index') }}"
                style="font-size:.9rem">
-                ↳ Parametri esercizio
+                {{ __('↳ Parametri esercizio') }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link ps-4 {{ request()->routeIs('allenatore.tipo-allenamento*') ? 'active' : '' }}"
                href="{{ route('allenatore.tipo-allenamento.index') }}"
                style="font-size:.9rem">
-                ↳ Tipi allenamento
+                {{ __('↳ Tipi allenamento') }}
             </a>
         </li>
         <li class="nav-item mt-2">
             <a class="nav-link {{ request()->routeIs('allenatore.paradigma*') ? 'active' : '' }}"
                href="{{ route('allenatore.paradigma.settings') }}"
                style="{{ request()->routeIs('allenatore.paradigma*') ? '' : 'color:#a78bfa;font-weight:600' }}">
-                🧠 Paradigma
+                {{ __('🧠 Paradigma') }}
             </a>
         </li>
 
     </ul>
 
     <div class="mt-auto p-3" style="position:absolute;bottom:0;width:100%">
+        {{-- ── LANGUAGE SWITCHER ─────────────────────────────────────── --}}
+        <div class="d-flex gap-1 mb-2">
+            <a href="{{ route('lang.switch', 'it') }}"
+               class="btn btn-xs flex-fill {{ app()->getLocale() === 'it' ? 'btn-light' : 'btn-outline-secondary' }}"
+               style="font-size:.72rem;padding:.2rem .4rem">🇮🇹 IT</a>
+            <a href="{{ route('lang.switch', 'en') }}"
+               class="btn btn-xs flex-fill {{ app()->getLocale() === 'en' ? 'btn-light' : 'btn-outline-secondary' }}"
+               style="font-size:.72rem;padding:.2rem .4rem">🇬🇧 EN</a>
+        </div>
         <small class="text-muted d-block mb-1">{{ auth()->user()->name }}</small>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button class="btn btn-sm btn-outline-secondary w-100">Esci</button>
+            <button class="btn btn-sm btn-outline-secondary w-100">{{ __('Esci') }}</button>
         </form>
     </div>
 </nav>
@@ -160,21 +169,21 @@
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title d-flex align-items-center gap-2">
                     <span style="font-size:1.4rem">⚠️</span>
-                    <span>Conferma eliminazione</span>
+                    <span>{{ __('Conferma eliminazione') }}</span>
                 </h5>
             </div>
             <div class="modal-body pt-2 pb-1">
                 <p id="abbd-confirm-msg" class="mb-2" style="font-size:.95rem"></p>
                 <p class="text-danger small mb-0" style="font-size:.78rem">
-                    Questa operazione <strong>non può essere annullata</strong>.
+                    {{ __('Questa operazione non può essere annullata') }}.
                 </p>
             </div>
             <div class="modal-footer border-0 gap-2">
                 <button type="button" class="btn btn-outline-secondary"
-                        data-bs-dismiss="modal">Annulla</button>
+                        data-bs-dismiss="modal">{{ __('Annulla') }}</button>
                 <button type="button" id="abbd-confirm-btn" class="btn btn-danger" disabled>
                     <span id="abbd-confirm-countdown" class="me-1" style="font-size:.8rem"></span>
-                    Elimina definitivamente
+                    {{ __('Elimina definitivamente') }}
                 </button>
             </div>
         </div>
@@ -219,7 +228,6 @@ window.addEventListener('load', function () {
     var countdownEl = document.getElementById('abbd-confirm-countdown');
 
     function getModal() {
-        // Lazy: crea o riusa l'istanza Bootstrap Modal
         return bootstrap.Modal.getOrCreateInstance(modalEl);
     }
 
@@ -249,10 +257,10 @@ window.addEventListener('load', function () {
         e.stopImmediatePropagation();
 
         _pendingForm = form;
-        msgEl.textContent = form.dataset.confirm || 'Sei sicuro?';
+        msgEl.textContent = form.dataset.confirm || "{{ __('Sei sicuro?') }}";
         startCountdown();
         getModal().show();
-    }, true); // capture phase — intercetta prima di qualsiasi handler inline
+    }, true);
 
     // Bottone conferma: sottomette il form
     confirmBtn.addEventListener('click', function () {
@@ -260,7 +268,7 @@ window.addEventListener('load', function () {
         var form = _pendingForm;
         _pendingForm = null;
         getModal().hide();
-        delete form.dataset.confirm; // evita loop
+        delete form.dataset.confirm;
         form.submit();
     });
 

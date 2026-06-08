@@ -1,5 +1,5 @@
 @extends('layouts.allenatore')
-@section('title', 'Paradigma Pedagogico')
+@section('title', __('Paradigma Pedagogico'))
 
 @push('styles')
 <style>
@@ -18,8 +18,8 @@
 
 @section('content')
 <div class="mb-4">
-    <h2>Paradigma Pedagogico</h2>
-    <p class="text-muted">Scegli il tuo approccio metodologico. Non esclude nessun esercizio — cambia template, filtri, domande di feedback e tono AI.</p>
+    <h2>{{ __('Paradigma Pedagogico') }}</h2>
+    <p class="text-muted">{{ __('Scegli il tuo approccio metodologico. Non esclude nessun esercizio — cambia template, filtri, domande di feedback e tono AI.') }}</p>
 </div>
 
 <form action="{{ route('allenatore.paradigma.update') }}" method="POST">
@@ -54,7 +54,7 @@
 {{-- ── Peso ecologico (solo hybrid) ───────────────────────────────────────── --}}
 <div id="hybrid-weight-section" class="card mb-4 border-warning">
     <div class="card-body">
-        <label class="form-label fw-semibold">Peso approccio ecologico:
+        <label class="form-label fw-semibold">{{ __('Peso approccio ecologico') }}:
             <span id="weight-display">{{ $coach->paradigm_weight_ecological ?? 0 }}</span>%
         </label>
         <input type="range" name="paradigm_weight_ecological" class="form-range"
@@ -71,7 +71,7 @@
 {{-- ── Stile feedback ──────────────────────────────────────────────────────── --}}
 <div class="row g-3 mb-4">
     <div class="col-md-6">
-        <label class="form-label fw-semibold">Stile feedback agli atleti</label>
+        <label class="form-label fw-semibold">{{ __('Stile feedback agli atleti') }}</label>
         <select name="feedback_style" class="form-select">
             <option value="prescriptive"  {{ ($coach->feedback_style ?? 'prescriptive')  === 'prescriptive'  ? 'selected' : '' }}>
                 Prescrittivo — "Fai così"
@@ -85,7 +85,7 @@
         </select>
     </div>
     <div class="col-md-6">
-        <label class="form-label fw-semibold">Tono suggerimenti AI</label>
+        <label class="form-label fw-semibold">{{ __('Tono suggerimenti AI') }}</label>
         <select name="ai_suggestion_tone" class="form-select">
             <option value="directive"   {{ ($coach->ai_suggestion_tone ?? 'directive')   === 'directive'   ? 'selected' : '' }}>
                 Direttivo — soluzioni tecniche precise
@@ -103,24 +103,24 @@
 {{-- ── Blocchi preferiti ───────────────────────────────────────────────────── --}}
 <div class="row g-3 mb-4">
     <div class="col-md-4">
-        <label class="form-label fw-semibold">Numero blocchi preferito per seduta</label>
+        <label class="form-label fw-semibold">{{ __('Numero blocchi preferito per seduta') }}</label>
         <input type="number" name="preferred_session_blocks" class="form-control"
                min="2" max="12" value="{{ $coach->preferred_session_blocks ?? 6 }}">
-        <div class="form-text">Il template suggerito userà questo numero di blocchi.</div>
+        <div class="form-text">{{ __('Il template suggerito userà questo numero di blocchi.') }}</div>
     </div>
 </div>
 
 <div class="d-flex align-items-center gap-3">
-    <button type="submit" class="btn btn-primary">Salva paradigma</button>
+    <button type="submit" class="btn btn-primary">{{ __('Salva paradigma') }}</button>
     <a href="{{ route('allenatore.paradigma.templates') }}" class="btn btn-outline-secondary">
-        📋 Vedi template disponibili
+        📋 {{ __('Vedi template disponibili') }}
     </a>
 </div>
 </form>
 
 {{-- ── Preview domande feedback ────────────────────────────────────────────── --}}
 <div class="card mt-4">
-    <div class="card-header">Domande feedback attive per il tuo paradigma</div>
+    <div class="card-header">{{ __('Domande feedback attive per il tuo paradigma') }}</div>
     <div class="card-body p-0">
         <ul class="list-group list-group-flush" id="feedback-questions-preview">
             @foreach($coach->getActiveFeedbackQuestions() as $q)
