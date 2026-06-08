@@ -171,9 +171,8 @@
             <div style="position:relative;height:1.4rem;margin-bottom:.4rem;z-index:1">
                 @foreach($unitaDidattiche as $ud)
                 @php
-                    // Unità didattica: mostrala come punto/breve fascia partendo da data_inizio
-                    // Non ha data_fine diretta — mostriamo una fascia di 14gg come stima
-                    $udFine = $ud->data_inizio->copy()->addDays(13)->min($fine);
+                    // Microciclo: usa data_fine reale se disponibile, altrimenti stima 14gg
+                    $udFine = ($ud->data_fine ?? $ud->data_inizio->copy()->addDays(13))->min($fine);
                     $p = $pos($ud->data_inizio, $udFine);
                 @endphp
                 <div style="
@@ -181,12 +180,12 @@
                     left:{{ $p['left'] }}%;
                     width:{{ max($p['width'], 1.5) }}%;
                     height:100%;
-                    background:#8b5cf6;
+                    background:{{ $ud->colore ?? '#8b5cf6' }};
                     border-radius:.3rem;
-                    opacity:.65;
+                    opacity:.75;
                 "
                 data-bs-toggle="tooltip"
-                title="U.D.: {{ $ud->titolo }} · {{ $ud->data_inizio->format('d/m/Y') }}">
+                title="{{ $ud->titolo }} · {{ $ud->data_inizio->format('d/m/Y') }}{{ $ud->data_fine ? ' → '.$ud->data_fine->format('d/m/Y') : '' }}">
                 </div>
                 @endforeach
             </div>
@@ -632,12 +631,12 @@
     @foreach($unitaDidattiche as $ud)
     <div class="col-md-6">
         <a href="{{ route('allenatore.unita-didattiche.show', $ud) }}" class="text-decoration-none">
-            <div class="card h-100 border-0 shadow-sm" style="border-left:3px solid #8b5cf6 !important;border-left-style:solid !important">
+            <div class="card h-100 border-0 shadow-sm" style="border-left:3px solid {{ $ud->colore ?? '#8b5cf6' }} !important">
                 <div class="card-body py-2 px-3">
                     <small class="fw-semibold text-dark d-block">{{ $ud->titolo }}</small>
                     <small class="text-muted">
                         {{ __('dal') }} {{ $ud->data_inizio->format('d/m/Y') }}
-                        · {{ $ud->progressione ? ucfirst(str_replace('_', ' ', $ud->progressione)) : '' }}
+                        @if($ud->data_fine) → {{ $ud->data_fine->format('d/m/Y') }} @endif
                     </small>
                 </div>
             </div>

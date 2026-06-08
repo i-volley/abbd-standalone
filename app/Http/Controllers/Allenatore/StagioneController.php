@@ -67,7 +67,7 @@ class StagioneController extends Controller
             ->whereNotNull('data_inizio')
             ->whereBetween('data_inizio', [$stagione->data_inizio, $stagione->data_fine])
             ->orderBy('data_inizio')
-            ->get(['id', 'titolo', 'data_inizio', 'progressione']);
+            ->get(['id', 'titolo', 'data_inizio', 'data_fine', 'colore']);
 
         // Tipi allenamento del team (per il form giorni)
         TipoAllenamento::creaPerTeam($stagione->team_id); // crea predefiniti se mancano
