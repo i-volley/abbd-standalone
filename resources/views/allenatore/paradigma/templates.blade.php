@@ -7,7 +7,12 @@
         <h2>{{ __('Template di Seduta') }}</h2>
         <p class="text-muted mb-0">{{ __('Template di sistema per ogni tipologia di allenamento.') }}</p>
     </div>
-    <a href="{{ route('allenatore.paradigma.settings') }}" class="btn btn-outline-secondary">← {{ __('Impostazioni') }}</a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('allenatore.paradigma.template-custom.index') }}" class="btn btn-success btn-sm">
+            📝 {{ __('I miei template') }}
+        </a>
+        <a href="{{ route('allenatore.paradigma.settings') }}" class="btn btn-outline-secondary btn-sm">← {{ __('Impostazioni') }}</a>
+    </div>
 </div>
 
 @php

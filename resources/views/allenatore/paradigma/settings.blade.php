@@ -115,6 +115,9 @@
     <a href="{{ route('allenatore.paradigma.templates') }}" class="btn btn-outline-secondary">
         📋 {{ __('Vedi template disponibili') }}
     </a>
+    <a href="{{ route('allenatore.paradigma.template-custom.index') }}" class="btn btn-outline-success">
+        📝 {{ __('I miei template') }}
+    </a>
 </div>
 </form>
 
