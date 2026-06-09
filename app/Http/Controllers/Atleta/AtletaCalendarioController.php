@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Feedback;
 use App\Models\Seduta;
 use App\Models\Stagione;
-use Carbon\Carbon;
 
 class AtletaCalendarioController extends Controller
 {
@@ -16,69 +15,53 @@ class AtletaCalendarioController extends Controller
         $team = $user->teams()->first();
 
         if (!$team) {
-            return view('atleta.calendario.index', ['settimane' => collect(), 'stagione' => null]);
+            return view('atleta.calendario.index', [
+                'sedutePerData'   => collect(),
+                'giorniSettimana' => collect(),
+                'stagioneDates'   => null,
+            ]);
         }
 
         // Stagione attiva o ultima del team
         $stagione = Stagione::where('team_id', $team->id)
             ->where('attiva', true)
-            ->with('giorniAllenamento.tipoAllenamento')
+            ->with('giorniAllenamento')
             ->first()
             ?? Stagione::where('team_id', $team->id)
-                ->with('giorniAllenamento.tipoAllenamento')
+                ->with('giorniAllenamento')
                 ->orderByDesc('data_inizio')
                 ->first();
 
-        if (!$stagione || $stagione->giorniAllenamento->isEmpty()) {
-            return view('atleta.calendario.index', ['settimane' => collect(), 'stagione' => $stagione]);
-        }
-
-        $oggi   = Carbon::today();
-        // Parti dall'inizio stagione se ancora futuro, altrimenti da oggi
-        $inizio = $stagione->data_inizio->gt($oggi) ? $stagione->data_inizio->copy() : $oggi->copy();
-        $fine   = $stagione->data_fine->min($inizio->copy()->addWeeks(8));
-
-        // Sedute pubbliche nel range
+        // Tutte le sedute visibili all'atleta (senza limite di range — servono per tutta la stagione)
         $sedute = Seduta::where('team_id', $team->id)
             ->where('visibile_atleti', true)
-            ->whereBetween('data', [$inizio, $fine])
             ->orderBy('data')
-            ->get()
-            ->keyBy(fn($s) => $s->data->format('Y-m-d'));
+            ->get();
 
         $feedbackInviati = Feedback::where('atleta_id', $user->id)
             ->whereIn('seduta_id', $sedute->pluck('id'))
             ->pluck('seduta_id')
             ->toArray();
 
-        // giorno_settimana: 0=Dom, 1=Lun, ..., 6=Sab (uguale a Carbon dayOfWeek)
-        $giornoMap = $stagione->giorniAllenamento->groupBy('giorno_settimana');
+        $sedutePerData = $sedute
+            ->groupBy(fn($s) => $s->data->format('Y-m-d'))
+            ->map(fn($group) => $group->map(fn($s) => [
+                'titolo'           => $s->titolo,
+                'url'              => route('atleta.sedute.show', $s),
+                'feedback_inviato' => in_array($s->id, $feedbackInviati),
+            ])->values());
 
-        // Genera slot giorno per giorno da $inizio a $fine
-        $slots = collect();
-        $cursor = $inizio->copy();
-        while ($cursor->lte($fine)) {
-            $dow = $cursor->dayOfWeek;
-            if ($giornoMap->has($dow)) {
-                $key    = $cursor->format('Y-m-d');
-                $seduta = $sedute->get($key);
-                foreach ($giornoMap[$dow] as $giorno) {
-                    $slots->push([
-                        'data'             => $cursor->copy(),
-                        'giorno'           => $giorno,
-                        'seduta'           => $seduta,
-                        'feedback_inviato' => $seduta && in_array($seduta->id, $feedbackInviati),
-                    ]);
-                }
-            }
-            $cursor->addDay();
-        }
+        $stagioneDates = $stagione ? [
+            'nome' => $stagione->nome,
+            'da'   => $stagione->data_inizio->format('Y-m-d'),
+            'a'    => $stagione->data_fine->format('Y-m-d'),
+        ] : null;
 
-        // Raggruppa per inizio settimana (lunedì)
-        $settimane = $slots->groupBy(
-            fn($s) => $s['data']->copy()->startOfWeek(Carbon::MONDAY)->format('Y-m-d')
-        );
+        // Giorni della settimana con allenamento (0=Dom..6=Sab)
+        $giorniSettimana = $stagione
+            ? $stagione->giorniAllenamento->pluck('giorno_settimana')->unique()->values()
+            : collect();
 
-        return view('atleta.calendario.index', compact('settimane', 'stagione'));
+        return view('atleta.calendario.index', compact('sedutePerData', 'giorniSettimana', 'stagioneDates'));
     }
 }
