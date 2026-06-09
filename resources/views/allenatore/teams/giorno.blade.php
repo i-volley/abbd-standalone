@@ -31,9 +31,9 @@
             <div class="mt-1 d-flex align-items-center gap-2">
                 <x-stato-seduta :stato="$s->stato" />
                 @if($s->visibile_atleti)
-                    <span class="badge bg-success" style="font-size:.7rem">Visibile</span>
+                    <span class="badge bg-success" style="font-size:.7rem">Visible</span>
                 @else
-                    <span class="badge bg-light text-dark border" style="font-size:.7rem">Nascosta</span>
+                    <span class="badge bg-light text-dark border" style="font-size:.7rem">Hidden</span>
                 @endif
             </div>
         </div>

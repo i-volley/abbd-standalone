@@ -29,7 +29,7 @@
                     <h6 class="mb-0 fw-bold">{{ $tpl->name }}</h6>
                     @php
                         $parColors = ['traditional'=>'primary','ecological'=>'success','hybrid'=>'warning'];
-                        $parLabels = ['traditional'=>'Tradizionale','ecological'=>'Ecologico','hybrid'=>'Ibrido'];
+                        $parLabels = ['traditional'=>'Traditional','ecological'=>'Ecological','hybrid'=>'Hybrid'];
                     @endphp
                     <span class="badge bg-{{ $parColors[$tpl->paradigm] ?? 'secondary' }}" style="font-size:.65rem">
                         {{ $parLabels[$tpl->paradigm] ?? $tpl->paradigm }}
@@ -56,7 +56,7 @@
                 <a href="{{ route('allenatore.paradigma.template-custom.edit', $tpl) }}"
                    class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
                 <form action="{{ route('allenatore.paradigma.template-custom.destroy', $tpl) }}" method="POST"
-                      data-confirm="Eliminare il template «{{ addslashes($tpl->name) }}»?">
+                      data-confirm="Delete template «{{ addslashes($tpl->name) }}»?">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-outline-danger">×</button>
                 </form>

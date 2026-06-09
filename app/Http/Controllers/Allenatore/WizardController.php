@@ -48,7 +48,7 @@ class WizardController extends Controller
 
     private function sportId(): int
     {
-        return Team::where('allenatore_id', auth()->id())->value('sport_id')
+        return Team::accessibleBy(auth()->id())->value('sport_id')
             ?? Sport::where('slug', 'pallavolo')->value('id')
             ?? 1;
     }

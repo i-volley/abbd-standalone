@@ -7,7 +7,7 @@
         <h2>{{ $template->name }}</h2>
         @php $paradigmColors = ['traditional'=>'primary','ecological'=>'success','hybrid'=>'warning']; @endphp
         <span class="badge bg-{{ $paradigmColors[$template->paradigm] ?? 'secondary' }}">
-            {{ ['traditional'=>'Tradizionale','ecological'=>'Ecologico','hybrid'=>'Ibrido'][$template->paradigm] ?? $template->paradigm }}
+            {{ ['traditional'=>'Traditional','ecological'=>'Ecological','hybrid'=>'Hybrid'][$template->paradigm] ?? $template->paradigm }}
         </span>
         @if($template->is_system)
         <span class="badge bg-dark ms-1">{{ __('Template di sistema') }}</span>

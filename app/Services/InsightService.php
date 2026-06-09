@@ -35,7 +35,8 @@ class InsightService
         $cutoff = now()->subDays(self::GIORNI);
 
         // Carica sedute completate degli ultimi N giorni con feedback
-        $sedute = Seduta::where('allenatore_id', $allenatore_id)
+        $accessibleTeamIds = \App\Models\Team::accessibleBy($allenatore_id)->pluck('id');
+        $sedute = Seduta::whereIn('team_id', $accessibleTeamIds)
             ->where('stato', 'completata')
             ->where('data', '>=', $cutoff)
             ->with([

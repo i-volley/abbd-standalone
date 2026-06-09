@@ -152,7 +152,7 @@
         <small class="text-muted d-block mb-1">{{ auth()->user()->name }}</small>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button class="btn btn-sm btn-outline-secondary w-100">{{ __('Esci') }}</button>
+            <button class="btn btn-sm btn-outline-secondary w-100">{{ __('Log out') }}</button>
         </form>
     </div>
 </nav>

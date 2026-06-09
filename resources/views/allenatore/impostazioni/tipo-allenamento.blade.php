@@ -53,7 +53,7 @@
                 <button class="btn btn-sm btn-outline-primary">{{ __('Salva') }}</button>
             </form>
             <form action="{{ route('allenatore.tipo-allenamento.destroy', $tipo) }}" method="POST"
-                  data-confirm="Eliminare il tipo «{{ addslashes($tipo->nome) }}»?">
+                  data-confirm="Delete type «{{ addslashes($tipo->nome) }}»?">
                 @csrf @method('DELETE')
                 <button class="btn btn-sm btn-outline-danger">×</button>
             </form>
@@ -77,7 +77,7 @@
 @endif
 
 <div class="alert alert-info small">
-    <strong>{{ __('Tipi predefiniti') }}</strong>: Allenamento, Sala Pesi, Piscina, Campo da Beach — già presenti alla creazione del team. Puoi rinominarli o aggiungerne di nuovi.
+    <strong>{{ __('Tipi predefiniti') }}</strong>: Training, Weight Room, Pool, Beach Court — already present when the team is created. You can rename them or add new ones.
 </div>
 
 @endif

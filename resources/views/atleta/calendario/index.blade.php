@@ -1,10 +1,10 @@
 @extends('layouts.atleta')
-@section('title', 'Calendario stagione')
+@section('title', 'Season calendar')
 
 @section('content')
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="mb-0">Calendario stagione</h3>
+    <h3 class="mb-0">Season calendar</h3>
 </div>
 
 <div class="card shadow-sm mb-4">
@@ -14,22 +14,22 @@
             <button id="btnPrev" class="btn btn-sm btn-outline-secondary px-2" style="line-height:1">‹</button>
             <span id="calTitle" class="fw-semibold text-center" style="min-width:9rem"></span>
             <button id="btnNext" class="btn btn-sm btn-outline-secondary px-2" style="line-height:1">›</button>
-            <button id="btnToday" class="btn btn-sm btn-outline-secondary ms-1">Oggi</button>
+            <button id="btnToday" class="btn btn-sm btn-outline-secondary ms-1">Today</button>
         </div>
 
         {{-- Mobile: dropdown --}}
         <select id="viewSelect" class="form-select form-select-sm d-md-none" style="width:auto">
-            <option value="month">Mese</option>
-            <option value="week">Settimana</option>
-            <option value="season" {{ $stagioneDates ? '' : 'disabled' }}>Stagione</option>
+            <option value="month">Month</option>
+            <option value="week">Week</option>
+            <option value="season" {{ $stagioneDates ? '' : 'disabled' }}>Season</option>
         </select>
 
         {{-- Desktop: bottoni --}}
         <div class="btn-group btn-group-sm d-none d-md-inline-flex" role="group">
-            <button id="btnMonth"  type="button" class="btn btn-primary">Mese</button>
-            <button id="btnWeek"   type="button" class="btn btn-outline-primary">Settimana</button>
+            <button id="btnMonth"  type="button" class="btn btn-primary">Month</button>
+            <button id="btnWeek"   type="button" class="btn btn-outline-primary">Week</button>
             <button id="btnSeason" type="button" class="btn {{ $stagioneDates ? 'btn-outline-primary' : 'btn-outline-secondary' }}"
-                    {{ $stagioneDates ? '' : 'disabled' }}>Stagione</button>
+                    {{ $stagioneDates ? '' : 'disabled' }}>Season</button>
         </div>
     </div>
     <div class="card-body p-0">
@@ -39,9 +39,9 @@
 
 {{-- Legenda --}}
 <div class="d-flex flex-wrap gap-3 mb-2" style="font-size:.8rem">
-    <span><span class="badge rounded-pill me-1" style="background:#f59e0b">●</span>Feedback da inviare</span>
-    <span><span class="badge rounded-pill me-1" style="background:#10b981">●</span>Feedback inviato</span>
-    <span><span class="badge rounded-pill me-1" style="background:#e2e8f0;color:#64748b">●</span>Allenamento programmato</span>
+    <span><span class="badge rounded-pill me-1" style="background:#f59e0b">●</span>Feedback to send</span>
+    <span><span class="badge rounded-pill me-1" style="background:#10b981">●</span>Feedback sent</span>
+    <span><span class="badge rounded-pill me-1" style="background:#e2e8f0;color:#64748b">●</span>Scheduled training</span>
 </div>
 
 @endsection
@@ -300,7 +300,7 @@
             html += `<div class="week-day-header">${GIORNI_SHORT[day.getDay()]}</div>`;
             html += `<div class="week-day-num">${day.getDate()}</div>`;
             evts.forEach(e => html += eventChip(e));
-            if (tr) html += `<div style="font-size:.65rem;color:#94a3b8;text-align:center;margin-top:.5rem">Programmato</div>`;
+            if (tr) html += `<div style="font-size:.65rem;color:#94a3b8;text-align:center;margin-top:.5rem">Scheduled</div>`;
             html += '</div>';
         }
         html += '</div>';
@@ -363,7 +363,7 @@
                 else      html += `<span style="font-size:.72rem;color:#ced4da">${day.getDate()}</span>`;
                 html += '</div>';
                 evts.forEach(e => html += eventChip(e));
-                if (tr) html += `<div style="font-size:.62rem;color:#94a3b8;margin-top:.2rem">Programmato</div>`;
+                if (tr) html += `<div style="font-size:.62rem;color:#94a3b8;margin-top:.2rem">Scheduled</div>`;
                 html += '</div>';
             }
             day.setDate(day.getDate()+1);

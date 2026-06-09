@@ -40,6 +40,25 @@ Route::get('/_demo_visibilita_sedute', function () {
     return response()->json(['ok' => true, 'sedute_rese_visibili' => $updated]);
 });
 
+// ── CO-ALLENATORE SETUP (one-shot — rimuovere dopo l'uso) ────────────────────
+Route::get('/_setup_co_allenatore', function () {
+    $owner       = \App\Models\User::where('email', 'teone1980@gmail.com')->first();
+    $collaboratore = \App\Models\User::where('email', 'collaboratore@eserciziario.it')->first();
+
+    if (!$owner || !$collaboratore) {
+        return response()->json(['error' => 'User not found', 'owner' => !!$owner, 'collab' => !!$collaboratore]);
+    }
+
+    $teams = \App\Models\Team::where('allenatore_id', $owner->id)->get();
+    $added = [];
+    foreach ($teams as $team) {
+        $team->coAllenatori()->syncWithoutDetaching([$collaboratore->id]);
+        $added[] = $team->nome;
+    }
+
+    return response()->json(['ok' => true, 'teams_linked' => $added, 'collaboratore' => $collaboratore->email]);
+});
+
 // ── DEMO ATLETA SETUP (one-shot — rimuovere dopo l'uso) ──────────────────────
 Route::get('/_setup_demo_atleta', function () {
     $email    = 'demo.atleta@eserciziario.it';

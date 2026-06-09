@@ -13,7 +13,8 @@ class UnitaDidatticaController extends Controller
 {
     public function index()
     {
-        $query = UnitaDidattica::where('allenatore_id', auth()->id())
+        $accessibleTeamIds = Team::accessibleBy(auth()->id())->pluck('id');
+        $query = UnitaDidattica::whereIn('team_id', $accessibleTeamIds)
             ->with(['sedute', 'team']);
 
         if (session('current_team_id')) {
@@ -28,7 +29,7 @@ class UnitaDidatticaController extends Controller
 
     public function create()
     {
-        $teams         = Team::where('allenatore_id', auth()->id())->get();
+        $teams         = Team::accessibleBy(auth()->id())->get();
         $defaultTeamId = session('current_team_id');
         $teamsData     = $this->buildTeamsData($teams);
 
@@ -64,7 +65,7 @@ class UnitaDidatticaController extends Controller
 
     public function edit(UnitaDidattica $unitaDidattica)
     {
-        $teams     = Team::where('allenatore_id', auth()->id())->get();
+        $teams     = Team::accessibleBy(auth()->id())->get();
         $teamsData = $this->buildTeamsData($teams);
 
         return view('allenatore.unita-didattiche.edit', compact('unitaDidattica', 'teams', 'teamsData'));

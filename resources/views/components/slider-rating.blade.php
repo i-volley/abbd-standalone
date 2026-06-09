@@ -1,9 +1,9 @@
 @props(['name', 'label', 'min' => 1, 'max' => 10, 'value' => 5])
 @php
 $labels = [
-    1=>'Molto facile',2=>'Molto facile',3=>'Facile',4=>'Facile',
-    5=>'Moderato',6=>'Moderato',7=>'Faticoso',8=>'Faticoso',
-    9=>'Massimale',10=>'Massimale'
+    1=>'Very easy',2=>'Very easy',3=>'Easy',4=>'Easy',
+    5=>'Moderate',6=>'Moderate',7=>'Hard',8=>'Hard',
+    9=>'Maximum',10=>'Maximum'
 ];
 @endphp
 <div class="mb-4">
@@ -24,8 +24,8 @@ $labels = [
         document.getElementById('val-'+name).textContent = val;
         var lblEl = document.getElementById('lbl-'+name);
         if (lblEl) {
-            var rpeLabels = {1:'Molto facile',2:'Molto facile',3:'Facile',4:'Facile',
-                5:'Moderato',6:'Moderato',7:'Faticoso',8:'Faticoso',9:'Massimale',10:'Massimale'};
+            var rpeLabels = {1:'Very easy',2:'Very easy',3:'Easy',4:'Easy',
+                5:'Moderate',6:'Moderate',7:'Hard',8:'Hard',9:'Maximum',10:'Maximum'};
             lblEl.textContent = rpeLabels[parseInt(val)] || '';
         }
     }

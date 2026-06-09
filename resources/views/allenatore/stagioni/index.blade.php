@@ -19,7 +19,7 @@
             <a href="{{ route('allenatore.stagioni.edit', $s) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
             <a href="{{ route('allenatore.stagioni.show', $s) }}" class="btn btn-sm btn-outline-primary">{{ __('Apri') }}</a>
             <form action="{{ route('allenatore.stagioni.destroy', $s) }}" method="POST"
-                  data-confirm="Eliminare la stagione «{{ addslashes($s->nome) }}»? Verranno eliminati anche macrocicli e microcicli collegati.">
+                  data-confirm="Delete season «{{ addslashes($s->nome) }}»? All macrocycles and microcycles linked to it will also be deleted.">
                 @csrf @method('DELETE')
                 <button class="btn btn-sm btn-outline-danger">{{ __('Elimina') }}</button>
             </form>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'ABBD') — Le mie sedute</title>
+    <title>@yield('title', 'ABBD') — My sessions</title>
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
     @stack('styles')
 </head>
@@ -15,15 +15,15 @@
         <a class="navbar-brand" href="{{ route('atleta.sedute') }}">⚡ ABBD</a>
         <div class="navbar-nav ms-auto d-flex flex-row gap-3 align-items-center">
             <a class="nav-link {{ request()->routeIs('atleta.calendario') ? 'text-white' : 'text-secondary' }}"
-               href="{{ route('atleta.calendario') }}">Calendario</a>
+               href="{{ route('atleta.calendario') }}">Calendar</a>
             <a class="nav-link {{ request()->routeIs('atleta.sedute*') ? 'text-white' : 'text-secondary' }}"
-               href="{{ route('atleta.sedute') }}">Sedute</a>
+               href="{{ route('atleta.sedute') }}">Sessions</a>
             <a class="nav-link {{ request()->routeIs('atleta.storico') ? 'text-white' : 'text-secondary' }}"
-               href="{{ route('atleta.storico') }}">Storico</a>
+               href="{{ route('atleta.storico') }}">History</a>
             <small class="text-muted">{{ auth()->user()->name }}</small>
             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                 @csrf
-                <button class="btn btn-sm btn-outline-secondary">Esci</button>
+                <button class="btn btn-sm btn-outline-secondary">Log out</button>
             </form>
         </div>
     </div>

@@ -25,9 +25,9 @@
     <div class="col-md-3">
         <label class="form-label fw-semibold">{{ __('Tipologia') }} *</label>
         <select name="paradigm" class="form-select" required>
-            <option value="traditional" {{ old('paradigm','traditional') === 'traditional' ? 'selected' : '' }}>🔵 Tradizionale</option>
-            <option value="ecological"  {{ old('paradigm') === 'ecological'  ? 'selected' : '' }}>🟢 Ecologico</option>
-            <option value="hybrid"      {{ old('paradigm') === 'hybrid'      ? 'selected' : '' }}>🟡 Ibrido</option>
+            <option value="traditional" {{ old('paradigm','traditional') === 'traditional' ? 'selected' : '' }}>🔵 Traditional</option>
+            <option value="ecological"  {{ old('paradigm') === 'ecological'  ? 'selected' : '' }}>🟢 Ecological</option>
+            <option value="hybrid"      {{ old('paradigm') === 'hybrid'      ? 'selected' : '' }}>🟡 Hybrid</option>
         </select>
     </div>
     <div class="col-md-3 d-flex align-items-end">

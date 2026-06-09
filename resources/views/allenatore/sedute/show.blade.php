@@ -261,20 +261,20 @@
                                 </div>
                                 {{-- Row 1: serie / rip / rec --}}
                                 <div class="metrics-row">
-                                    <input type="number" placeholder="Serie" class="form-control metrica"
+                                    <input type="number" placeholder="Sets" class="form-control metrica"
                                            style="width:60px" name="serie"
                                            value="{{ $se->serie }}" min="1">
-                                    <input type="number" placeholder="Rip." class="form-control metrica"
+                                    <input type="number" placeholder="Reps" class="form-control metrica"
                                            style="width:60px" name="ripetizioni"
                                            value="{{ $se->ripetizioni }}" min="1">
-                                    <input type="number" placeholder="Rec.s" class="form-control metrica"
+                                    <input type="number" placeholder="Rest.s" class="form-control metrica"
                                            style="width:65px" name="recupero_sec"
                                            value="{{ $se->recupero_sec }}" min="0">
                                 </div>
                                 {{-- Row 2: fondamentale / salti / minuti / carico / campo --}}
                                 <div class="metrics-row">
                                     <select class="form-select metrica" name="fondamentale_id" style="width:130px">
-                                        <option value="">Fondamentale</option>
+                                        <option value="">Skill</option>
                                         @foreach($gestiFondamentali as $gf)
                                         <option value="{{ $gf->id }}"
                                             {{ $se->fondamentale_id == $gf->id ? 'selected' : '' }}>
@@ -282,7 +282,7 @@
                                         </option>
                                         @endforeach
                                     </select>
-                                    <input type="number" placeholder="Salti" class="form-control metrica"
+                                    <input type="number" placeholder="Jumps" class="form-control metrica"
                                            style="width:60px" name="n_salti"
                                            value="{{ $se->n_salti }}" min="0">
                                     <input type="number" placeholder="Min" class="form-control metrica"
@@ -296,7 +296,7 @@
                                     @if($seduta->campi->isNotEmpty())
                                     <select class="form-select metrica campo-select" name="campo_id"
                                             style="width:105px" data-pivot="{{ $se->id }}">
-                                        <option value="">Campo</option>
+                                        <option value="">Field</option>
                                         @foreach($seduta->campi as $c)
                                         <option value="{{ $c->id }}"
                                                 data-colore="{{ $c->colore }}"
@@ -314,7 +314,7 @@
                                            id="voto{{ $se->id }}"
                                            data-pivot="{{ $se->id }}"
                                            {{ $se->voto_abilitato ? 'checked' : '' }}>
-                                    <label class="form-check-label small" for="voto{{ $se->id }}">Voto</label>
+                                    <label class="form-check-label small" for="voto{{ $se->id }}">Rate</label>
                                 </div>
                                 <button class="btn btn-sm btn-outline-danger btn-rimuovi"
                                         data-pivot="{{ $se->id }}">✕</button>
@@ -358,7 +358,7 @@
                     </div>
                     <div class="text-center">
                         <div class="fw-bold fs-5" id="carico-carico">—</div>
-                        <div class="text-muted" style="font-size:.7rem">CARICO AVG</div>
+                        <div class="text-muted" style="font-size:.7rem">AVG LOAD</div>
                     </div>
                 </div>
                 <div id="carico-warning" class="mt-2" style="display:none"></div>
@@ -532,7 +532,7 @@
     lista.addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-rimuovi');
         if (!btn) return;
-        if (!confirm('Rimuovere questo esercizio dalla seduta?')) return;
+        if (!confirm('Remove this exercise from the session?')) return;
         const pivotId = btn.dataset.pivot;
         fetch('/allenatore/sedute/' + SEDUTA_ID + '/esercizi/' + pivotId, {
             method: 'DELETE', headers: {'X-CSRF-TOKEN': CSRF}
@@ -560,7 +560,7 @@
             headers: {'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
             body: JSON.stringify({esercizio_id: btn.dataset.esercizioId, track: track, campo_id: campo_id || null})
         }).then(r => r.json()).then(function(data) {
-            btn.textContent = 'Aggiunto ✓';
+            btn.textContent = 'Added ✓';
             document.getElementById('durata-display').textContent = data.durata_tot;
             document.getElementById('empty-msg').classList.add('d-none');
             // Salva stato filtri prima del reload
@@ -594,7 +594,7 @@
 
     // ── Aggiungi campo ───────────────────────────────────────────────────────
     document.getElementById('btn-aggiungi-campo').addEventListener('click', function() {
-        const nome = prompt('Nome del campo (es. Campo 1, Tecnica, Muro):');
+        const nome = prompt('Field name (e.g. Field 1, Technique, Block):');
         if (!nome || !nome.trim()) return;
         fetch('/allenatore/sedute/' + SEDUTA_ID + '/campi', {
             method: 'POST',
@@ -611,7 +611,7 @@
         if (!btn) return;
         const campoId = btn.dataset.campoId;
         const nome    = btn.closest('.campo-pill')?.querySelector('span')?.textContent || 'questo campo';
-        if (!confirm('Rimuovere "' + nome.trim() + '"? Gli esercizi assegnati perderanno il campo.')) return;
+        if (!confirm('Remove "' + nome.trim() + '"? Assigned exercises will lose their field.')) return;
         fetch('/allenatore/sedute/' + SEDUTA_ID + '/campi/' + campoId, {
             method: 'DELETE', headers: {'X-CSRF-TOKEN': CSRF}
         }).then(r => r.json()).then(function() {

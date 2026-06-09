@@ -74,13 +74,13 @@
         <label class="form-label fw-semibold">{{ __('Stile feedback agli atleti') }}</label>
         <select name="feedback_style" class="form-select">
             <option value="prescriptive"  {{ ($coach->feedback_style ?? 'prescriptive')  === 'prescriptive'  ? 'selected' : '' }}>
-                Prescrittivo — "Fai così"
+                Prescriptive — "Do it like this"
             </option>
             <option value="interrogative" {{ ($coach->feedback_style ?? '') === 'interrogative' ? 'selected' : '' }}>
-                Interrogativo — "Cosa hai percepito?"
+                Interrogative — "What did you feel?"
             </option>
             <option value="mixed"         {{ ($coach->feedback_style ?? '') === 'mixed' ? 'selected' : '' }}>
-                Misto — combina entrambi
+                Mixed — combines both
             </option>
         </select>
     </div>
@@ -88,13 +88,13 @@
         <label class="form-label fw-semibold">{{ __('Tono suggerimenti AI') }}</label>
         <select name="ai_suggestion_tone" class="form-select">
             <option value="directive"   {{ ($coach->ai_suggestion_tone ?? 'directive')   === 'directive'   ? 'selected' : '' }}>
-                Direttivo — soluzioni tecniche precise
+                Directive — precise technical solutions
             </option>
             <option value="explorative" {{ ($coach->ai_suggestion_tone ?? '') === 'explorative' ? 'selected' : '' }}>
-                Esplorativo — domande e scenari aperti
+                Exploratory — open questions and scenarios
             </option>
             <option value="neutral"     {{ ($coach->ai_suggestion_tone ?? '') === 'neutral' ? 'selected' : '' }}>
-                Neutro — bilanciato
+                Neutral — balanced
             </option>
         </select>
     </div>
@@ -131,7 +131,7 @@
                 <span class="small">{{ $q->question_text }}</span>
                 <div class="d-flex gap-1">
                     <span class="badge bg-{{ $q->paradigm === 'both' ? 'secondary' : ($q->paradigm === 'traditional' ? 'primary' : 'success') }}">
-                        {{ $q->paradigm === 'both' ? 'Sempre' : ($q->paradigm === 'traditional' ? 'Tradizionale' : 'Ecologico') }}
+                        {{ $q->paradigm === 'both' ? 'Always' : ($q->paradigm === 'traditional' ? 'Traditional' : 'Ecological') }}
                     </span>
                     <span class="badge bg-light text-dark">{{ $q->question_type }}</span>
                 </div>

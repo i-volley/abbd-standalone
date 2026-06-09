@@ -13,7 +13,7 @@ class TeamController extends Controller
 {
     public function index()
     {
-        $teams = Team::where('allenatore_id', auth()->id())->with('sport')->get();
+        $teams = Team::accessibleBy(auth()->id())->with('sport')->get();
         return view('allenatore.teams.index', compact('teams'));
     }
 
@@ -82,7 +82,7 @@ class TeamController extends Controller
     public function entra(Team $team)
     {
         // Verifica che il team appartenga all'allenatore loggato
-        abort_unless($team->allenatore_id === auth()->id(), 403);
+        abort_unless($team->isAccessibleBy(auth()->id()), 403);
 
         session(['current_team_id' => $team->id, 'current_team_nome' => $team->nome]);
 
@@ -93,7 +93,7 @@ class TeamController extends Controller
     /** Hub del team: riepilogo + calendario sedute */
     public function hub(Team $team)
     {
-        abort_unless($team->allenatore_id === auth()->id(), 403);
+        abort_unless($team->isAccessibleBy(auth()->id()), 403);
 
         $team->load(['sport', 'atleti']);
 
@@ -154,7 +154,7 @@ class TeamController extends Controller
     /** Dettaglio di un singolo giorno: sedute di quella data (vista mobile calendario) */
     public function giorno(Team $team, string $data)
     {
-        abort_unless($team->allenatore_id === auth()->id(), 403);
+        abort_unless($team->isAccessibleBy(auth()->id()), 403);
 
         try {
             $giorno = \Illuminate\Support\Carbon::parse($data);

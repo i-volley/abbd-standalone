@@ -104,8 +104,8 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                 <div class="small text-muted d-flex gap-3 flex-wrap mb-1">
                     @if($e->gestoTecnico)<span>📌 {{ $e->gestoTecnico->nome }}</span>@endif
                     <span>⏱ {{ $e->durata_min }} min</span>
-                    @if($e->n_salti > 0)<span>↕ {{ $e->n_salti }} salti</span>@endif
-                    @if($e->n_gesti > 0)<span>✋ {{ $e->n_gesti }} gesti</span>@endif
+                    @if($e->n_salti > 0)<span>↕ {{ $e->n_salti }} jumps</span>@endif
+                    @if($e->n_gesti > 0)<span>✋ {{ $e->n_gesti }} gestures</span>@endif
                     @if($e->n_giocatori)<span>👥 {{ $e->n_giocatori }}</span>@endif
                     @if($e->livello)<span class="text-capitalize">Lv: {{ $e->livello }}</span>@endif
                 </div>
@@ -127,8 +127,8 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
 </div>
 @empty
 <div class="alert alert-warning">
-    <strong>Nessun esercizio trovato</strong> con questi filtri.
-    <a href="{{ route('allenatore.esercizi.create') }}">Crea il primo esercizio prescritto</a> e taggalo con metodologia <strong>{{ $diagnosi['metodologia'] }}</strong>.
+    <strong>No exercises found</strong> with these filters.
+    <a href="{{ route('allenatore.esercizi.create') }}">Create the first prescribed exercise</a> and tag it with methodology <strong>{{ $diagnosi['metodologia'] }}</strong>.
 </div>
 @endforelse
 

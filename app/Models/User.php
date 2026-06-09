@@ -76,4 +76,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Team::class, 'allenatore_id');
     }
+
+    public function canAccessTeam(int $teamId): bool
+    {
+        $team = \App\Models\Team::find($teamId);
+        return $team && $team->isAccessibleBy($this->id);
+    }
 }

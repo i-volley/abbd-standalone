@@ -71,9 +71,9 @@
                 <div class="d-flex align-items-start gap-3">
                     <span style="font-size:1.8rem">❌</span>
                     <div>
-                        <strong>Molti errori tecnici nell'esecuzione</strong>
-                        <p class="small text-muted mb-0 mt-1">Il gesto tecnico non è corretto — errori nella postura, nel piano di rimbalzo, nella coordinazione del colpo.</p>
-                        <span class="badge bg-primary badge-metod">→ ANALITICO</span>
+                        <strong>Many technical errors in execution</strong>
+                        <p class="small text-muted mb-0 mt-1">The technical gesture is incorrect — errors in posture, contact plane, or coordination of the stroke.</p>
+                        <span class="badge bg-primary badge-metod">→ ANALYTIC</span>
                     </div>
                 </div>
             </button>
@@ -82,9 +82,9 @@
                 <div class="d-flex align-items-start gap-3">
                     <span style="font-size:1.8rem">⚡</span>
                     <div>
-                        <strong>Il gesto crolla quando aumenta la velocità di gioco</strong>
-                        <p class="small text-muted mb-0 mt-1">Da fermi eseguono bene, ma sotto ritmo di gara compaiono gli errori. Difficoltà di adattamento alla velocità della palla o della sequenza.</p>
-                        <span class="badge bg-warning text-dark badge-metod">→ SINTETICO</span>
+                        <strong>The gesture fails when game speed increases</strong>
+                        <p class="small text-muted mb-0 mt-1">They perform well in slow drills, but errors appear under match tempo. Difficulty adapting to ball speed or sequence pace.</p>
+                        <span class="badge bg-warning text-dark badge-metod">→ SYNTHETIC</span>
                     </div>
                 </div>
             </button>
@@ -93,9 +93,9 @@
                 <div class="d-flex align-items-start gap-3">
                     <span style="font-size:1.8rem">🌀</span>
                     <div>
-                        <strong>Errori quando la situazione si complica</strong>
-                        <p class="small text-muted mb-0 mt-1">In esercizio vanno bene, in partita crolla tutto. Faticano con il numero di variabili simultanee: avversari, compagni, palla.</p>
-                        <span class="badge bg-success badge-metod">→ GLOBALE</span>
+                        <strong>Errors when the situation gets complex</strong>
+                        <p class="small text-muted mb-0 mt-1">They're fine in drills, but fall apart in matches. Struggle with simultaneous variables: opponents, teammates, ball.</p>
+                        <span class="badge bg-success badge-metod">→ GLOBAL</span>
                     </div>
                 </div>
             </button>
@@ -104,9 +104,9 @@
                 <div class="d-flex align-items-start gap-3">
                     <span style="font-size:1.8rem">🧠</span>
                     <div>
-                        <strong>Difficoltà nelle scelte tattiche</strong>
-                        <p class="small text-muted mb-0 mt-1">Tecnicamente sono capaci, ma le decisioni sono lente o sbagliate: dove attaccare, quando murarsi, come distribuire il gioco.</p>
-                        <span class="badge bg-success badge-metod">→ GLOBALE TATTICO</span>
+                        <strong>Difficulty in tactical decision-making</strong>
+                        <p class="small text-muted mb-0 mt-1">Technically capable, but decisions are slow or wrong: where to attack, when to block, how to distribute play.</p>
+                        <span class="badge bg-success badge-metod">→ GLOBAL TACTICAL</span>
                     </div>
                 </div>
             </button>

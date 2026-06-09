@@ -53,8 +53,8 @@ $repTextColor    = ['low' => '#fff', 'medium' => '#1a1a1a', 'high' => '#fff'];
                 <div class="small text-muted d-flex gap-2 flex-wrap mb-1">
                     @if($e->gestoTecnico)<span>{{ $e->gestoTecnico->nome }}</span>@endif
                     <span>{{ $e->durata_min }} min</span>
-                    @if($e->n_salti > 0)<span>{{ $e->n_salti }} salti</span>@endif
-                    @if($e->n_gesti > 0)<span>{{ $e->n_gesti }} gesti</span>@endif
+                    @if($e->n_salti > 0)<span>{{ $e->n_salti }} jumps</span>@endif
+                    @if($e->n_gesti > 0)<span>{{ $e->n_gesti }} gestures</span>@endif
                     @if($e->n_giocatori)<span>{{ $e->n_giocatori }}</span>@endif
                     @if($e->campo_visivo)<span title="{{ __('Campo di gioco disponibile') }}">🏐</span>@endif
                 </div>
@@ -68,7 +68,7 @@ $repTextColor    = ['low' => '#fff', 'medium' => '#1a1a1a', 'high' => '#fff'];
                 <a href="{{ route('allenatore.esercizi.show', $e) }}" class="btn btn-sm btn-outline-dark">{{ __('Scheda') }}</a>
                 <a href="{{ route('allenatore.esercizi.edit', $e) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
                 <form action="{{ route('allenatore.esercizi.destroy', $e) }}" method="POST" class="d-inline"
-                      data-confirm="Eliminare {{ addslashes($e->nome) }}?">
+                      data-confirm="Delete {{ addslashes($e->nome) }}?">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-outline-danger">{{ __('Elimina') }}</button>
                 </form>
@@ -117,8 +117,8 @@ $repTextColor    = ['low' => '#fff', 'medium' => '#1a1a1a', 'high' => '#fff'];
                 <div class="small text-muted d-flex gap-2 flex-wrap mb-1">
                     @if($e->gestoTecnico)<span>{{ $e->gestoTecnico->nome }}</span>@endif
                     <span>{{ $e->durata_min }} min</span>
-                    @if($e->n_salti > 0)<span>{{ $e->n_salti }} salti</span>@endif
-                    @if($e->n_gesti > 0)<span>{{ $e->n_gesti }} gesti</span>@endif
+                    @if($e->n_salti > 0)<span>{{ $e->n_salti }} jumps</span>@endif
+                    @if($e->n_gesti > 0)<span>{{ $e->n_gesti }} gestures</span>@endif
                     @if($e->n_giocatori)<span>{{ $e->n_giocatori }}</span>@endif
                 </div>
                 <div class="d-flex flex-wrap gap-1">

@@ -1,13 +1,13 @@
 <script>
 (function () {
     const BLOCK_TYPES = [
-        { value: 'warmup',                label: 'Riscaldamento',               color: '#f59e0b' },
-        { value: 'technical',             label: 'Tecnica',                     color: '#3b82f6' },
-        { value: 'tactical',              label: 'Tattica',                     color: '#06b6d4' },
-        { value: 'ecological_constraint', label: 'Vincolo ecologico',           color: '#10b981' },
-        { value: 'game_form',             label: 'Forma di gioco',              color: '#ef4444' },
-        { value: 'cooldown',              label: 'Cool-down / Riflessione',     color: '#6b7280' },
-        { value: 'free',                  label: 'Blocco libero',               color: '#1e293b' },
+        { value: 'warmup',                label: 'Warm-up',                     color: '#f59e0b' },
+        { value: 'technical',             label: 'Technical',                   color: '#3b82f6' },
+        { value: 'tactical',              label: 'Tactical',                    color: '#06b6d4' },
+        { value: 'ecological_constraint', label: 'Ecological constraint',       color: '#10b981' },
+        { value: 'game_form',             label: 'Game form',                   color: '#ef4444' },
+        { value: 'cooldown',              label: 'Cool-down / Reflection',      color: '#6b7280' },
+        { value: 'free',                  label: 'Free block',                  color: '#1e293b' },
     ];
 
     const typeMap = Object.fromEntries(BLOCK_TYPES.map(t => [t.value, t]));
@@ -45,7 +45,7 @@
         row.innerHTML = `
         <div class="card-body py-2 px-3">
             <div class="row g-2 align-items-center">
-                <div class="col-auto" style="cursor:grab;color:#adb5bd;font-size:1.1rem;padding-top:.2rem" title="Trascina per riordinare">⠿</div>
+                <div class="col-auto" style="cursor:grab;color:#adb5bd;font-size:1.1rem;padding-top:.2rem" title="Drag to reorder">⠿</div>
                 <div class="col-md-3">
                     <select name="blocks[${idx}][block_type]" class="form-select form-select-sm block-type-sel" required>
                         ${typeOptions}

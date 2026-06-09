@@ -388,7 +388,7 @@
                         ⚡ {{ __('Genera') }}
                     </button>
                     <form action="{{ route('allenatore.stagioni.giorni.destroy', [$stagione, $g]) }}" method="POST"
-                          data-confirm="Rimuovere {{ $g->label_giorno }} {{ $g->orario }}?">
+                          data-confirm="Remove {{ $g->label_giorno }} {{ $g->orario }}?">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-outline-danger">×</button>
                     </form>
@@ -408,8 +408,8 @@
                         @csrf
                         <div class="modal-body pb-1">
                             <p class="small text-muted mb-3">
-                                Crea sedute <strong>bozza</strong> per ogni <strong>{{ $g->label_giorno }}</strong>
-                                nel periodo scelto. Salta date con seduta già esistente (stesso titolo+data).
+                                Create <strong>draft</strong> sessions for every <strong>{{ $g->label_giorno }}</strong>
+                                in the chosen period. Skip dates with an existing session (same title+date).
                             </p>
                             <div class="row g-2">
                                 <div class="col-6">
@@ -580,7 +580,7 @@
             <a href="{{ route('allenatore.macrocicli.show', $m) }}" class="btn btn-sm btn-outline-primary">{{ __('Apri') }}</a>
             <a href="{{ route('allenatore.macrocicli.edit', $m) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
             <form action="{{ route('allenatore.macrocicli.destroy', $m) }}" method="POST"
-                  data-confirm="Eliminare il macrociclo «{{ addslashes($m->nome) }}»? Verranno eliminati anche i microcicli collegati.">
+                  data-confirm="Delete macrocycle «{{ addslashes($m->nome) }}»? Linked microcycles will also be deleted.">
                 @csrf @method('DELETE')
                 <button class="btn btn-sm btn-outline-danger">×</button>
             </form>

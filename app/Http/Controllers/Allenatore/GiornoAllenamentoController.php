@@ -43,7 +43,7 @@ class GiornoAllenamentoController extends Controller
     /** Aggiunge un giorno ricorrente alla stagione */
     public function store(Request $request, Stagione $stagione)
     {
-        abort_unless($stagione->team->allenatore_id === auth()->id(), 403);
+        abort_unless($stagione->team->isAccessibleBy(auth()->id()), 403);
         $data = $this->validateGiorno($request);
 
         GiornoAllenamento::firstOrCreate(
@@ -62,7 +62,7 @@ class GiornoAllenamentoController extends Controller
     /** Modifica un giorno ricorrente esistente */
     public function update(Request $request, Stagione $stagione, GiornoAllenamento $giorno)
     {
-        abort_unless($stagione->team->allenatore_id === auth()->id(), 403);
+        abort_unless($stagione->team->isAccessibleBy(auth()->id()), 403);
         abort_unless($giorno->stagione_id === $stagione->id, 403);
 
         $this->validateGiorno($request);
@@ -74,7 +74,7 @@ class GiornoAllenamentoController extends Controller
     /** Elimina un giorno ricorrente */
     public function destroy(Stagione $stagione, GiornoAllenamento $giorno)
     {
-        abort_unless($stagione->team->allenatore_id === auth()->id(), 403);
+        abort_unless($stagione->team->isAccessibleBy(auth()->id()), 403);
         abort_unless($giorno->stagione_id === $stagione->id, 403);
 
         $giorno->delete();
@@ -86,7 +86,7 @@ class GiornoAllenamentoController extends Controller
      */
     public function generaGiorno(Request $request, Stagione $stagione, GiornoAllenamento $giorno)
     {
-        abort_unless($stagione->team->allenatore_id === auth()->id(), 403);
+        abort_unless($stagione->team->isAccessibleBy(auth()->id()), 403);
         abort_unless($giorno->stagione_id === $stagione->id, 403);
 
         $request->validate([

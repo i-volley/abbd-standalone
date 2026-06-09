@@ -25,9 +25,9 @@
     <div class="col-md-3">
         <label class="form-label fw-semibold">{{ __('Tipologia') }} *</label>
         <select name="paradigm" class="form-select" required>
-            <option value="traditional" {{ old('paradigm', $template->paradigm) === 'traditional' ? 'selected' : '' }}>🔵 Tradizionale</option>
-            <option value="ecological"  {{ old('paradigm', $template->paradigm) === 'ecological'  ? 'selected' : '' }}>🟢 Ecologico</option>
-            <option value="hybrid"      {{ old('paradigm', $template->paradigm) === 'hybrid'      ? 'selected' : '' }}>🟡 Ibrido</option>
+            <option value="traditional" {{ old('paradigm', $template->paradigm) === 'traditional' ? 'selected' : '' }}>🔵 Traditional</option>
+            <option value="ecological"  {{ old('paradigm', $template->paradigm) === 'ecological'  ? 'selected' : '' }}>🟢 Ecological</option>
+            <option value="hybrid"      {{ old('paradigm', $template->paradigm) === 'hybrid'      ? 'selected' : '' }}>🟡 Hybrid</option>
         </select>
     </div>
     <div class="col-md-3 d-flex align-items-end">
@@ -64,7 +64,7 @@
 
 <hr class="mt-4">
 <form action="{{ route('allenatore.paradigma.template-custom.destroy', $template) }}" method="POST"
-      data-confirm="Eliminare il template «{{ addslashes($template->name) }}»?">
+      data-confirm="Delete template «{{ addslashes($template->name) }}»?">
     @csrf @method('DELETE')
     <button class="btn btn-sm btn-outline-danger">{{ __('Elimina template') }}</button>
 </form>

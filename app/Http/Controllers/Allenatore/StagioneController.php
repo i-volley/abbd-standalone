@@ -14,7 +14,8 @@ class StagioneController extends Controller
 {
     public function index()
     {
-        $query = Stagione::whereHas('team', fn($q) => $q->where('allenatore_id', auth()->id()))
+        $accessibleTeamIds = Team::accessibleBy(auth()->id())->pluck('id');
+        $query = Stagione::whereIn('team_id', $accessibleTeamIds)
             ->with('team');
 
         // Filtra per team attivo in sessione
@@ -30,7 +31,7 @@ class StagioneController extends Controller
 
     public function create()
     {
-        $teams         = Team::where('allenatore_id', auth()->id())->get();
+        $teams         = Team::accessibleBy(auth()->id())->get();
         $defaultTeamId = session('current_team_id');
         return view('allenatore.stagioni.create', compact('teams', 'defaultTeamId'));
     }
@@ -79,7 +80,7 @@ class StagioneController extends Controller
 
     public function edit(Stagione $stagione)
     {
-        $teams = Team::where('allenatore_id', auth()->id())->get();
+        $teams = Team::accessibleBy(auth()->id())->get();
         return view('allenatore.stagioni.edit', compact('stagione', 'teams'));
     }
 

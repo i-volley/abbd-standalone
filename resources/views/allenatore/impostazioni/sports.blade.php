@@ -68,7 +68,7 @@
 
                     {{-- Elimina categoria --}}
                     <form action="{{ route('allenatore.categorie-gesto.destroy', $cat) }}" method="POST"
-                          data-confirm="Eliminare la categoria {{ addslashes($cat->nome) }}? I gesti associati perderanno la categoria.">
+                          data-confirm="Delete category {{ addslashes($cat->nome) }}? Associated gestures will lose their category.">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-outline-danger">×</button>
                     </form>
@@ -83,7 +83,7 @@
                     @csrf
                     <input type="hidden" name="sport_id" value="{{ $sport->id }}">
                     <input type="text" name="nome" class="form-control form-control-sm"
-                           placeholder="Nuova categoria..." style="max-width:200px" required>
+                           placeholder="New category..." style="max-width:200px" required>
                     <input type="color" name="colore" value="#0d6efd"
                            class="form-control form-control-color form-control-sm"
                            style="width:2.5rem;height:2rem;padding:.1rem .2rem" title="Scegli colore">
@@ -103,7 +103,7 @@
                     <a href="{{ route('allenatore.gesti-tecnici.edit', $g) }}"
                        class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
                     <form action="{{ route('allenatore.gesti-tecnici.destroy', $g) }}" method="POST"
-                          data-confirm="Eliminare {{ addslashes($g->nome) }}?">
+                          data-confirm="Delete {{ addslashes($g->nome) }}?">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-outline-danger">×</button>
                     </form>
@@ -161,7 +161,7 @@
                         <summary class="text-danger small" style="cursor:pointer">{{ __('Zona pericolosa') }}</summary>
                         <div class="mt-2">
                             <form action="{{ route('allenatore.sports.destroy', $sport) }}" method="POST"
-                                  data-confirm="ATTENZIONE: eliminare {{ addslashes($sport->nome) }}? Verranno eliminati anche tutti i gesti tecnici e le categorie associate.">
+                                  data-confirm="WARNING: delete {{ addslashes($sport->nome) }}? All associated technical gestures and categories will also be deleted.">
                                 @csrf @method('DELETE')
                                 <button class="btn btn-sm btn-danger w-100">{{ __('Elimina sport') }} {{ $sport->nome }}</button>
                             </form>

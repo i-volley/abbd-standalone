@@ -19,7 +19,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span>{{ $atleta->name }} <small class="text-muted">{{ $atleta->email }}</small></span>
                     <form action="{{ route('allenatore.teams.atleti.remove', [$team, $atleta]) }}" method="POST"
-                          data-confirm="Rimuovere {{ addslashes($atleta->name) }} dal team?">
+                          data-confirm="Remove {{ addslashes($atleta->name) }} from the team?">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-outline-danger">{{ __('Rimuovi') }}</button>
                     </form>

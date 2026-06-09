@@ -14,13 +14,13 @@ class AllenatoreDashboardController extends Controller
     public function index()
     {
         // Nessun team → redirect diretto alla creazione (evita 500 da variabili mancanti)
-        $hasTeam = Team::where('allenatore_id', auth()->id())->exists();
+        $hasTeam = Team::accessibleBy(auth()->id())->exists();
         if (!$hasTeam) {
             return redirect()->route('allenatore.teams.create')
                 ->with('info', 'Benvenuto! Crea il tuo primo team per iniziare.');
         }
 
-        $team = Team::where('allenatore_id', auth()->id())->with('sport')->first();
+        $team = Team::accessibleBy(auth()->id())->with('sport')->first();
 
         $stats          = [];
         $ultimeFeedback = collect();

@@ -28,7 +28,7 @@
         <div class="col-12">
             <label class="form-label">{{ __('Intensità *') }}</label>
             <select name="intensita" class="form-select" required>
-                @foreach(['bassa' => 'Bassa', 'media' => 'Media', 'alta' => 'Alta', 'scarico' => 'Scarico'] as $v => $l)
+                @foreach(['bassa' => 'Low', 'media' => 'Medium', 'alta' => 'High', 'scarico' => 'Unload'] as $v => $l)
                     <option value="{{ $v }}" {{ old('intensita', $microciclo->intensita) === $v ? 'selected' : '' }}>
                         {{ $l }}
                     </option>
@@ -47,7 +47,7 @@
                class="btn btn-outline-secondary">{{ __('Annulla') }}</a>
             <form action="{{ route('allenatore.microcicli.destroy', $microciclo) }}" method="POST"
                   class="ms-auto"
-                  data-confirm="Eliminare il microciclo settimana {{ $microciclo->numero }}?">
+                  data-confirm="Delete microcycle week {{ $microciclo->numero }}?">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-outline-danger btn-sm">{{ __('Elimina') }}</button>
             </form>

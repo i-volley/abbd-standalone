@@ -35,7 +35,7 @@
             <div class="col-lg-8">
                 <h6 class="text-uppercase text-muted fw-bold mb-3"
                     style="font-size:.72rem;letter-spacing:.08em">
-                    Voci di "{{ $label }}"
+                    Entries for "{{ $label }}"
                 </h6>
 
                 @forelse(($parametri[$tipo] ?? collect()) as $p)
@@ -62,7 +62,7 @@
                         {{-- Elimina (solo non-sistema) --}}
                         @if(!$p->di_sistema)
                         <form action="{{ route('allenatore.parametri.destroy', $p) }}" method="POST"
-                              data-confirm="Eliminare «{{ addslashes($p->etichetta) }}»? Gli esercizi già assegnati manterranno il valore.">
+                              data-confirm="Delete «{{ addslashes($p->etichetta) }}»? Exercises already assigned will keep the value.">
                             @csrf @method('DELETE')
                             <button class="btn btn-sm btn-outline-danger" title="Elimina">×</button>
                         </form>
@@ -116,7 +116,7 @@
             {{-- ── FORM AGGIUNTA ────────────────────────────────────────────── --}}
             <div class="col-lg-4">
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-transparent fw-semibold">+ Aggiungi voce "{{ $label }}"</div>
+                    <div class="card-header bg-transparent fw-semibold">+ Add entry "{{ $label }}"</div>
                     <div class="card-body">
                         <form action="{{ route('allenatore.parametri.store') }}" method="POST">
                             @csrf

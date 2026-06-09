@@ -1,8 +1,8 @@
 @extends('layouts.atleta')
-@section('title', 'Le mie sedute')
+@section('title', 'My sessions')
 
 @section('content')
-<h3 class="mb-4">Le mie sedute</h3>
+<h3 class="mb-4">My sessions</h3>
 
 @forelse($sedute as $seduta)
 <div class="card shadow-sm mb-3">
@@ -19,18 +19,18 @@
             </div>
             <div class="text-end">
                 @if(in_array($seduta->id, $feedbackInviati))
-                    <span class="badge bg-success">Feedback inviato</span>
+                    <span class="badge bg-success">Feedback sent</span>
                 @else
-                    <span class="badge bg-warning text-dark">Feedback da inviare</span>
+                    <span class="badge bg-warning text-dark">Feedback to send</span>
                 @endif
                 <div class="mt-2">
-                    <a href="{{ route('atleta.sedute.show', $seduta) }}" class="btn btn-sm btn-outline-primary">Vedi</a>
+                    <a href="{{ route('atleta.sedute.show', $seduta) }}" class="btn btn-sm btn-outline-primary">View</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 @empty
-<div class="alert alert-info">Nessuna seduta disponibile.</div>
+<div class="alert alert-info">No sessions available.</div>
 @endforelse
 @endsection

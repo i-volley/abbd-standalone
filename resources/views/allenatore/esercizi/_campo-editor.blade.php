@@ -20,53 +20,53 @@
 
     {{-- Header + controlli --}}
     <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-        <span class="fw-semibold">🏐 Campo di gioco</span>
+        <span class="fw-semibold">🏐 Playing field</span>
 
         {{-- Layout toggle --}}
         <div class="btn-group btn-group-sm" role="group">
-            <button type="button" class="cv-layout btn btn-primary" data-layout="full">Campo intero</button>
-            <button type="button" class="cv-layout btn btn-outline-primary" data-layout="half">Metà campo</button>
+            <button type="button" class="cv-layout btn btn-primary" data-layout="full">Full court</button>
+            <button type="button" class="cv-layout btn btn-outline-primary" data-layout="half">Half court</button>
         </div>
 
         {{-- Strumenti --}}
         <div class="btn-group btn-group-sm" role="group">
-            <button type="button" class="cv-tool btn btn-secondary active" data-tool="move" title="Sposta elementi">✋ Sposta</button>
+            <button type="button" class="cv-tool btn btn-secondary active" data-tool="move" title="Move elements">✋ Move</button>
             <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow-red"
-                    title="Freccia rossa solida: direzione di attacco"
-                    style="color:#dc2626;border-color:#dc2626">➔ Attacco</button>
+                    title="Solid red arrow: attack direction"
+                    style="color:#dc2626;border-color:#dc2626">➔ Attack</button>
             <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow-blue"
-                    title="Freccia blu tratteggiata: spostamento giocatore"
-                    style="color:#2563eb;border-color:#2563eb">➔ Giocatore</button>
+                    title="Dashed blue arrow: player movement"
+                    style="color:#2563eb;border-color:#2563eb">➔ Player</button>
             <button type="button" class="cv-tool btn btn-outline-secondary" data-tool="arrow-ball"
-                    title="Freccia gialla tratteggiata: movimento palla (numerata)"
-                    style="color:#ca8a04;border-color:#ca8a04">➔ Palla</button>
+                    title="Dashed yellow arrow: ball movement (numbered)"
+                    style="color:#ca8a04;border-color:#ca8a04">➔ Ball</button>
         </div>
 
-        <button type="button" class="btn btn-sm btn-outline-secondary" id="cv-undo" title="Annulla ultima azione (Ctrl+Z)">↩ Annulla</button>
-        <button type="button" class="btn btn-sm btn-outline-danger" id="cv-clear">✕ Pulisci tutto</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="cv-undo" title="Undo last action (Ctrl+Z)">↩ Undo</button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="cv-clear">✕ Clear all</button>
     </div>
 
     {{-- Palette aggiungi elementi --}}
     <div class="d-flex align-items-center gap-1 mb-2 flex-wrap">
-        <small class="text-muted me-1">Aggiungi:</small>
+        <small class="text-muted me-1">Add:</small>
         <button type="button" class="cv-add btn btn-sm fw-bold" data-team="A"
-                style="background:#f97316;color:#fff;border:none;min-width:2.2rem" title="Attaccante (max 6)">A</button>
+                style="background:#f97316;color:#fff;border:none;min-width:2.2rem" title="Attacker (max 6)">A</button>
         <button type="button" class="cv-add btn btn-sm fw-bold" data-team="D"
-                style="background:#3b82f6;color:#fff;border:none;min-width:2.2rem" title="Difensore (max 6)">D</button>
+                style="background:#3b82f6;color:#fff;border:none;min-width:2.2rem" title="Defender (max 6)">D</button>
         <button type="button" class="cv-add btn btn-sm fw-bold" data-team="B"
-                style="background:#fbbf24;color:#222;border:none;min-width:2.2rem" title="Pallone">🏐</button>
+                style="background:#fbbf24;color:#222;border:none;min-width:2.2rem" title="Ball">🏐</button>
         <button type="button" class="cv-add btn btn-sm fw-bold" data-team="C"
-                style="background:#1e293b;color:#fff;border:none;min-width:2.2rem" title="Coach / Allenatore (zona libera)">C</button>
+                style="background:#1e293b;color:#fff;border:none;min-width:2.2rem" title="Coach (free zone)">C</button>
         <button type="button" class="cv-add btn btn-sm fw-bold" data-team="X"
-                style="background:#6b7280;color:#fff;border:none;min-width:2.2rem" title="Carro palline / ostacolo">🧺</button>
-        <small class="text-muted ms-1" style="font-size:.75rem">· tasto dx su elemento = elimina · Esc = annulla freccia</small>
+                style="background:#6b7280;color:#fff;border:none;min-width:2.2rem" title="Ball cart / obstacle">🧺</button>
+        <small class="text-muted ms-1" style="font-size:.75rem">· right-click on element = delete · Esc = cancel arrow</small>
     </div>
 
     {{-- Palette ruoli --}}
     <div class="d-flex align-items-center gap-1 mb-2 flex-wrap">
-        <small class="text-muted me-1">Ruoli:</small>
+        <small class="text-muted me-1">Roles:</small>
         <select id="cv-role-select" class="form-select form-select-sm" style="width:auto;max-width:160px">
-            <option value="">— scegli ruolo —</option>
+            <option value="">— choose role —</option>
             <option value="P">P – Palleggiatore</option>
             <option value="O">O – Opposto</option>
             <option value="S1">S1 – Schiacciatore 1</option>
@@ -77,10 +77,10 @@
         </select>
         <button type="button" id="cv-add-r1" class="btn btn-sm fw-bold"
                 style="background:#1e293b;color:#fff;border:none;min-width:3rem"
-                title="Aggiungi ruolo Squadra 1 (pieno)">+ Sq.1</button>
+                title="Add role Team 1 (filled)">+ Sq.1</button>
         <button type="button" id="cv-add-r2" class="btn btn-sm fw-bold"
                 style="background:#fff;color:#1e293b;border:2px solid #1e293b;min-width:3rem"
-                title="Aggiungi ruolo Squadra 2 (outline)">+ Sq.2</button>
+                title="Add role Team 2 (outline)">+ Sq.2</button>
     </div>
 
     {{-- Riga: campo SVG + descrizione --}}
@@ -127,11 +127,11 @@
 
         {{-- Descrizione esercizio --}}
         <div style="flex:1 1 200px;min-width:180px;display:flex;flex-direction:column">
-            <label class="form-label fw-semibold mb-1">Descrizione / Note metodologiche</label>
+            <label class="form-label fw-semibold mb-1">Description / Methodological notes</label>
             <textarea name="descrizione" class="form-control flex-grow-1"
                       style="min-height:180px;resize:vertical;font-size:.9rem"
-                      placeholder="Descrivi l'esercizio: posizioni iniziali, compiti, varianti, punti chiave...">{{ $descrizioneVal }}</textarea>
-            <small class="text-muted mt-1" style="font-size:.75rem">Varianti, progressioni, errori frequenti...</small>
+                      placeholder="Describe the exercise: starting positions, tasks, variants, key points...">{{ $descrizioneVal }}</textarea>
+            <small class="text-muted mt-1" style="font-size:.75rem">Variants, progressions, common errors...</small>
         </div>
 
     </div>{{-- /riga --}}

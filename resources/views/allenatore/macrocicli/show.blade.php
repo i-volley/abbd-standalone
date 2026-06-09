@@ -23,13 +23,13 @@
     <div class="card-body d-flex justify-content-between align-items-center">
         <div>
             <strong>{{ __('Settimana') }} {{ $m->numero }}</strong>
-            <small class="text-muted ms-2">{{ $m->data_inizio->format('d/m/Y') }} · {{ __('intensità') }}:
+            <small class="text-muted ms-2">{{ $m->data_inizio->format('d/m/Y') }} · intensity:
                 <span class="badge bg-secondary">{{ $m->intensita }}</span>
             </small>
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('allenatore.microcicli.edit', $m) }}" class="btn btn-sm btn-outline-secondary">{{ __('Modifica') }}</a>
-            <form action="{{ route('allenatore.microcicli.destroy', $m) }}" method="POST" data-confirm="Eliminare?">
+            <form action="{{ route('allenatore.microcicli.destroy', $m) }}" method="POST" data-confirm="Delete?">
                 @csrf @method('DELETE')
                 <button class="btn btn-sm btn-outline-danger">{{ __('Elimina') }}</button>
             </form>

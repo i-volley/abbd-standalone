@@ -48,4 +48,23 @@ class Team extends Model
     {
         return $this->hasMany(TipoAllenamento::class)->orderBy('ordine')->orderBy('nome');
     }
+
+    public function coAllenatori()
+    {
+        return $this->belongsToMany(User::class, 'team_co_allenatori', 'team_id', 'user_id');
+    }
+
+    public function scopeAccessibleBy($query, int $userId): void
+    {
+        $query->where(function ($q) use ($userId) {
+            $q->where('allenatore_id', $userId)
+              ->orWhereHas('coAllenatori', fn ($r) => $r->where('users.id', $userId));
+        });
+    }
+
+    public function isAccessibleBy(int $userId): bool
+    {
+        return $this->allenatore_id === $userId
+            || $this->coAllenatori()->where('users.id', $userId)->exists();
+    }
 }

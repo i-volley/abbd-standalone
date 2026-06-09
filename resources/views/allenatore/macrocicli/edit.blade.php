@@ -66,7 +66,7 @@
                class="btn btn-outline-secondary">{{ __('Annulla') }}</a>
             <form action="{{ route('allenatore.macrocicli.destroy', $macrociclo) }}" method="POST"
                   class="ms-auto"
-                  data-confirm="Eliminare il macrociclo «{{ addslashes($macrociclo->nome) }}»?">
+                  data-confirm="Delete macrocycle «{{ addslashes($macrociclo->nome) }}»?">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-outline-danger btn-sm">{{ __('Elimina macrociclo') }}</button>
             </form>

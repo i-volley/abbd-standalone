@@ -17,13 +17,14 @@ class SeduteController extends Controller
     private function teamId(): int
     {
         return session('current_team_id')
-            ?? Team::where('allenatore_id', auth()->id())->value('id')
+            ?? Team::accessibleBy(auth()->id())->value('id')
             ?? 0;
     }
 
     public function index()
     {
-        $query = Seduta::where('allenatore_id', auth()->id())->with('team');
+        $accessibleTeamIds = Team::accessibleBy(auth()->id())->pluck('id');
+        $query = Seduta::whereIn('team_id', $accessibleTeamIds)->with('team');
 
         if (session('current_team_id')) {
             $query->where('team_id', session('current_team_id'));
@@ -39,7 +40,7 @@ class SeduteController extends Controller
 
     public function create()
     {
-        $teams           = Team::where('allenatore_id', auth()->id())->get();
+        $teams           = Team::accessibleBy(auth()->id())->get();
         $unitaDidattiche = \App\Models\UnitaDidattica::where('allenatore_id', auth()->id())
                             ->when(session('current_team_id'), fn($q) => $q->where('team_id', session('current_team_id')))
                             ->orderByDesc('created_at')->get();
