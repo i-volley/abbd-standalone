@@ -33,13 +33,15 @@ class AtletaCalendarioController extends Controller
             return view('atleta.calendario.index', ['settimane' => collect(), 'stagione' => $stagione]);
         }
 
-        $oggi = Carbon::today();
-        $fine = $stagione->data_fine->min($oggi->copy()->addWeeks(8));
+        $oggi   = Carbon::today();
+        // Parti dall'inizio stagione se ancora futuro, altrimenti da oggi
+        $inizio = $stagione->data_inizio->gt($oggi) ? $stagione->data_inizio->copy() : $oggi->copy();
+        $fine   = $stagione->data_fine->min($inizio->copy()->addWeeks(8));
 
         // Sedute pubbliche nel range
         $sedute = Seduta::where('team_id', $team->id)
             ->where('visibile_atleti', true)
-            ->whereBetween('data', [$oggi, $fine])
+            ->whereBetween('data', [$inizio, $fine])
             ->orderBy('data')
             ->get()
             ->keyBy(fn($s) => $s->data->format('Y-m-d'));
@@ -52,9 +54,9 @@ class AtletaCalendarioController extends Controller
         // giorno_settimana: 0=Dom, 1=Lun, ..., 6=Sab (uguale a Carbon dayOfWeek)
         $giornoMap = $stagione->giorniAllenamento->groupBy('giorno_settimana');
 
-        // Genera slot giorno per giorno da oggi a $fine
+        // Genera slot giorno per giorno da $inizio a $fine
         $slots = collect();
-        $cursor = $oggi->copy();
+        $cursor = $inizio->copy();
         while ($cursor->lte($fine)) {
             $dow = $cursor->dayOfWeek;
             if ($giornoMap->has($dow)) {
