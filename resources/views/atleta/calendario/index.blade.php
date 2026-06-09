@@ -1,6 +1,11 @@
 @extends('layouts.atleta')
 @section('title', 'Calendario stagione')
 
+@php
+$nomiGiorni = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+$nomiMesi   = ['','Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+@endphp
+
 @section('content')
 <div class="d-flex align-items-baseline gap-3 mb-1">
     <h3 class="mb-0">Calendario stagione</h3>
@@ -54,13 +59,13 @@
                             {{ $data->format('d') }}
                         </div>
                         <div class="text-uppercase" style="font-size:.6rem;color:{{ $isOggi ? '#e0e7ff' : '#94a3b8' }}">
-                            {{ $data->locale('it')->isoFormat('MMM') }}
+                            {{ $nomiMesi[$data->month] }}
                         </div>
                     </div>
                     {{-- Info --}}
                     <div>
                         <div class="fw-semibold small">
-                            {{ ucfirst($data->locale('it')->isoFormat('dddd')) }}
+                            {{ $nomiGiorni[$data->dayOfWeek] }}
                             <span class="text-muted fw-normal" style="font-size:.82rem">{{ $giorno->orario }}</span>
                             @if($isOggi)
                                 <span class="badge bg-primary ms-1" style="font-size:.6rem">Oggi</span>
