@@ -27,6 +27,18 @@ require __DIR__.'/auth.php';
 
 Route::get('/', [HomeController::class, 'index']);
 
+// ── DEMO: rende visibili le ultime 5 sedute per ogni team ────────────────────
+Route::get('/_demo_visibilita_sedute', function () {
+    $updated = [];
+    \App\Models\Team::all()->each(function ($team) use (&$updated) {
+        $ids = \App\Models\Seduta::where('team_id', $team->id)
+            ->orderByDesc('data')->limit(5)->pluck('id');
+        \App\Models\Seduta::whereIn('id', $ids)->update(['visibile_atleti' => true]);
+        $updated[$team->nome] = $ids->count();
+    });
+    return response()->json(['ok' => true, 'sedute_rese_visibili' => $updated]);
+});
+
 // ── DEMO ATLETA SETUP (one-shot — rimuovere dopo l'uso) ──────────────────────
 Route::get('/_setup_demo_atleta', function () {
     $email    = 'demo.atleta@eserciziario.it';
