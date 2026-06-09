@@ -40,28 +40,6 @@ Route::get('/_demo_visibilita_sedute', function () {
     return response()->json(['ok' => true, 'sedute_rese_visibili' => $updated]);
 });
 
-// ── COLLABORATORE ALLENATORE SETUP (one-shot — rimuovere dopo l'uso) ─────────
-Route::get('/_setup_collaboratore_allenatore', function () {
-    $email    = 'collaboratore@eserciziario.it';
-    $password = 'Collab2025!';
-
-    $user = \App\Models\User::firstOrCreate(
-        ['email' => $email],
-        ['name' => 'Collaboratore', 'password' => \Illuminate\Support\Facades\Hash::make($password)]
-    );
-    if (!$user->hasRole('allenatore')) {
-        $user->assignRole('allenatore');
-    }
-
-    return response()->json([
-        'ok'       => true,
-        'email'    => $email,
-        'password' => $password,
-        'user_id'  => $user->id,
-        'created'  => $user->wasRecentlyCreated,
-    ]);
-});
-
 // ── DEMO ATLETA SETUP (one-shot — rimuovere dopo l'uso) ──────────────────────
 Route::get('/_setup_demo_atleta', function () {
     $email    = 'demo.atleta@eserciziario.it';
