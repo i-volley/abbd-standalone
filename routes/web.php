@@ -27,6 +27,35 @@ require __DIR__.'/auth.php';
 
 Route::get('/', [HomeController::class, 'index']);
 
+// ── DEMO ATLETA SETUP (one-shot — rimuovere dopo l'uso) ──────────────────────
+Route::get('/_setup_demo_atleta', function () {
+    $email    = 'demo.atleta@eserciziario.it';
+    $password = 'DemoAtleta2025!';
+
+    $atleta = \App\Models\User::firstOrCreate(
+        ['email' => $email],
+        ['name' => 'Demo Atleta', 'password' => \Illuminate\Support\Facades\Hash::make($password)]
+    );
+    if (!$atleta->hasRole('atleta')) {
+        $atleta->assignRole('atleta');
+    }
+
+    // Collega al primo team trovato in DB
+    $team = \App\Models\Team::first();
+    if ($team) {
+        $team->atleti()->syncWithoutDetaching([$atleta->id]);
+    }
+
+    return response()->json([
+        'ok'       => true,
+        'email'    => $email,
+        'password' => $password,
+        'team'     => $team?->nome,
+        'atleta_id'=> $atleta->id,
+        'created'  => $atleta->wasRecentlyCreated,
+    ]);
+});
+
 // ── LANGUAGE SWITCHER ────────────────────────────────────────────────────────
 Route::get('/lang/{locale}', function (string $locale) {
     if (in_array($locale, ['it', 'en'])) {
