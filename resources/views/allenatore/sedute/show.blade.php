@@ -636,7 +636,7 @@
         });
     });
 
-    // Ripristina filtri dopo reload da aggiunta esercizio
+    // Ripristina filtri dopo reload da aggiunta esercizio e rilancia ricerca
     (function() {
         var keys = ['sf_q','sf_fase','sf_met','sf_campo'];
         var ids  = ['filtro-q','filtro-fase','filtro-metodologia','add-to-campo'];
@@ -648,9 +648,8 @@
             if (val !== null && el) el.value = val;
             sessionStorage.removeItem(k);
         });
+        cercaEsercizi();
     })();
-
-    cercaEsercizi();
 
     // ── Soglie carico (configurate per il team) ──────────────────────────────
     var SOGLIE = {
