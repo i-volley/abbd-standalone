@@ -27,6 +27,20 @@ require __DIR__.'/auth.php';
 
 Route::get('/', [HomeController::class, 'index']);
 
+// TEMP DEBUG — rimuovere dopo diagnosi seed ecologici
+Route::get('/_debug_eco', function () {
+    $count = \App\Models\Esercizio::where('paradigm_primary', 'ecological')->count();
+    $sport = \App\Models\Sport::where('slug', 'pallavolo')->first();
+    $user1 = \App\Models\User::first();
+    $sample = \App\Models\Esercizio::where('paradigm_primary', 'ecological')->limit(3)->pluck('nome');
+    return response()->json([
+        'ecological_count' => $count,
+        'pallavolo_sport_id' => $sport?->id,
+        'first_user_id' => $user1?->id,
+        'sample_names' => $sample,
+    ]);
+});
+
 // ── LANGUAGE SWITCHER ────────────────────────────────────────────────────────
 Route::get('/lang/{locale}', function (string $locale) {
     if (in_array($locale, ['it', 'en'])) {
