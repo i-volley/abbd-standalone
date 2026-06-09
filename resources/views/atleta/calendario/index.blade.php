@@ -54,13 +54,13 @@
                             {{ $data->format('d') }}
                         </div>
                         <div class="text-uppercase" style="font-size:.6rem;color:{{ $isOggi ? '#e0e7ff' : '#94a3b8' }}">
-                            {{ $data->isoFormat('MMM') }}
+                            {{ $data->locale('it')->isoFormat('MMM') }}
                         </div>
                     </div>
                     {{-- Info --}}
                     <div>
                         <div class="fw-semibold small">
-                            {{ ucfirst($data->isoFormat('dddd')) }}
+                            {{ ucfirst($data->locale('it')->isoFormat('dddd')) }}
                             <span class="text-muted fw-normal" style="font-size:.82rem">{{ $giorno->orario }}</span>
                             @if($isOggi)
                                 <span class="badge bg-primary ms-1" style="font-size:.6rem">Oggi</span>
