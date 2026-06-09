@@ -40,19 +40,19 @@ Route::get('/_setup_demo_atleta', function () {
         $atleta->assignRole('atleta');
     }
 
-    // Collega al primo team trovato in DB
-    $team = \App\Models\Team::first();
-    if ($team) {
+    // Collega a TUTTI i team del DB
+    $teams = \App\Models\Team::all();
+    foreach ($teams as $team) {
         $team->atleti()->syncWithoutDetaching([$atleta->id]);
     }
 
     return response()->json([
-        'ok'       => true,
-        'email'    => $email,
-        'password' => $password,
-        'team'     => $team?->nome,
-        'atleta_id'=> $atleta->id,
-        'created'  => $atleta->wasRecentlyCreated,
+        'ok'        => true,
+        'email'     => $email,
+        'password'  => $password,
+        'atleta_id' => $atleta->id,
+        'created'   => $atleta->wasRecentlyCreated,
+        'teams_linked' => $teams->pluck('nome', 'id'),
     ]);
 });
 
