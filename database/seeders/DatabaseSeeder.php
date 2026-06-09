@@ -21,8 +21,9 @@ class DatabaseSeeder extends Seeder
                 CapacitaSeeder::class,      // firstOrCreate → sicuro
                 GestoTecnicoSeeder::class,  // firstOrCreate → sicuro
                 CategoriaGestoSeeder::class,// firstOrCreate → sicuro
-                ParametroEsercizioSeeder::class, // firstOrCreate → sicuro
-                ParadigmSeeder::class,      // firstOrCreate → sicuro
+                ParametroEsercizioSeeder::class,      // firstOrCreate → sicuro
+                ParadigmSeeder::class,              // firstOrCreate → sicuro
+                ExerciseEcologicalSeeder::class,    // firstOrCreate → sicuro
             ]);
             $this->command->info('Seed parziale: DB già popolato, dati utente preservati.');
             return;
@@ -41,6 +42,7 @@ class DatabaseSeeder extends Seeder
             ParametroEsercizioSeeder::class,
             EsercizioSeeder::class,
             EsercizioFipavSeeder::class,
+            ExerciseEcologicalSeeder::class,
             PianificazioneSeeder::class,
             SeduteSeeder::class,
         ]);
