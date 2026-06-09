@@ -172,6 +172,14 @@
                             <option value="globale">Globale</option>
                         </select>
                     </div>
+                    {{-- Filtro paradigma --}}
+                    <div class="col-12">
+                        <div class="d-flex gap-1">
+                            <button type="button" class="btn btn-sm btn-secondary flex-fill filtro-par-btn" data-val="" style="font-size:.72rem">{{ __('Tutti') }}</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary flex-fill filtro-par-btn" data-val="ecological" style="font-size:.72rem">🌿 Eco</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary flex-fill filtro-par-btn" data-val="traditional" style="font-size:.72rem">📋 Trad</button>
+                        </div>
+                    </div>
                     {{-- Campo target per l'aggiunta --}}
                     <div class="col-12" id="add-campo-wrapper" {{ $seduta->campi->isEmpty() ? 'style=display:none' : '' }}>
                         <select id="add-to-campo" class="form-select form-select-sm">
@@ -560,6 +568,7 @@
             sessionStorage.setItem('sf_fase',   document.getElementById('filtro-fase').value);
             sessionStorage.setItem('sf_met',    document.getElementById('filtro-metodologia').value);
             sessionStorage.setItem('sf_campo',  campoSel ? campoSel.value : '');
+            sessionStorage.setItem('sf_par',    paradigm);
             location.reload();
         });
     });
@@ -612,14 +621,16 @@
 
     // ── Filtri catalogo ──────────────────────────────────────────────────────
     var timer;
+    var paradigm = '';
     function cercaEsercizi() {
         var q    = document.getElementById('filtro-q').value;
         var fase = document.getElementById('filtro-fase').value;
         var met  = document.getElementById('filtro-metodologia').value;
         var url  = new URL('/allenatore/esercizi/cerca', window.location.origin);
-        if (q)    url.searchParams.set('q', q);
-        if (fase) url.searchParams.set('fase[]', fase);
-        if (met)  url.searchParams.set('metodologia[]', met);
+        if (q)        url.searchParams.set('q', q);
+        if (fase)     url.searchParams.set('fase[]', fase);
+        if (met)      url.searchParams.set('metodologia[]', met);
+        if (paradigm) url.searchParams.set('paradigm_primary', paradigm);
         url.searchParams.set('seduta_id', SEDUTA_ID);
 
         fetch(url.toString()).then(r => r.text()).then(function(html) {
@@ -636,17 +647,46 @@
         });
     });
 
+    // Paradigma toggle buttons
+    document.querySelectorAll('.filtro-par-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filtro-par-btn').forEach(function(b) {
+                b.classList.remove('btn-secondary');
+                b.classList.add('btn-outline-secondary');
+            });
+            btn.classList.remove('btn-outline-secondary');
+            btn.classList.add('btn-secondary');
+            paradigm = btn.dataset.val;
+            clearTimeout(timer); timer = setTimeout(cercaEsercizi, 150);
+        });
+    });
+
     // Ripristina filtri dopo reload da aggiunta esercizio e rilancia ricerca
     (function() {
-        var keys = ['sf_q','sf_fase','sf_met','sf_campo'];
-        var ids  = ['filtro-q','filtro-fase','filtro-metodologia','add-to-campo'];
+        var keys = ['sf_q','sf_fase','sf_met','sf_campo','sf_par'];
+        var ids  = ['filtro-q','filtro-fase','filtro-metodologia','add-to-campo', null];
         var found = keys.some(function(k) { return sessionStorage.getItem(k) !== null; });
         if (!found) return;
         keys.forEach(function(k, i) {
             var val = sessionStorage.getItem(k);
-            var el  = document.getElementById(ids[i]);
-            if (val !== null && el) el.value = val;
             sessionStorage.removeItem(k);
+            if (val === null) return;
+            if (k === 'sf_par') {
+                // Ripristina stato bottoni paradigma
+                paradigm = val;
+                document.querySelectorAll('.filtro-par-btn').forEach(function(b) {
+                    if (b.dataset.val === val) {
+                        b.classList.remove('btn-outline-secondary');
+                        b.classList.add('btn-secondary');
+                    } else {
+                        b.classList.remove('btn-secondary');
+                        b.classList.add('btn-outline-secondary');
+                    }
+                });
+            } else {
+                var el = document.getElementById(ids[i]);
+                if (el) el.value = val;
+            }
         });
         cercaEsercizi();
     })();
