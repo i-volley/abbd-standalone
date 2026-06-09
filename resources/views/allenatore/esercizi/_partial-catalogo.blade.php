@@ -1,9 +1,16 @@
 @php
-$metodBadge     = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-dark', 'globale' => 'bg-success'];
-$faseBadge      = ['riscaldamento' => 'bg-warning text-dark', 'potenziamento' => 'bg-danger', 'stretching' => 'bg-info text-dark'];
-$faseGiocoBadge = ['cambio_palla' => 'bg-info text-dark', 'break_point' => 'bg-danger', 'ricostruzione' => 'bg-warning text-dark'];
-$faseGiocoLab   = ['cambio_palla' => 'CP', 'break_point' => 'BP', 'ricostruzione' => 'RIC'];
-$ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
+$metodBadge      = ['analitico' => 'bg-primary', 'sintetico' => 'bg-warning text-dark', 'globale' => 'bg-success'];
+$faseBadge       = ['riscaldamento' => 'bg-warning text-dark', 'potenziamento' => 'bg-danger', 'stretching' => 'bg-info text-dark'];
+$faseGiocoBadge  = ['cambio_palla' => 'bg-info text-dark', 'break_point' => 'bg-danger', 'ricostruzione' => 'bg-warning text-dark'];
+$faseGiocoLab    = ['cambio_palla' => 'CP', 'break_point' => 'BP', 'ricostruzione' => 'RIC'];
+$ruoloLab        = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centrale' => 'CEN', 'opposto' => 'OPP', 'libero' => 'LIB'];
+// Tag ecologici
+$paradigmIcon    = ['ecological' => '🌿', 'traditional' => '📋'];
+$paradigmColor   = ['ecological' => '#10b981', 'traditional' => '#3b82f6'];
+$categoryLabel   = ['analytic' => 'Anal.', 'situational' => 'Situ.', 'game_form' => 'Gioco', 'free_play' => 'Libero'];
+$constraintLabel = ['organism' => 'Org', 'task' => 'Task', 'environment' => 'Amb'];
+$repColor        = ['low' => '#94a3b8', 'medium' => '#f59e0b', 'high' => '#10b981'];
+$repTextColor    = ['low' => '#fff', 'medium' => '#1a1a1a', 'high' => '#fff'];
 @endphp
 
 {{-- ── I MIEI ESERCIZI ─────────────────────────────────────────────────────── --}}
@@ -30,6 +37,18 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                     @foreach($e->ruoli as $r)
                         <span class="badge bg-dark rounded-pill" style="font-size:.65rem">{{ $ruoloLab[$r->ruolo] ?? $r->ruolo }}</span>
                     @endforeach
+                    @if(isset($paradigmColor[$e->paradigm_primary]))
+                        <span class="badge rounded-pill" style="background:{{ $paradigmColor[$e->paradigm_primary] }};font-size:.6rem;color:#fff">{{ $paradigmIcon[$e->paradigm_primary] }} {{ ucfirst($e->paradigm_primary) }}</span>
+                    @endif
+                    @if($e->exercise_category)
+                        <span class="badge bg-secondary rounded-pill" style="font-size:.6rem">{{ $categoryLabel[$e->exercise_category] ?? $e->exercise_category }}</span>
+                    @endif
+                    @if($e->constraint_type && $e->constraint_type !== 'none')
+                        <span class="badge rounded-pill" style="background:#f59e0b;color:#1a1a1a;font-size:.6rem">{{ $constraintLabel[$e->constraint_type] ?? $e->constraint_type }}</span>
+                    @endif
+                    @if($e->representativeness)
+                        <span class="badge rounded-pill" style="background:{{ $repColor[$e->representativeness] }};color:{{ $repTextColor[$e->representativeness] }};font-size:.55rem">{{ strtoupper(substr($e->representativeness,0,3)) }}</span>
+                    @endif
                 </div>
                 <div class="small text-muted d-flex gap-2 flex-wrap mb-1">
                     @if($e->gestoTecnico)<span>{{ $e->gestoTecnico->nome }}</span>@endif
@@ -82,6 +101,18 @@ $ruoloLab       = ['alzatore' => 'ALZ', 'ricevitore_attaccante' => 'SCH', 'centr
                         <x-badge-categoria-eta :categoria="$e->categoria_eta" />
                     @endif
                     @if($e->campo_visivo)<span title="{{ __('Campo di gioco disponibile') }}">🏐</span>@endif
+                    @if(isset($paradigmColor[$e->paradigm_primary]))
+                        <span class="badge rounded-pill" style="background:{{ $paradigmColor[$e->paradigm_primary] }};font-size:.6rem;color:#fff">{{ $paradigmIcon[$e->paradigm_primary] }} {{ ucfirst($e->paradigm_primary) }}</span>
+                    @endif
+                    @if($e->exercise_category)
+                        <span class="badge bg-secondary rounded-pill" style="font-size:.6rem">{{ $categoryLabel[$e->exercise_category] ?? $e->exercise_category }}</span>
+                    @endif
+                    @if($e->constraint_type && $e->constraint_type !== 'none')
+                        <span class="badge rounded-pill" style="background:#f59e0b;color:#1a1a1a;font-size:.6rem">{{ $constraintLabel[$e->constraint_type] ?? $e->constraint_type }}</span>
+                    @endif
+                    @if($e->representativeness)
+                        <span class="badge rounded-pill" style="background:{{ $repColor[$e->representativeness] }};color:{{ $repTextColor[$e->representativeness] }};font-size:.55rem">{{ strtoupper(substr($e->representativeness,0,3)) }}</span>
+                    @endif
                 </div>
                 <div class="small text-muted d-flex gap-2 flex-wrap mb-1">
                     @if($e->gestoTecnico)<span>{{ $e->gestoTecnico->nome }}</span>@endif

@@ -85,6 +85,30 @@
             @endforeach
         </div>
 
+        {{-- Paradigma --}}
+        <div class="mb-1">
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Paradigma') }}</small>
+        </div>
+        <div class="d-flex gap-2 flex-wrap mb-3">
+            <button type="button" class="btn btn-sm btn-secondary filtro-paradigm" data-val="">{{ __('Tutti') }}</button>
+            <button type="button" class="btn btn-sm filtro-paradigm" data-val="ecological"
+                    style="background:#10b981;color:#fff;border:none;font-weight:600;font-size:.875rem;padding:.375rem .75rem;border-radius:.375rem">🌿 {{ __('Ecologico') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-primary filtro-paradigm" data-val="traditional">📋 {{ __('Tradizionale') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-paradigm" data-val="neutral">{{ __('Neutro') }}</button>
+        </div>
+
+        {{-- Tipo esercizio --}}
+        <div class="mb-1">
+            <small class="text-muted fw-semibold text-uppercase" style="font-size:.7rem;letter-spacing:.07em">{{ __('Tipo esercizio') }}</small>
+        </div>
+        <div class="d-flex gap-1 flex-wrap mb-3">
+            <button type="button" class="btn btn-sm btn-secondary filtro-excat" data-val="">{{ __('Tutti') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-excat" data-val="analytic">{{ __('Analitico') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-excat" data-val="situational">{{ __('Situazionale') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-excat" data-val="game_form">{{ __('Forma di gioco') }}</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filtro-excat" data-val="free_play">{{ __('Gioco libero') }}</button>
+        </div>
+
         {{-- Testo libero --}}
         <input type="text" id="cerca-nome" class="form-control"
                placeholder="{{ __('Cerca per nome o descrizione...') }}">
@@ -101,7 +125,7 @@
 <script>
 const CERCA_URL = '{{ route('allenatore.esercizi.cerca') }}';
 
-let filtri = { metodologia: '', gesto_tecnico_id: '', categoria_eta: '', fase_gioco: '', ruolo: '', prevenzione_distretto: '', q: '' };
+let filtri = { metodologia: '', gesto_tecnico_id: '', categoria_eta: '', fase_gioco: '', ruolo: '', prevenzione_distretto: '', paradigm_primary: '', exercise_category: '', q: '' };
 
 function aggiorna() {
     const params = new URLSearchParams();
@@ -262,6 +286,43 @@ document.querySelectorAll('.filtro-prev').forEach(btn => {
         } else {
             const all = document.querySelector('.filtro-prev[data-val=""]');
             all.classList.remove('btn-outline-secondary'); all.classList.add('btn-secondary');
+        }
+        aggiorna();
+    });
+});
+
+// ── Paradigma ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.filtro-paradigm').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        filtri.paradigm_primary = filtri.paradigm_primary === val && val !== '' ? '' : val;
+        document.querySelectorAll('.filtro-paradigm').forEach(b => {
+            b.classList.remove('btn-secondary','btn-primary','btn-success');
+            if (!b.dataset.val) { b.classList.add('btn-outline-secondary'); }
+        });
+        const active = document.querySelector('.filtro-paradigm[data-val="' + (filtri.paradigm_primary || '') + '"]');
+        if (active) {
+            if (filtri.paradigm_primary === 'ecological') { active.style.background='#10b981'; active.style.color='#fff'; }
+            else if (filtri.paradigm_primary === 'traditional') { active.classList.remove('btn-outline-primary'); active.classList.add('btn-primary'); }
+            else { active.classList.remove('btn-outline-secondary'); active.classList.add('btn-secondary'); }
+        }
+        aggiorna();
+    });
+});
+
+// ── Tipo esercizio ────────────────────────────────────────────────────────
+document.querySelectorAll('.filtro-excat').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        filtri.exercise_category = filtri.exercise_category === val && val !== '' ? '' : val;
+        document.querySelectorAll('.filtro-excat').forEach(b => {
+            b.classList.remove('btn-secondary'); b.classList.add('btn-outline-secondary');
+        });
+        if (filtri.exercise_category) {
+            btn.classList.remove('btn-outline-secondary'); btn.classList.add('btn-secondary');
+        } else {
+            document.querySelector('.filtro-excat[data-val=""]').classList.remove('btn-outline-secondary');
+            document.querySelector('.filtro-excat[data-val=""]').classList.add('btn-secondary');
         }
         aggiorna();
     });

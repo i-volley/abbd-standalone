@@ -214,6 +214,12 @@ class EsercizioController extends Controller
         if ($request->filled('prevenzione_distretto')) {
             $query->where('prevenzione_distretto', $request->prevenzione_distretto);
         }
+        if ($request->filled('paradigm_primary')) {
+            $query->where('paradigm_primary', $request->paradigm_primary);
+        }
+        if ($request->filled('exercise_category')) {
+            $query->where('exercise_category', $request->exercise_category);
+        }
         if ($request->filled('q')) {
             $q = $request->q;
             $query->where(fn($sq) => $sq->where('nome', 'like', "%$q%")->orWhere('descrizione', 'like', "%$q%"));
