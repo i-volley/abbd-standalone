@@ -41,6 +41,23 @@ Route::get('/_debug_eco', function () {
     ]);
 });
 
+Route::get('/_debug_eco_seed', function () {
+    try {
+        $output = new \Symfony\Component\Console\Output\BufferedOutput();
+        \Illuminate\Support\Facades\Artisan::call('db:seed', [
+            '--class' => 'Database\\Seeders\\ExerciseEcologicalSeeder',
+            '--force' => true,
+        ], $output);
+        $text = $output->fetch();
+        $count = \App\Models\Esercizio::where('paradigm_primary', 'ecological')->count();
+        return response("SEED OUTPUT:\n{$text}\n\nCOUNT after: {$count}")
+            ->header('Content-Type', 'text/plain');
+    } catch (\Throwable $e) {
+        return response('ERROR: ' . get_class($e) . ': ' . $e->getMessage() . "\n\nTrace:\n" . $e->getTraceAsString(), 500)
+            ->header('Content-Type', 'text/plain');
+    }
+});
+
 // ── LANGUAGE SWITCHER ────────────────────────────────────────────────────────
 Route::get('/lang/{locale}', function (string $locale) {
     if (in_array($locale, ['it', 'en'])) {

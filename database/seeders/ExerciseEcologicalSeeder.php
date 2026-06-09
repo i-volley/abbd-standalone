@@ -72,7 +72,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'space']),
+                'affordance_targets'  => ['ball', 'space'],
             ],
             [
                 'name'                => 'Ricezione su battuta corta/lunga a sorpresa',
@@ -84,7 +84,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'space', 'time']),
+                'affordance_targets'  => ['ball', 'space', 'time'],
             ],
             [
                 'name'                => 'Ricezione in campo ridotto 3x3',
@@ -96,7 +96,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'time', 'teammate']),
+                'affordance_targets'  => ['space', 'time', 'teammate'],
             ],
             [
                 'name'                => 'Ricezione con scelta immediata 1a/2a palla',
@@ -108,7 +108,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'teammate', 'time']),
+                'affordance_targets'  => ['ball', 'teammate', 'time'],
             ],
             [
                 'name'                => 'Difesa su attacco da posizione sconosciuta',
@@ -120,7 +120,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'opponent', 'time']),
+                'affordance_targets'  => ['ball', 'opponent', 'time'],
             ],
             [
                 'name'                => 'Ricezione float con occhi bendati fino al rimbalzo',
@@ -132,7 +132,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'time']),
+                'affordance_targets'  => ['ball', 'time'],
             ],
             [
                 'name'                => 'Difesa con rete alta +30cm',
@@ -144,7 +144,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['net', 'ball', 'space']),
+                'affordance_targets'  => ['net', 'ball', 'space'],
             ],
             [
                 'name'                => 'Ricezione K1 con costruzione completa',
@@ -156,7 +156,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'none',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'teammate', 'opponent', 'space']),
+                'affordance_targets'  => ['ball', 'teammate', 'opponent', 'space'],
             ],
             [
                 'name'                => 'Difesa 1vs1 su palla spinta dall\'allenatore',
@@ -168,7 +168,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'time', 'space']),
+                'affordance_targets'  => ['ball', 'time', 'space'],
             ],
             [
                 'name'                => 'Ricezione con target mobile',
@@ -180,7 +180,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'teammate', 'space']),
+                'affordance_targets'  => ['ball', 'teammate', 'space'],
             ],
 
             // =================================================================
@@ -197,7 +197,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'time', 'ball']),
+                'affordance_targets'  => ['teammate', 'time', 'ball'],
             ],
             [
                 'name'                => 'Palleggio con un attaccante nascosto',
@@ -209,7 +209,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'opponent', 'space']),
+                'affordance_targets'  => ['teammate', 'opponent', 'space'],
             ],
             [
                 'name'                => 'Palleggio in salto senza rincorsa',
@@ -221,7 +221,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'time']),
+                'affordance_targets'  => ['ball', 'time'],
             ],
             [
                 'name'                => 'Palleggio con muro simulato variabile',
@@ -233,7 +233,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'teammate', 'space']),
+                'affordance_targets'  => ['opponent', 'teammate', 'space'],
             ],
             [
                 'name'                => 'Palleggio da posizioni non standard',
@@ -245,7 +245,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'space', 'teammate']),
+                'affordance_targets'  => ['ball', 'space', 'teammate'],
             ],
             [
                 'name'                => 'Palleggio 3vs3 con obbligo di variare alzata',
@@ -257,7 +257,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'opponent', 'space']),
+                'affordance_targets'  => ['teammate', 'opponent', 'space'],
             ],
             [
                 'name'                => 'Palleggio con risposta al colore del pannello',
@@ -269,7 +269,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'time', 'teammate']),
+                'affordance_targets'  => ['space', 'time', 'teammate'],
             ],
             [
                 'name'                => 'Palleggio di bagher fuori rete',
@@ -281,7 +281,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['net', 'ball', 'space']),
+                'affordance_targets'  => ['net', 'ball', 'space'],
             ],
             [
                 'name'                => 'Palleggio con attaccante che chiama il tempo',
@@ -293,7 +293,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'time', 'ball']),
+                'affordance_targets'  => ['teammate', 'time', 'ball'],
             ],
             [
                 'name'                => 'Palleggio con due palloni alternati',
@@ -305,7 +305,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'space', 'time']),
+                'affordance_targets'  => ['ball', 'space', 'time'],
             ],
 
             // =================================================================
@@ -322,7 +322,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'none',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'net', 'ball']),
+                'affordance_targets'  => ['opponent', 'space', 'net', 'ball'],
             ],
             [
                 'name'                => 'Attacco con palla in traiettorie variabili',
@@ -334,7 +334,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'time', 'space']),
+                'affordance_targets'  => ['ball', 'time', 'space'],
             ],
             [
                 'name'                => 'Attacco con zone proibite variabili',
@@ -346,7 +346,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'opponent', 'ball']),
+                'affordance_targets'  => ['space', 'opponent', 'ball'],
             ],
             [
                 'name'                => 'Attacco da salto da fermo (no rincorsa)',
@@ -358,7 +358,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'time']),
+                'affordance_targets'  => ['ball', 'time'],
             ],
             [
                 'name'                => 'Attacco con muro che si sposta all\'ultimo',
@@ -370,7 +370,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'net']),
+                'affordance_targets'  => ['opponent', 'space', 'net'],
             ],
             [
                 'name'                => 'Attacco 2vs2 campo piccolo con punteggio',
@@ -382,7 +382,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'opponent', 'teammate', 'net']),
+                'affordance_targets'  => ['space', 'opponent', 'teammate', 'net'],
             ],
             [
                 'name'                => 'Attacco con informazione sul muro ritardata',
@@ -394,7 +394,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'ball', 'time']),
+                'affordance_targets'  => ['opponent', 'ball', 'time'],
             ],
             [
                 'name'                => 'Attacco con vincolo braccio non dominante',
@@ -406,7 +406,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'space']),
+                'affordance_targets'  => ['ball', 'space'],
             ],
             [
                 'name'                => 'Attacco in pipe su ricezione reale',
@@ -418,7 +418,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'none',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'teammate', 'opponent']),
+                'affordance_targets'  => ['ball', 'teammate', 'opponent'],
             ],
             [
                 'name'                => 'Attacco con difensore che rivela la zona all\'ultimo',
@@ -430,7 +430,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'ball']),
+                'affordance_targets'  => ['opponent', 'space', 'ball'],
             ],
 
             // =================================================================
@@ -447,7 +447,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'opponent', 'ball']),
+                'affordance_targets'  => ['space', 'opponent', 'ball'],
             ],
             [
                 'name'                => 'Battuta con schieramento difensivo visibile',
@@ -459,7 +459,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'ball']),
+                'affordance_targets'  => ['opponent', 'space', 'ball'],
             ],
             [
                 'name'                => 'Battuta jump su segnale ritardato',
@@ -471,7 +471,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'time']),
+                'affordance_targets'  => ['ball', 'time'],
             ],
             [
                 'name'                => 'Battuta float con variazione zona ogni punto',
@@ -483,7 +483,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'ball']),
+                'affordance_targets'  => ['space', 'ball'],
             ],
             [
                 'name'                => 'Battuta con ricettore che si posiziona tardi',
@@ -495,7 +495,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'time']),
+                'affordance_targets'  => ['opponent', 'space', 'time'],
             ],
             [
                 'name'                => 'Battuta in gioco reale con conseguenza',
@@ -507,7 +507,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'none',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'ball', 'teammate']),
+                'affordance_targets'  => ['opponent', 'space', 'ball', 'teammate'],
             ],
             [
                 'name'                => 'Battuta con un solo arto',
@@ -519,7 +519,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball']),
+                'affordance_targets'  => ['ball'],
             ],
             [
                 'name'                => 'Battuta in pressione temporale',
@@ -531,7 +531,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['time', 'ball', 'space']),
+                'affordance_targets'  => ['time', 'ball', 'space'],
             ],
             [
                 'name'                => 'Battuta a coppie con confronto diretto',
@@ -543,7 +543,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'neutral',
-                'affordance_targets'  => json_encode(['space', 'ball']),
+                'affordance_targets'  => ['space', 'ball'],
             ],
             [
                 'name'                => 'Battuta ace o out: zona stretta',
@@ -555,7 +555,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'neutral',
-                'affordance_targets'  => json_encode(['space', 'ball']),
+                'affordance_targets'  => ['space', 'ball'],
             ],
 
             // =================================================================
@@ -572,7 +572,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'time', 'net']),
+                'affordance_targets'  => ['opponent', 'time', 'net'],
             ],
             [
                 'name'                => 'Muro 1vs1 su pipe',
@@ -584,7 +584,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'none',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'net']),
+                'affordance_targets'  => ['opponent', 'space', 'net'],
             ],
             [
                 'name'                => 'Muro con copertura obbligatoria',
@@ -596,7 +596,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'teammate']),
+                'affordance_targets'  => ['opponent', 'space', 'teammate'],
             ],
             [
                 'name'                => 'Muro doppio con comunicazione',
@@ -608,7 +608,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'opponent', 'net']),
+                'affordance_targets'  => ['teammate', 'opponent', 'net'],
             ],
             [
                 'name'                => 'Muro su alzata sconosciuta',
@@ -620,7 +620,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'none',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'net', 'time']),
+                'affordance_targets'  => ['opponent', 'net', 'time'],
             ],
             [
                 'name'                => 'Muro con salto da posizione scomoda',
@@ -632,7 +632,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['net', 'ball', 'time']),
+                'affordance_targets'  => ['net', 'ball', 'time'],
             ],
             [
                 'name'                => 'Muro 3vs3 con punteggio solo da muro diretto',
@@ -644,7 +644,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'net', 'space']),
+                'affordance_targets'  => ['opponent', 'net', 'space'],
             ],
             [
                 'name'                => 'Muro su attacco da posizione arretrata',
@@ -656,7 +656,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'ball', 'net']),
+                'affordance_targets'  => ['opponent', 'ball', 'net'],
             ],
             [
                 'name'                => 'Muro con disturbo laterale',
@@ -668,7 +668,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'organism',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['net', 'ball', 'time']),
+                'affordance_targets'  => ['net', 'ball', 'time'],
             ],
             [
                 'name'                => 'Muro con scelta: chiudi o apri',
@@ -680,7 +680,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['opponent', 'space', 'net']),
+                'affordance_targets'  => ['opponent', 'space', 'net'],
             ],
 
             // =================================================================
@@ -697,7 +697,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'space', 'time', 'ball']),
+                'affordance_targets'  => ['teammate', 'space', 'time', 'ball'],
             ],
             [
                 'name'                => '4vs4 con campo asimmetrico',
@@ -709,7 +709,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'teammate', 'opponent']),
+                'affordance_targets'  => ['space', 'teammate', 'opponent'],
             ],
             [
                 'name'                => '6vs6 con obbligo di tocco per tutti',
@@ -721,7 +721,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'space', 'ball']),
+                'affordance_targets'  => ['teammate', 'space', 'ball'],
             ],
             [
                 'name'                => 'Transizione K1-K2 continua',
@@ -733,7 +733,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'none',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'teammate', 'opponent', 'space']),
+                'affordance_targets'  => ['ball', 'teammate', 'opponent', 'space'],
             ],
             [
                 'name'                => '3vs3 con palleggiatore a rotazione',
@@ -745,7 +745,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'ball', 'space']),
+                'affordance_targets'  => ['teammate', 'ball', 'space'],
             ],
             [
                 'name'                => '6vs6 con punteggio differenziato per zona d\'attacco',
@@ -757,7 +757,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'teammate', 'opponent']),
+                'affordance_targets'  => ['space', 'teammate', 'opponent'],
             ],
             [
                 'name'                => 'Gioco con sistema difensivo scelto in campo',
@@ -769,7 +769,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'task',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'opponent', 'space']),
+                'affordance_targets'  => ['teammate', 'opponent', 'space'],
             ],
             [
                 'name'                => '5vs6 (squadra in svantaggio numerico)',
@@ -781,7 +781,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'medium',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['space', 'teammate', 'opponent']),
+                'affordance_targets'  => ['space', 'teammate', 'opponent'],
             ],
             [
                 'name'                => 'Free ball con ricostruzione sotto pressione',
@@ -793,7 +793,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'high',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['ball', 'teammate', 'space', 'time']),
+                'affordance_targets'  => ['ball', 'teammate', 'space', 'time'],
             ],
             [
                 'name'                => '6vs6 con cambio di schema a metà rally',
@@ -805,7 +805,7 @@ class ExerciseEcologicalSeeder extends Seeder
                 'constraint_type'     => 'environment',
                 'representativeness'  => 'low',
                 'feedback_suggestion' => 'interrogative_perceptual',
-                'affordance_targets'  => json_encode(['teammate', 'space', 'ball']),
+                'affordance_targets'  => ['teammate', 'space', 'ball'],
             ],
 
         ];
