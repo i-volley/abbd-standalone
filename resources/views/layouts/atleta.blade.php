@@ -14,7 +14,9 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ route('atleta.sedute') }}">⚡ ABBD</a>
         <div class="navbar-nav ms-auto d-flex flex-row gap-3 align-items-center">
-            <a class="nav-link {{ request()->routeIs('atleta.sedute') ? 'text-white' : 'text-secondary' }}"
+            <a class="nav-link {{ request()->routeIs('atleta.calendario') ? 'text-white' : 'text-secondary' }}"
+               href="{{ route('atleta.calendario') }}">Calendario</a>
+            <a class="nav-link {{ request()->routeIs('atleta.sedute*') ? 'text-white' : 'text-secondary' }}"
                href="{{ route('atleta.sedute') }}">Sedute</a>
             <a class="nav-link {{ request()->routeIs('atleta.storico') ? 'text-white' : 'text-secondary' }}"
                href="{{ route('atleta.storico') }}">Storico</a>

@@ -17,6 +17,7 @@ use App\Http\Controllers\Allenatore\UnitaDidatticaController;
 use App\Http\Controllers\Allenatore\ParadigmaController;
 use App\Http\Controllers\Allenatore\TemplateCustomController;
 use App\Http\Controllers\Allenatore\WizardController;
+use App\Http\Controllers\Atleta\AtletaCalendarioController;
 use App\Http\Controllers\Atleta\AtletaSeduteController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
@@ -171,6 +172,7 @@ Route::prefix('allenatore')->name('allenatore.')
 Route::prefix('atleta')->name('atleta.')
     ->middleware(['auth', 'role:atleta'])->group(function () {
 
+    Route::get('/calendario', [AtletaCalendarioController::class, 'index'])->name('calendario');
     Route::get('/sedute', [AtletaSeduteController::class, 'index'])->name('sedute');
     Route::get('/sedute/{seduta}', [AtletaSeduteController::class, 'show'])->name('sedute.show');
     Route::get('/storico', [AtletaSeduteController::class, 'storico'])->name('storico');
