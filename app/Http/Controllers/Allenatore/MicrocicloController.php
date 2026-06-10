@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 
 class MicrocicloController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | TODO — Integrazione Passport: fine microciclo (microcycle.end)
+    |--------------------------------------------------------------------------
+    | Un microciclo ha solo `data_inizio`, non un evento di chiusura esplicito.
+    | La fine va rilevata via scheduler (vedi routes/console.php) chiamando
+    | PassportWebhookService::microcycleEnd($atletaId, ['microciclo_id' => ...]).
+    | Call-site documentato come TODO — vedi agent5.done.
+    */
     public function create(Macrociclo $macrociclo)
     {
         return view('allenatore.microcicli.create', compact('macrociclo'));

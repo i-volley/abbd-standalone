@@ -5,9 +5,29 @@ namespace App\Http\Controllers\Atleta;
 use App\Http\Controllers\Controller;
 use App\Models\Feedback;
 use App\Models\Seduta;
+use App\Services\PassportWebhookService;
 
 class AtletaSeduteController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | TODO — Integrazione Passport: registrazione presenza (attendance)
+    |--------------------------------------------------------------------------
+    | ABBD attualmente NON modella la presenza/assenza dell'atleta alle sedute
+    | (nessun modello/colonna "presenza"). Quando verrà introdotta la
+    | registrazione presenze, agganciare qui la notifica al Passport:
+    |
+    |   public function registraPresenza(Seduta $seduta, PassportWebhookService $passport)
+    |   {
+    |       // ... persist presenza ...
+    |       $passport->attendanceRegistered(auth()->id(), [
+    |           'seduta_id' => $seduta->id,
+    |           'data'      => $seduta->data,
+    |       ]);
+    |   }
+    |
+    | Lasciato come call-site documentato (TODO) — vedi agent5.done.
+    */
     private function teamId(): int
     {
         return auth()->user()->teams()->value('teams.id') ?? 0;

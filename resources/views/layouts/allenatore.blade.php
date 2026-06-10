@@ -137,6 +137,22 @@
             </a>
         </li>
 
+        {{-- ── MODULO PASSPORT / GAMIFICATION (visibile solo se attivo) ──── --}}
+        @if(config('services.passport.attivo'))
+        <li class="nav-item mt-3">
+            <a class="nav-link" target="_blank" rel="noopener"
+               href="{{ rtrim(config('services.passport.url'), '/') }}">
+                {{ __('🛂 Passaporto') }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" target="_blank" rel="noopener"
+               href="{{ rtrim(config('services.passport.url'), '/') }}/gamification">
+                {{ __('🏆 Gamification') }}
+            </a>
+        </li>
+        @endif
+
     </ul>
 
     <div class="mt-auto p-3" style="position:absolute;bottom:0;width:100%">

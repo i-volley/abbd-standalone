@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    // iA-Volley Passport / Gamification module integration.
+    // When "attivo" is false every outbound webhook is a no-op and the
+    // Passaporto/Gamification nav entries are hidden. "api_key" must match
+    // the Passport backend's ABBD_WEBHOOK_API_KEY.
+    'passport' => [
+        'attivo'  => env('PASSPORT_MODULE_ATTIVO', false),
+        'url'     => env('PASSPORT_MODULE_URL'),
+        'api_key' => env('PASSPORT_MODULE_API_KEY'),
+    ],
+
 ];

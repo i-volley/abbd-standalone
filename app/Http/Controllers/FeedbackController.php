@@ -7,10 +7,11 @@ use App\Models\Feedback;
 use App\Models\FeedbackEsercizio;
 use App\Models\Seduta;
 use App\Models\SedutaEsercizio;
+use App\Services\PassportWebhookService;
 
 class FeedbackController extends Controller
 {
-    public function store(StoreFeedbackRequest $request)
+    public function store(StoreFeedbackRequest $request, PassportWebhookService $passport)
     {
         $data = $request->validated();
 
@@ -50,6 +51,22 @@ class FeedbackController extends Controller
                 ]);
             }
         }
+
+        // --- Integrazione Passport/Gamification ---
+        // Il feedback è stato compilato dall'atleta e contiene l'RPE: notifica
+        // entrambi gli eventi al modulo Passport (no-op se il modulo è inattivo).
+        $passport->feedbackCompiled(auth()->id(), [
+            'seduta_id'           => $feedback->seduta_id,
+            'feedback_id'         => $feedback->id,
+            'inviato_in_scadenza' => $feedback->inviato_in_scadenza,
+            'rpe'                 => $feedback->rpe,
+        ]);
+
+        $passport->rpeRegistered(auth()->id(), [
+            'seduta_id'   => $feedback->seduta_id,
+            'feedback_id' => $feedback->id,
+            'rpe'         => $feedback->rpe,
+        ]);
 
         return redirect()->route('atleta.sedute')->with('success', 'Feedback inviato. Grazie!');
     }

@@ -20,6 +20,12 @@
                href="{{ route('atleta.sedute') }}">Sessions</a>
             <a class="nav-link {{ request()->routeIs('atleta.storico') ? 'text-white' : 'text-secondary' }}"
                href="{{ route('atleta.storico') }}">History</a>
+            @if(config('services.passport.attivo'))
+            <a class="nav-link text-secondary" target="_blank" rel="noopener"
+               href="{{ rtrim(config('services.passport.url'), '/') }}">{{ __('Passaporto') }}</a>
+            <a class="nav-link text-secondary" target="_blank" rel="noopener"
+               href="{{ rtrim(config('services.passport.url'), '/') }}/gamification">{{ __('Gamification') }}</a>
+            @endif
             <small class="text-muted">{{ auth()->user()->name }}</small>
             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                 @csrf
